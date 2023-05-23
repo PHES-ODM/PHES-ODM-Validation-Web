@@ -1,0 +1,202 @@
+---
+title: "PHES-ODM Validation Web Tool Specifications"
+author: "Yulric Sequeira"
+format: html
+---
+
+This document goes over the high level specifications for the PHES-ODM 
+validation tool.
+
+# Audience
+
+The primary audience of this document are:
+
+1. The potential users of the tool to provide feedback on the features
+2. The programmers of the tool
+
+# Context
+
+The ODM team has developed a 
+[Python library](https://validate-docs.phes-odm.org/) to enable its users to 
+validate ODM datasets. Experience with Python is required to use the tool which
+alienates users with no programming knowledge or users with no Python
+experience. The purpose of the validation tool is to enable these subset of 
+users to validate their datasets.
+
+The validation tool is a web application where ODM users can upload their
+ODM datsets, validate it against the rules defined in the Python library, and
+download a report that contains all the errors/warnings in the dataset.
+
+# Constraints
+
+* The tool will need to be built in Python using the 
+  [Plotly Dash framework](https://plotly.com/dash/)
+
+# Features
+
+## Dataset Upload
+
+Users should be able to upload datasets to the tool for validation. 
+
+The tool should support the following file types:
+
+1. **CSV**: A comma-seperated file. The tool should make the following
+   assumptions about the uploaded file:
+   1. Each CSV file uploaded contains the data from a single table. If possible
+      the name of the table should be inferred from the file name.
+   2. The first row in the file contains the column names for the table
+   3. The data rows start from the second row in the file
+2. **Excel**: The tool should make the following assumptions about the uploaded
+   file:
+   1. Each sheet in an excel file contains the data from a single table.
+   2. The name of each sheet corresponds to the name of a table in the ODM that
+      the sheet represents.
+   3. For columns and rows within a sheet, the same assumptions as for a CSV
+      file apply.
+
+A maximum file size constraint should be set on the dataset but work will need
+to be done to decide on what this limit should be.
+
+**For privacy reasons none of the uploaded datasets should be persisted to a 
+server, database etc.**
+
+## Dataset Metadata
+
+The dataset upload process should include a step which allows the user to 
+attach metadata to their dataset.
+
+This metadata will be used by the tool to inform the validation process.
+
+The metadata fields are specified below:
+
+1. **ODM Version**: The version of the ODM their dataset is from. The accepted
+   versions are: *v1.0.0*, *v1.1.0*, and *v2.0.0*. If possible, the tool should
+   detect the version from the uploaded dataset.
+2. **Table Name**: For CSV files, the user should specify the name of the
+   ODM table that the file represents. The list of allowed table names depends
+   on what version of the ODM the dataset is from.
+
+## Upload Report
+
+Users should be able to view an upload report.
+
+Once a user has uploaded a dataset to the tool they should be presented with
+an upload report that summarizes the dataset.
+
+The purpose of the upload report is to provide users with feedback about the 
+upload process, allowing them to verify if the tool correctly imported their 
+dataset.
+
+The report should include the following information:
+
+1. The date and time the dataset was uploaded
+2. The file name of the uploaded dataset
+3. For Excel files, the number of tables found, the table names, and the number 
+   of ODM compliant tables found.
+4. For Excel/CSV files, for each table, the number of columns found, the column
+   names, and the number of ODM compliant columns found.
+5. For Excel/CSV files, for each table, the number of rows found.
+
+## Dataset Validation
+
+Users should be able validate their uploaded dataset.
+
+Once a user has successfully uploaded their dataset, set the necessary metadata 
+fields, and optionally verified the upload report, the next logical step is to
+start the validation process.
+
+Depending on the ODM version metadata set by the user, the approriate validation 
+schema file should be used.
+
+When validating a dataset, the user should be able to choose from a [validation
+profile](#validation-profile), if they have any.
+
+## Validation Customization
+
+Users should be able to customize the validation done on a dataset.
+
+Before starting the validation process for a dataset, users should be allowed to
+customize the following the pieces of the process:
+
+1. **Validation rules**: The user can customize the rules that they want to
+   be included in a validation process.
+
+## Validation Profile
+
+Users should be able to **create**, **edit**, **delete**, **download**, and **upload**
+a validation profile.
+
+Once a user has created a custom validation they should be allowed to save it in
+a validation profile for easy re-use.
+
+A validation profile is a saved [custom validation](#validation-customization)
+that allows the user to use it in the future or on another dataset.
+
+In addition to the validation customizations, the profile should also include
+the following information:
+
+1. **Name**: A name for the profile
+
+To enable users to share profiles with other computers or with other users,
+they should be allowed to download a validation profile and create a new one
+by uploading the downloaded profile.
+
+**For now, all profiles should be saved in the user's browser**
+
+## Validation Summary Report
+
+Users should be able to view a summary report of the validation.
+
+Once the validation process has completed for a dataset, users should be able 
+to view a report that summarizes the errors and warnings generated during the 
+validation.
+
+The report should include the following information:
+
+1. For Excel files, the number of invalid tables
+2. For all other file types, for each table,
+   1. The number of invalid columns
+   2. The number invalid rows
+   3. The number of errors
+   4. The number of warnings
+
+## Validation Report
+
+Users should be able view a report that details all the errors/warnings in the 
+dataset once validation is completed. 
+
+The report should include information that makes it easy for the user to fix any 
+errors in the dataset. Each error should include the following information:
+
+1. Whether its an error or warning
+2. The table name
+3. The row number
+4. The column name
+5. The ID of the rule that reported the error
+6. A human readable message to make it easy for the user to fix the error
+
+## Validation Report Download
+
+Users should be able to download the validation report. 
+
+The user should be able to choose from one of the following file format options:
+
+1. CSV: Each row of the file represents an error.
+2. YAML
+3. JSON
+
+The information in each file should match with the information in the 
+[validation report](#validation-report) section.
+
+The user should be able to choose from the following download options:
+
+1. **Full**: The file includes all errors and warnings
+2. **Errors**: The file includes only the errors
+3. **Warnings**: The file inlcudes only the warnings
+
+## Error Handling
+
+If the tool encounters an unexpected error during its execution, the user 
+should be provided with enough information that somebody on the team can
+reproduce the error.
+
