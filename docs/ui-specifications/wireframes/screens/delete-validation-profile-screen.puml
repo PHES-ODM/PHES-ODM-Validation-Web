@@ -1,0 +1,7 @@
+@startuml
+
+!include ./screens.puml
+
+$delete_validation_profile_confirmation_screen()
+
+@enduml

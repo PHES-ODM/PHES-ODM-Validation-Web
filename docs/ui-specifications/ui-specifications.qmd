@@ -1,0 +1,380 @@
+---
+title: UI Specifications
+format: 
+    html:
+        embed-resources: true
+---
+
+This document will go over the high level UI specifications for the web 
+validation tool. These specifications are not meant to specify the **visual**
+aspects of the tool (i.e. they are not meant to be pretty) but are more meant
+to specify functional aspects of the UI.
+
+The specifications will go through each feature outlined in the high level
+specifications and explain their functional aspects by using wireframe 
+diagrams as well as flow diagrams.
+
+# Features 
+
+Each of the next sub-sections will go over the features for the tool and the 
+user flows and/or wireframes for them. The sections that show flow diagrams
+will not go through each screen in the flow, those can be seen in the 
+[screens](#screens) section.
+
+## [Dataset Upload](../spec.qmd#dataset-upload) and [Dataset Metadata](../spec.qmd#dataset-metadata)
+
+There are multiple screens from which a user can start the process of uploading 
+a dataset, this section will focus on the home screen as the starting point.
+The image below contains the flow diagram for uploading a dataset from the home
+screen.
+
+![upload dataset from the home screen](../../dist/upload-dataset-from-home-screen.png)
+
+The user can initiate the upload dataset flow by clicking on the **Upload 
+Dataset** button from any screen where its available.
+
+In addition, the user should not be allowed to proceed from the **Finish CSV 
+Upload** screen and **Finish Excel Upload** screen unless all the dataset 
+metadata is valid.
+
+This flow can also be initiated from the [Validation Summary](#from-the-validation-summary-screen) 
+screen and [View Dataset](#from-the-view-dataset-screen) screen. The flows are 
+identical to the one above, with the only difference being the start screen.
+
+## [Upload Report](../spec.qmd#upload-report)
+
+The user can view the upload report from the [View Dataset](#view-dataset-screen)
+screen. The two ways the user can access this screen is by:
+
+1. Successfully uploading a new dataset which takes them to the screen; and
+2. Clicking on an already uploaded dataset which can be done from the 
+   [Validation Summary Screen](#validation-summary-screen) or the 
+   [View Dataset Screen](#view-dataset-screen)
+
+## [Dataset Validation](../spec.qmd#dataset-validation)
+
+The flow diagram for this feature is shown below.
+
+![validate dataset flow](../../dist/validate-dataset.png)
+
+From the **Customize Validation** screen the user can customize pieces of the
+validation by creating a new validation profile. This flow is shown in the 
+[validation profiles](#validation-profiles) section.
+
+## [Validation Customization](../spec.qmd$validation-customization) and [Validation Profiles](../spec.qmd#validation-profiles)
+
+A user can customize a validation by creating a validation profile and using it
+when validating a dataset. The next sub-sections go over all the operations
+that a user can do with a validation profile.
+
+### Viewing the Validation Profiles
+
+The user flow is shown below.
+
+![view validation profiles](../../dist/view-validation-profiles.png)
+
+A user can view their validation profiles from multiple screens, the [home 
+screen](#home-screen), the [view dataset](#view-dataset-screen), or the 
+[validation summary](#validation-summary-screen) screen.
+
+### Creating a Validation Profile
+
+The flow for creating a new validation profile can be started from the [View 
+Validation Profiles](#view-validation-profiles-screen) screen, or the [new
+Validation](#new-validation-screen) screen.
+
+![create validation profile from view validations profile screen](../../dist/create-validation-profile-from-view-validation-profiles-screen.png)
+
+![create validation profile from new validation screen](../../dist/create-validation-profile-from-new-validation-screen.png)
+
+### Editing a Validation Profile
+
+The flow diagram is shown below,
+
+![edit a validation profile](../../dist/edit-validation-profile.png)
+
+### Deleting a Validation Profile
+
+The flow diagram is shown below,
+
+![delete a validation profile](../../dist/delete-validation-profile.png)
+
+### Downloading a Validation Profile
+
+The flow diagram is shown below,
+
+![downloading a validation profile](../../dist/download-validation-profile.png)
+
+### Uploading a Validation Profile
+
+The flow is diagram is shown below,
+
+![uploading a validation profile](../../dist/upload-validation-profile.png)
+
+## [Validation Summary Report](../spec.qmd#validation-summary-report)
+
+There are two ways the user can view the validation summary report:
+
+1. After a [successful validation has completed](#dataset-validation)
+2. By clicking on a previous validation from the [View Dataset](#view-dataset-screen)
+   screen
+
+## [Validation Report](../spec.qmd#validation-report)
+
+Users can view the full validation report from the validation summary screen
+for a validation.
+
+The flow diagram is shown below:
+
+![view validation report](../../dist/view-validation-report.png)
+
+## [Validation Report Download](../spec.qmd#validation-report-download)
+
+Users can download the validation report from the [Validation Report](#validation-report-screen)
+screen.
+
+# Screens
+
+The next sub-sections will go over the different screens presented in the flow
+diagrams above.
+
+## Home Screen
+
+![home screen](../../dist/home-screen.png)
+
+The home screen is shown to the user when they land on the open the tool. From 
+the home screen they can:
+
+* **Upload a dataset**: Using the **Upload Dataset** button
+* **View their validation profiles**: Using the **View Validation Profiles** 
+  button. 
+* **View Tutorials**: Using the **Tutorial** button
+
+## Choose Dataset Screen
+
+![choose dataset screen](../../dist/choose-dataset-screen.png)
+
+This screen is part of the [upload dataset flow](#dataset-upload-and-dataset-metadata)
+where the user can choose a CSV or Excel file they want uploaded to the tool.
+
+The tool should use the [file chooser dialog](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file)
+that ships with every browser. The tool should also prevent the user from 
+choosing files that aren't CSV or Excel files.
+
+The **Close** button allows the user to cancel the dataset upload process, 
+taking them back to the screen from where they started the flow.
+
+## Finish CSV Upload Screen
+
+![finish CSV upload screen](../../dist/finish-csv-upload-screen.png)
+
+This screen is part of the [upload dataset flow](#dataset-upload-and-dataset-metadata)
+and is shown when the user has selected a CSV file from the 
+[choose dataset screen](#choose-dataset-screen).
+
+On this screen the user can:
+
+* Select the ODM version that this dataset is for. This is the **ODM version**
+   dropdown. Refer to the high level specifications for what versions the tool
+   supports.
+* Select the ODM table that this dataset represents. This is done using the 
+  **Table** dropdown.
+* Complete the upload process by clicking the **Upload** button. 
+* Cancel the upload process by clicking the **Close** button.
+
+In addition,
+
+* The **Ontario Lab.csv** text should be replaced with the file name of the 
+  dataset.
+* The user should not be allowed to upload the dataset until they have selected
+  a valid **ODM version** and **Table**.
+
+## Finish Excel Upload Screen
+
+![finish excel upload screen](../../dist/finish-excel-upload-screen.png)
+
+This screen is part of the [upload dataset flow](#dataset-upload-and-dataset-metadata)
+and is shown when the user has selected an Excel file from the 
+[choose dataset screen](#choose-dataset-screen).
+
+From this screen the user can:
+
+* Choose the ODM version the dataset is for. This is done using the 
+  **ODM version** dropdown. For the list of supported ODM versions, look at the
+  high level specifications.
+* Choose the ODM table that each sheet maps to. This is done using the dropdowns
+  at the bottom of the **Tables** text.
+* Upload the dataset using the **Upload** button.
+* Cancel the dataset upload using the **Close** button.
+
+In addition,
+
+* The **Hamilton Lab.xlsx** should be replaced with the file name of the dataset
+* The user should be allowed to upload the dataset only if the ODM version and 
+  table dropdowns have been correctly filled in.
+
+## View Dataset Screen
+
+![view dataset screen](../../dist/view-dataset-screen.png)
+
+This screen is shown when the user uploads a new dataset or selects a dataset
+on another screen. It allows the user to view summary details about the 
+uploaded dataset.
+
+From this screen the user can:
+
+* Select another dataset from the **Choose Dataset** panel.
+* Upload a new dataset using the **Upload Dataset** button
+* View their validation profiles using the **View Validation Profiles** button
+* View the **Upload Report** which summarizes the uploaded dataset.
+* Navigate to the [Validation Summary](#validation-summary-screen) by clicking 
+  on one of them in the **Previous Validations** panel.
+* Start a new validation using the **Validate Dataset** button
+* View the tutorials using the **Tutorial** button.
+
+## Validation Summary Screen
+
+![validation summary screen](../../dist/validation-summary-screen.png)
+
+This screen provides summary for a particular dataset validation. From this
+screen the user can:
+
+* Navigate to the [View Dataset](#view-dataset-screen) by clicking on one of
+  them in the **Choose Dataset** panel.
+* Upload a new dataset by clicking on the **Upload Dataset** button
+* View their validation profiles by clicking on the **View Validation Profiles**
+  button
+* Navigate to the summary for another validation by clicking on one of them
+  in the **Previous Validations** panel.
+* Start a new validation by clicking the **Validate Dataset** button
+* View the tutorials by clicking the **Tutorials** button
+* View the upload report for the selected validation
+* View the entire validation report by clicking the **Validation Report** button
+
+## New Validation Screen
+
+![new validation summary](../../dist/new-validation-screen.png)
+
+This screen is used by the user to start a new validation and is part of the
+[validate dataset](#dataset-validation) flow.
+
+From this screen the user can:
+
+* Choose the validation profile they want to use using the **validation 
+  profile** dropdown
+* View the properties of their selected profile using the **Validation
+  Properties** panel
+* Customize the validation by creating a new profile. This is done by clicking
+  the **Customize Validation** button
+* Start the validation by clicking the **Start Validation** button
+* Cancel the new validation by clicking the **Cancel** button
+
+In addition,
+
+* By default the selected validation profile should be one created by the
+  ODM staff
+
+## Validating Screen
+
+![validating screen](../../dist/validating-screen.png)
+
+This screen is part of the [validate dataset](#dataset-validation) flow.
+
+From this screen the user can:
+
+* View their validation progress
+* Cancel the validation by pressing the **Cancel** button
+
+## Cancel Validation Screen
+
+![cancel validation screen](../../dist/cancel-validation-screen.png)
+
+This screen is part of the [validate dataset](#dataset-validation) flow. Its 
+used to confirm with the user if they want to cancel their validation.
+
+From this screen the user can:
+
+* Cancel the validation process by clicking the **Yes** button
+* Continue the validation process by clicking the **Not** button
+
+## View Validation Profiles
+
+![view validation profiles screen](../../dist/view-validation-profiles-screen.png)
+
+From this screen the user can:
+
+* View the different validation profiles they have
+* Edit any one by clicking the **Edit** button
+* Download any one by clicking the **Download** button
+* Delete any one by clocking the **Delete** button
+* Create a new profile by clicking the **Create New Profile** button
+* Return to the previous screen by clicking the **Close** button
+
+## Create Validation Profile Screen
+
+![create validation profile screen](../../dist/create-validation-profile-screen.png)
+
+From this screen the user can:
+
+* Edit the name of their new validation profile. This field is mandatory.
+* Edit the description of their new validation profile. This field is optional.
+* Edit the rules they want to be part of this profile. At least one rule should
+  be selected.
+* Create the new profile by clicking the **Create Profile** button. The above
+  validations need to pass for the profile creation.
+* Create a new profile by uploading a validation profile. When they upload the
+  file, the tool should attempt to fill in the fields using the information in
+  the file. This is done using the **Upload Profile** button.
+* Cancel the creation with the **Cancel** button.
+
+## Edit Validation Profile Screen
+
+![edit validation profile screen](../../dist/edit-validation-profile-screen.png)
+
+This screen has the same functionality as the [Create Validation Profile](#create-validation-profile-screen)
+screen.
+
+## Delete Validation Profile Screen
+
+![delete validation profile screen](../../dist/delete-validation-profile-screen.png)
+
+Used to confirm if the user wants to delete a validation profile. From this 
+screen the user can:
+
+* Confirm they want to delete a validation profile by clicking the **Yes** 
+  button
+* Stop the deletion by clicking the **No** button
+
+## Choose Validation Profile Screen
+
+![choose validation profile screen](../../dist/choose-validation-profile-screen.png)
+
+When uploading a validation profile, this screen allows the user to choose a 
+validation profile file from their computer. It should use the [File 
+Dialog](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file)
+provided by the browser.
+
+## Validation Report Screen
+
+![view validation report screen](../../dist/validation-report-screen.png)
+
+From this screen the user can:
+
+* View the full results of a validation
+* Download the validation report by clicking on one of the options in the
+  **Download Report** dropdown.
+* Set what they want to include in the downloaded report by using the **Download
+  Options** dropdown.
+* Close the validation report by clicking the **Close** button
+  
+# Appendix
+
+## Other Upload Dataset Flows
+
+### From the Validation Summary Screen
+
+![upload dataset flow from the validation summary screen](../../dist/upload-dataset-from-validaton-summary-screen.png)
+
+### From the View Dataset Screen
+
+![upload dataset flow from the view dataset screen](../../dist/upload-dataset-from-view-dataset-screen.png)

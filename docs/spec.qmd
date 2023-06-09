@@ -72,9 +72,19 @@ The metadata fields are specified below:
 1. **ODM Version**: The version of the ODM their dataset is from. The accepted
    versions are: *v1.0.0*, *v1.1.0*, and *v2.0.0*. If possible, the tool should
    detect the version from the uploaded dataset.
-2. **Table Name**: For CSV files, the user should specify the name of the
-   ODM table that the file represents. The list of allowed table names depends
-   on what version of the ODM the dataset is from.
+2. **Table Name(s)**: The ODM table that each sheet represents. For CSV files,
+   this is the table that the file represents. For Excel files, these are the   
+   tables that each sheet in the file represents.
+
+   If possible, the tool should be try to auto-detect the table name. For CSV
+   files, the tool should try to match the name of the file to an ODM table. For 
+   Excel files, the tool should try to match the name of each sheet to an ODM
+   table.
+
+   The user should be allowed to set the table themselves, if they think that 
+   the detected table is incorrect, or if the tool can't detect it. To make it 
+   easier for the user, they should be allowed to choose from a pre-populated 
+   list, whose items depends on the ODM version of the dataset.
 
 ## Upload Report
 
@@ -109,7 +119,9 @@ Depending on the ODM version metadata set by the user, the approriate validation
 schema file should be used.
 
 When validating a dataset, the user should be able to choose from a [validation
-profile](#validation-profile), if they have any.
+profile](#validation-profile), if they have any. By default, an ODM validation 
+profile should be used. The ODM validation profile should be the validation
+profile recommended by the ODM team.
 
 ## Validation Customization
 
@@ -200,3 +212,7 @@ If the tool encounters an unexpected error during its execution, the user
 should be provided with enough information that somebody on the team can
 reproduce the error.
 
+## Tutorial
+
+Users should be able to view a tutorial that guides them through the different
+features in the tool.

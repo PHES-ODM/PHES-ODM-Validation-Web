@@ -1,0 +1,26 @@
+@startuml
+
+!include ../screens/screens.puml
+
+(*) --> [User is on the **Create Validation Profile** screen]"
+{{
+    $create_validation_profile_screen()
+}}
+" as create_validation_profile_screen
+
+create_validation_profile_screen --> [User clicks on the **Upload Profile** \
+button]"
+{{
+    $choose_validation_profile_screen()
+}}
+" as choose_validation_profile_screen
+
+choose_validation_profile_screen --> [User chooses a validation profile \
+\n Update the create validation profile screen with the chosen profile] \
+create_validation_profile_screen
+
+choose_validation_profile_screen --> [User clicks on the **Close** button] \
+create_validation_profile_screen
+
+@enduml
+

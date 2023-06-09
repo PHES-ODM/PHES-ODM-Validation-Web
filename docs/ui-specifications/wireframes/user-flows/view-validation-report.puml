@@ -1,0 +1,21 @@
+@startuml
+
+!include ../screens/screens.puml
+
+(*) --> [User is on the **Validation Summary** screen]"
+{{
+    $validation_summary_screen()
+}}
+" as validation_summary_screen
+
+validation_summary_screen --> [User clicks on the **View Validation Report** \
+button]"
+{{
+    $validation_report_screen()
+}}
+" as validation_report_screen
+
+validation_report_screen --> [User clicks on the **Close** button] \
+validation_summary_screen
+
+@enduml

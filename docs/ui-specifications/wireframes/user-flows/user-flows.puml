@@ -1,0 +1,45 @@
+@startuml
+
+!include ../screens/screens.puml
+
+!procedure $upload_dataset_flow($start_screen, $start_message)
+    (*) --> [$start_message]"
+    {{
+        %invoke_procedure($start_screen) 
+    }}
+    " as start_screen
+
+    start_screen --> [User clicks on the **Upload Dataset** button]"
+    {{
+        $choose_dataset_screen()
+    }}
+    " as choose_dataset_screen
+
+    choose_dataset_screen --> [User clicks on the **Close** button] start_screen
+
+    choose_dataset_screen --> [User chooses a CSV dataset]"
+    {{
+        $finish_csv_upload_screen()
+    }}
+    " as finish_csv_upload_screen
+
+    finish_csv_upload_screen --> [User clicks on the **Close** button] start_screen
+
+    finish_csv_upload_screen --> [User clicks on the **Upload** button]"
+    {{
+        $view_dataset_screen("Ontario Lab.csv", 0)
+    }}
+    " as view_dataset_screen
+
+    choose_dataset_screen --> [User chooses an Excel dataset]"
+    {{
+        $finish_excel_upload_screen()
+    }}
+    " as finish_excel_upload_screen
+
+    finish_excel_upload_screen --> [User clicks on the **Close** button] start_screen
+
+    finish_excel_upload_screen --> [User clicks on the **Upload** button] view_dataset_screen
+!endprocedure
+
+@enduml

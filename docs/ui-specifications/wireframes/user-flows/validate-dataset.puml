@@ -1,0 +1,41 @@
+@startuml
+
+!include ../screens/screens.puml
+
+(*) --> [User has uploaded a dataset and \n has selected a dataset]"
+{{
+    $view_dataset_screen("Ontario Lab.csv", 0)
+}}
+" as view_dataset_screen
+
+view_dataset_screen --> [User clicks on the **Validate Dataset** button]"
+{{
+    $new_validation_screen()
+}}
+" as new_validation_screen
+
+new_validation_screen --> [User clicks on the **Start Validation** button]"
+{{
+    $validating_screen()
+}}
+" as validating_screen
+
+new_validation_screen --> [User clicks on the **Cancel** button] view_dataset_screen
+
+validating_screen --> [Validation has completed]"
+{{
+    $validation_summary_screen()
+}}
+" as validation_summary_screen
+
+validating_screen --> [User clicks on the **Cancel** button]"
+{{
+    $cancel_validation_screen()
+}}
+" as cancel_validation_screen
+
+cancel_validation_screen --> [User clicks on the **Yes** button] view_dataset_screen
+
+cancel_validation_screen --> [User clicks on the **No** button] validating_screen
+
+@enduml

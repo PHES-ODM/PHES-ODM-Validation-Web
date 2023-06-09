@@ -1,0 +1,286 @@
+@startuml
+
+!procedure $home_screen()
+salt
+{
+    title Home Screen
+    {!
+        [Upload Dataset] | Welcome Text
+
+        [View Validation Profiles] | .
+
+        [Tutorial] | .
+    }
+}
+!endprocedure
+
+!procedure $choose_dataset_screen()
+salt
+{
+    title Choose Dataset Screen 
+
+    {T
+        + Lab Data 
+            ++ Ontario Lab.csv
+            ++ Hamilton Lab.xlsx
+    }
+
+    [Close]
+}
+!endprocedure
+
+!procedure $finish_csv_upload_screen()
+salt
+{
+    title Finish CSV Upload Screen
+
+    Ontario Lab.csv
+
+    {! 
+        Dataset ODM Version | ^ODM version^
+        ODM Table | ^Table^
+    }
+
+    [Upload]
+    [Close]
+}
+!endprocedure
+
+!procedure $finish_excel_upload_screen()
+salt
+{
+    title Finish Excel Upload Screen 
+
+    Hamilton Lab.xlsx
+
+    ODM Version: | ^ODM version^
+
+    Tables
+    {#
+        Sheet Name | Table
+        Sample | ^Table^
+        lab | ^Table^
+    }
+
+    [Upload]
+    [Close]
+}
+!endprocedure
+
+!procedure $view_dataset_screen($file_name, $show_validations)
+salt
+{
+    title View Dataset Screen
+    
+    {
+        {
+            {^"Choose Dataset"
+                [Ontario Lab.csv]
+                [Hamilton Lab.xlsx]
+            }
+
+            [Upload Dataset]
+        } | {
+                $file_name
+                {SI
+                    Upload Report
+                    .
+                    .
+                    .
+                    .
+                 }
+            }
+
+        ==
+
+        [View Validation Profiles] | .
+
+        ==
+
+        !if ($show_validations)
+        {^"Previous Validations"
+            [Validation 1]
+            [Validation 2]
+        } | .
+        !endif
+
+        [Validate Dataset] | .
+
+        == 
+
+        [Tutorial]
+    }
+}
+!endprocedure
+
+!procedure $new_validation_screen()
+salt
+{
+    title New Validation Screen
+    { Choose validation profile | ^validation profile^^ ODM profile^ }
+    ..
+    ..
+
+    {^"Validation Properties"
+        Rules Selected: greater_than_max_length... 
+    }
+
+    [Customize Validation]
+    [Start Validation]
+    [Cancel]
+}
+!endprocedure
+
+!procedure $validating_screen()
+salt
+{
+    title Validating Screen
+    Validating <file_name>....
+    [Cancel]
+}
+!endprocedure
+
+!procedure $cancel_validation_screen()
+salt
+{
+    title Cancel Validation Screen
+    Are you sure you want to stop the validation process?
+    [Yes]
+    [No]
+}
+!endprocedure
+
+!procedure $validation_summary_screen()
+salt
+{
+    title Validation Summary Screen
+    {!
+            {
+                {^"Choose Dataset"
+                    [Ontario Lab.csv]
+                    [Hamilton Lab.xlsx]
+                }
+
+                [Upload Dataset]
+            } | {
+                    <File Name> 
+                    {SI
+                            Validation Summary Text
+                            .
+                            .
+                            .
+                            .
+                    }
+                }
+
+            ==
+
+            [View Validation Profiles] | [View Validation Report] 
+
+            ==
+
+            {^"Previous Validations"
+                [Validation 1]
+                [Validation 2]
+            } | .
+
+            [Validate Dataset] | .
+
+            == 
+
+            [Tutorial]
+    }
+}
+!endprocedure
+
+!procedure $view_validation_profiles_screen()
+salt
+{
+    title View Validation Profiles Screen
+    Validation Profile 1 | [Edit] | [Download] | [Delete]
+    Validation Profile 2 | [Edit] | [Download] | [Delete]
+    [Create New Profile]
+    [Close]
+}
+!endprocedure
+
+!procedure $delete_validation_profile_confirmation_screen()
+salt
+{
+    title Delete Validation Profile Confirmation Screen
+    Do you want to delete profile <profile_name>?
+    [Yes]
+    [No]
+}
+!endprocedure
+
+!procedure $construct_validation_profile_form_screen(\
+    $screen_title, $confirm_button_text, $add_upload_button\
+)
+salt
+{
+    title $screen_title 
+    "Name "
+    "Description "
+    **Rules**: greater_than_max_length, less_than_min_value, ...
+    [$confirm_button_text]
+
+    !if ($add_upload_button) 
+    [Upload Profile] 
+    !endif
+
+    [Cancel]
+}
+!endprocedure
+
+!procedure $create_validation_profile_screen()
+    $construct_validation_profile_form_screen("Create Validation Profile Screen", "Create Profile", 1)
+!endprocedure
+
+!procedure $edit_validation_profile_screen()
+    $construct_validation_profile_form_screen("Edit Validation Profile Screen", "Save Profile", 0)
+!endprocedure
+
+!procedure $choose_validation_profile_screen()
+salt
+{
+    title Choose Validation Profile Screen 
+
+    {T
+        + Validation Profiles 
+            ++ MECP profile.yml
+            ++ PHAC profile.yml
+    }
+
+    [Close]
+}
+!endprocedure
+
+!procedure $validation_report_screen()
+salt
+{
+    title Validation Report Screen
+
+    Validation Report Text
+
+    ^ Download Report ^^ Download as CSV ^^ Download as YAML ^^ Download as \
+JSON ^
+    .. 
+    .. 
+    ..
+    ..
+    ..
+    ..
+    ^ Download Options ^^ Full ^^ Errors ^^ Warnings ^^
+    .. 
+    .. 
+    ..
+    ..
+    ..
+    ..
+
+    [Close]
+}
+!endprocedure
+
+@enduml
