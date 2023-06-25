@@ -21,7 +21,7 @@ user flows and/or wireframes for them. The sections that show flow diagrams
 will not go through each screen in the flow, those can be seen in the 
 [screens](#screens) section.
 
-## [Dataset Upload](../spec.qmd#dataset-upload) and [Dataset Metadata](../spec.qmd#dataset-metadata)
+## [Dataset Upload](../spec.qmd#dataset-upload)
 
 There are multiple screens from which a user can start the process of uploading 
 a dataset, this section will focus on the home screen as the starting point.
@@ -33,13 +33,21 @@ screen.
 The user can initiate the upload dataset flow by clicking on the **Upload 
 Dataset** button from any screen where its available.
 
-In addition, the user should not be allowed to proceed from the **Finish CSV 
-Upload** screen and **Finish Excel Upload** screen unless all the dataset 
-metadata is valid.
+In addition, the user should not be allowed to proceed from the **Configure 
+Dataset** screens unless all the dataset metadata is valid.
 
 This flow can also be initiated from the [Validation Summary](#from-the-validation-summary-screen) 
 screen and [View Dataset](#from-the-view-dataset-screen) screen. The flows are 
 identical to the one above, with the only difference being the start screen.
+
+## [Dataset Metadata](../spec.qmd#dataset-metadata)
+
+The user can set the metadata for their dataset either:
+
+* During the [dataset upload process](#dataset-upload)
+* From the [view dataset screen](#view-dataset-screen) whose flow is shown below
+
+![configure dataset from view dataset screen](../../dist/configure-dataset.png)
 
 ## [Upload Report](../spec.qmd#upload-report)
 
@@ -164,13 +172,14 @@ choosing files that aren't CSV or Excel files.
 The **Close** button allows the user to cancel the dataset upload process, 
 taking them back to the screen from where they started the flow.
 
-## Finish CSV Upload Screen
+## Configure Dataset Screen
 
-![finish CSV upload screen](../../dist/finish-csv-upload-screen.png)
+Depending on the dataset that the user wants to configure, a different 
+screen is shown.
 
-This screen is part of the [upload dataset flow](#dataset-upload-and-dataset-metadata)
-and is shown when the user has selected a CSV file from the 
-[choose dataset screen](#choose-dataset-screen).
+### Configure CSV Dataset Screen
+
+![Configure CSV Dataset screen](../../dist/configure-csv-dataset-screen.png)
 
 On this screen the user can:
 
@@ -179,39 +188,36 @@ On this screen the user can:
    supports.
 * Select the ODM table that this dataset represents. This is done using the 
   **Table** dropdown.
-* Complete the upload process by clicking the **Upload** button. 
-* Cancel the upload process by clicking the **Close** button.
+* Save the configuration by clicking the **Save** button. 
+* Cancel the configuration by clicking the **Close** button.
 
 In addition,
 
-* The **Ontario Lab.csv** text should be replaced with the file name of the 
+* The **\<CSV file name\>** text should be replaced with the file name of the 
   dataset.
-* The user should not be allowed to upload the dataset until they have selected
-  a valid **ODM version** and **Table**.
+* The user should be allowed to save the configuration only if the ODM version 
+  and table dropdown have been correctly filled in.
 
-## Finish Excel Upload Screen
+## Configure Excel Dataset Screen
 
-![finish excel upload screen](../../dist/finish-excel-upload-screen.png)
-
-This screen is part of the [upload dataset flow](#dataset-upload-and-dataset-metadata)
-and is shown when the user has selected an Excel file from the 
-[choose dataset screen](#choose-dataset-screen).
+![configure excel dataset screen](../../dist/configure-excel-dataset-screen.png)
 
 From this screen the user can:
 
-* Choose the ODM version the dataset is for. This is done using the 
-  **ODM version** dropdown. For the list of supported ODM versions, look at the
-  high level specifications.
+* Choose the ODM version the dataset is for. This is done using the **ODM 
+  version** dropdown. For the list of supported ODM versions, look at the high 
+  level specifications.
 * Choose the ODM table that each sheet maps to. This is done using the dropdowns
   at the bottom of the **Tables** text.
-* Upload the dataset using the **Upload** button.
-* Cancel the dataset upload using the **Close** button.
+* Save the configuration by clicking the **Save** button. 
+* Cancel the configuration by clicking the **Close** button.
 
 In addition,
 
-* The **Hamilton Lab.xlsx** should be replaced with the file name of the dataset
-* The user should be allowed to upload the dataset only if the ODM version and 
-  table dropdowns have been correctly filled in.
+* The **\<Excel file name\>** text should be replaced with the file name of the 
+  dataset
+* The user should be allowed to save the configuration only if the ODM version 
+  and table dropdowns have been correctly filled in.
 
 ## View Dataset Screen
 
@@ -226,6 +232,7 @@ From this screen the user can:
 * Select another dataset from the **Choose Dataset** panel.
 * Upload a new dataset using the **Upload Dataset** button
 * View their validation profiles using the **View Validation Profiles** button
+* Re-configure their dataset by clicking the **Configure Dataset** button
 * View the **Upload Report** which summarizes the uploaded dataset.
 * Navigate to the [Validation Summary](#validation-summary-screen) by clicking 
   on one of them in the **Previous Validations** panel.

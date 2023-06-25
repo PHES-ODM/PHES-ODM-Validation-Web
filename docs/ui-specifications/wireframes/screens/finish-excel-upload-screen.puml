@@ -1,7 +1,0 @@
-@startuml
-
-!include ./screens.puml
-
-$finish_excel_upload_screen()
-
-@enduml

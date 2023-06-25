@@ -1,0 +1,37 @@
+@startuml
+
+!include ../screens/screens.puml
+
+(*) --> [User is on the **View Dataset** screen]"
+{{
+    $view_dataset_screen("<file name>", true)
+}}
+" as view_dataset_screen
+
+view_dataset_screen --> [User clicks on the **Configure Dataset** button and \
+the dataset is a CSV file]"
+{{
+    $configure_dataset_screen("<CSV file name>", 1)
+}}
+" as configure_csv_dataset_screen 
+
+configure_csv_dataset_screen --> [User clicks on the **Save** button] \
+view_dataset_screen
+
+configure_csv_dataset_screen --> [User clicks on the **Close** button] \
+view_dataset_screen
+
+view_dataset_screen --> [User clicks on the **Configure Dataset** button and \
+the dataset is an Excel file]"
+{{
+    $configure_dataset_screen("<Excel file name>", 0)
+}}
+" as configure_excel_dataset_screen
+
+configure_excel_dataset_screen --> [User clicks on the **Save** button] \
+view_dataset_screen
+
+configure_excel_dataset_screen --> [User clicks on the **Close** button] \
+view_dataset_screen
+
+@enduml

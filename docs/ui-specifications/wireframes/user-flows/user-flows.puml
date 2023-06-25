@@ -19,13 +19,13 @@
 
     choose_dataset_screen --> [User chooses a CSV dataset]"
     {{
-        $finish_csv_upload_screen()
+        $configure_dataset_screen("Ontario Lab.csv", 1)
     }}
     " as finish_csv_upload_screen
 
     finish_csv_upload_screen --> [User clicks on the **Close** button] start_screen
 
-    finish_csv_upload_screen --> [User clicks on the **Upload** button]"
+    finish_csv_upload_screen --> [User clicks on the **Save** button]"
     {{
         $view_dataset_screen("Ontario Lab.csv", 0)
     }}
@@ -33,13 +33,13 @@
 
     choose_dataset_screen --> [User chooses an Excel dataset]"
     {{
-        $finish_excel_upload_screen()
+        $configure_dataset_screen("Hamilton Lab.xlsx", 0)
     }}
     " as finish_excel_upload_screen
 
     finish_excel_upload_screen --> [User clicks on the **Close** button] start_screen
 
-    finish_excel_upload_screen --> [User clicks on the **Upload** button] view_dataset_screen
+    finish_excel_upload_screen --> [User clicks on the **Save** button] view_dataset_screen
 !endprocedure
 
 @enduml

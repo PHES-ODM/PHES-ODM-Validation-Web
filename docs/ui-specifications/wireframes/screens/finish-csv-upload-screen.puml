@@ -1,7 +1,0 @@
-@startuml
-
-!include ./screens.puml
-
-$finish_csv_upload_screen()
-
-@enduml

@@ -29,40 +29,29 @@ salt
 }
 !endprocedure
 
-!procedure $finish_csv_upload_screen()
+!procedure $configure_dataset_screen($file_name, $is_csv_file)
 salt
 {
-    title Finish CSV Upload Screen
+    title Configure Dataset Screen
 
-    Ontario Lab.csv
-
-    {! 
-        Dataset ODM Version | ^ODM version^
-        ODM Table | ^Table^
-    }
-
-    [Upload]
-    [Close]
-}
-!endprocedure
-
-!procedure $finish_excel_upload_screen()
-salt
-{
-    title Finish Excel Upload Screen 
-
-    Hamilton Lab.xlsx
+    $file_name
 
     ODM Version: | ^ODM version^
 
-    Tables
-    {#
-        Sheet Name | Table
-        Sample | ^Table^
-        lab | ^Table^
-    }
+    !if ($is_csv_file)
+        {! 
+            ODM Table | ^Table^
+        }    
+    !else
+        Tables
+        {#
+            Sheet Name | Table
+            Sample | ^Table^
+            lab | ^Table^
+        }
+    !endif
 
-    [Upload]
+    [Save]
     [Close]
 }
 !endprocedure
@@ -82,6 +71,7 @@ salt
             [Upload Dataset]
         } | {
                 $file_name
+                [Configure Dataset]
                 {SI
                     Upload Report
                     .
