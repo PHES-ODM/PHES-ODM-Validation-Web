@@ -11,35 +11,35 @@
 
     start_screen --> [User clicks on the **Upload Dataset** button]"
     {{
-        $choose_dataset_screen()
+        $choose_dataset_dialog()
     }}
-    " as choose_dataset_screen
+    " as choose_dataset_dialog
 
-    choose_dataset_screen --> [User clicks on the **Close** button] start_screen
+    choose_dataset_dialog --> [User clicks on the **Close** button] start_screen
 
-    choose_dataset_screen --> [User chooses a CSV dataset]"
+    choose_dataset_dialog --> [User chooses a CSV dataset]"
     {{
-        $configure_dataset_screen("Ontario Lab.csv", 1)
+        $configure_dataset_dialog("Ontario Lab.csv", 1)
     }}
-    " as finish_csv_upload_screen
+    " as finish_csv_upload_dialog
 
-    finish_csv_upload_screen --> [User clicks on the **Close** button] start_screen
+    finish_csv_upload_dialog --> [User clicks on the **Close** button] start_screen
 
-    finish_csv_upload_screen --> [User clicks on the **Save** button]"
+    finish_csv_upload_dialog --> [User clicks on the **Save** button]"
     {{
         $view_dataset_screen("Ontario Lab.csv", 0)
     }}
     " as view_dataset_screen
 
-    choose_dataset_screen --> [User chooses an Excel dataset]"
+    choose_dataset_dialog --> [User chooses an Excel dataset]"
     {{
-        $configure_dataset_screen("Hamilton Lab.xlsx", 0)
+        $configure_dataset_dialog("Hamilton Lab.xlsx", 0)
     }}
-    " as finish_excel_upload_screen
+    " as finish_excel_upload_dialog
 
-    finish_excel_upload_screen --> [User clicks on the **Close** button] start_screen
+    finish_excel_upload_dialog --> [User clicks on the **Close** button] start_screen
 
-    finish_excel_upload_screen --> [User clicks on the **Save** button] view_dataset_screen
+    finish_excel_upload_dialog --> [User clicks on the **Save** button] view_dataset_screen
 !endprocedure
 
 @enduml

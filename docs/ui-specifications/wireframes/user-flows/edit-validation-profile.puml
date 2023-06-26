@@ -4,21 +4,21 @@
 
 (*) --> [User is on the "View Validation Profiles" screen]"
 {{
-    $view_validation_profiles_screen()
+    $view_validation_profiles_dialog()
 }}
-" as view_validation_profiles_screen
+" as view_validation_profiles_dialog
 
-view_validation_profiles_screen --> [User clicks on the **Edit** button for a \
+view_validation_profiles_dialog --> [User clicks on the **Edit** button for a \
 profile]"
 {{
-    $edit_validation_profile_screen()
+    $edit_validation_profile_dialog()
 }}
-" as edit_validation_profile_screen
+" as edit_validation_profile_dialog
 
-edit_validation_profile_screen --> [User clicks on the **Save Profile** button \
-] view_validation_profiles_screen
+edit_validation_profile_dialog --> [User clicks on the **Save Profile** button \
+] view_validation_profiles_dialog
 
-edit_validation_profile_screen --> [User clicks on the **Cancel** button] \
-view_validation_profiles_screen
+edit_validation_profile_dialog --> [User clicks on the **Cancel** button] \
+view_validation_profiles_dialog
 
 @enduml

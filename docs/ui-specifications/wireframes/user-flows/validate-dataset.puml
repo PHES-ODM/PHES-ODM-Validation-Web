@@ -10,32 +10,32 @@
 
 view_dataset_screen --> [User clicks on the **Validate Dataset** button]"
 {{
-    $new_validation_screen()
+    $new_validation_dialog()
 }}
-" as new_validation_screen
+" as new_validation_dialog
 
-new_validation_screen --> [User clicks on the **Start Validation** button]"
+new_validation_dialog --> [User clicks on the **Start Validation** button]"
 {{
-    $validating_screen()
+    $validating_dialog()
 }}
-" as validating_screen
+" as validating_dialog
 
-new_validation_screen --> [User clicks on the **Cancel** button] view_dataset_screen
+new_validation_dialog --> [User clicks on the **Cancel** button] view_dataset_screen
 
-validating_screen --> [Validation has completed]"
+validating_dialog --> [Validation has completed]"
 {{
     $validation_summary_screen()
 }}
 " as validation_summary_screen
 
-validating_screen --> [User clicks on the **Cancel** button]"
+validating_dialog --> [User clicks on the **Cancel** button]"
 {{
-    $cancel_validation_screen()
+    $cancel_validation_dialog()
 }}
-" as cancel_validation_screen
+" as cancel_validation_dialog
 
-cancel_validation_screen --> [User clicks on the **Yes** button] view_dataset_screen
+cancel_validation_dialog --> [User clicks on the **Yes** button] view_dataset_screen
 
-cancel_validation_screen --> [User clicks on the **No** button] validating_screen
+cancel_validation_dialog --> [User clicks on the **No** button] validating_dialog
 
 @enduml

@@ -14,6 +14,20 @@ The specifications will go through each feature outlined in the high level
 specifications and explain their functional aspects by using wireframe 
 diagrams as well as flow diagrams.
 
+# Screen Types
+
+The different screens that are part of the UI can be broadly classified into 
+two categories:
+
+1. **Primary Screens**: These screens consist of two panels, a sidebar and an 
+   information panel. The sidebar has screen specific actions that the user can 
+   do. The information panel mainly consists of text.
+2. **Dialog Screens**: These screens are used when a process cannot be completed 
+   in a single step (for e.g., [uploading a dataset](#dataset-upload), or for 
+   actions that require confirmation from a user. They are overlaid on top of a 
+   primary screen, and a user is not allowed to interact with the primary screen 
+   until the dialog is closed.
+
 # Features 
 
 Each of the next sub-sections will go over the features for the tool and the 
@@ -158,9 +172,9 @@ the home screen they can:
   button. 
 * **View Tutorials**: Using the **Tutorial** button
 
-## Choose Dataset Screen
+## Choose Dataset Dialog 
 
-![choose dataset screen](../../dist/choose-dataset-screen.png)
+![choose dataset dialog](../../dist/choose-dataset-dialog.png)
 
 This screen is part of the [upload dataset flow](#dataset-upload-and-dataset-metadata)
 where the user can choose a CSV or Excel file they want uploaded to the tool.
@@ -172,20 +186,20 @@ choosing files that aren't CSV or Excel files.
 The **Close** button allows the user to cancel the dataset upload process, 
 taking them back to the screen from where they started the flow.
 
-## Configure Dataset Screen
+## Configure Dataset Dialog 
 
 Depending on the dataset that the user wants to configure, a different 
 screen is shown.
 
-### Configure CSV Dataset Screen
+### Configure CSV Dataset Dialog 
 
-![Configure CSV Dataset screen](../../dist/configure-csv-dataset-screen.png)
+![Configure CSV dataset dialog](../../dist/configure-csv-dataset-dialog.png)
 
 On this screen the user can:
 
 * Select the ODM version that this dataset is for. This is the **ODM version**
-   dropdown. Refer to the high level specifications for what versions the tool
-   supports.
+  dropdown. Refer to the high level specifications for what versions the tool
+  supports.
 * Select the ODM table that this dataset represents. This is done using the 
   **Table** dropdown.
 * Save the configuration by clicking the **Save** button. 
@@ -198,9 +212,9 @@ In addition,
 * The user should be allowed to save the configuration only if the ODM version 
   and table dropdown have been correctly filled in.
 
-## Configure Excel Dataset Screen
+### Configure Excel Dataset Dialog 
 
-![configure excel dataset screen](../../dist/configure-excel-dataset-screen.png)
+![configure excel dataset dialog](../../dist/configure-excel-dataset-dialog.png)
 
 From this screen the user can:
 
@@ -258,9 +272,9 @@ screen the user can:
 * View the upload report for the selected validation
 * View the entire validation report by clicking the **Validation Report** button
 
-## New Validation Screen
+## New Validation Dialog 
 
-![new validation summary](../../dist/new-validation-screen.png)
+![new validation dialog](../../dist/new-validation-dialog.png)
 
 This screen is used by the user to start a new validation and is part of the
 [validate dataset](#dataset-validation) flow.
@@ -281,9 +295,9 @@ In addition,
 * By default the selected validation profile should be one created by the
   ODM staff
 
-## Validating Screen
+## Validating Dialog 
 
-![validating screen](../../dist/validating-screen.png)
+![validating dialog](../../dist/validating-dialog.png)
 
 This screen is part of the [validate dataset](#dataset-validation) flow.
 
@@ -292,9 +306,9 @@ From this screen the user can:
 * View their validation progress
 * Cancel the validation by pressing the **Cancel** button
 
-## Cancel Validation Screen
+## Cancel Validation Dialog 
 
-![cancel validation screen](../../dist/cancel-validation-screen.png)
+![cancel validation dialog](../../dist/cancel-validation-dialog.png)
 
 This screen is part of the [validate dataset](#dataset-validation) flow. Its 
 used to confirm with the user if they want to cancel their validation.
@@ -304,9 +318,9 @@ From this screen the user can:
 * Cancel the validation process by clicking the **Yes** button
 * Continue the validation process by clicking the **Not** button
 
-## View Validation Profiles
+## View Validation Profiles Dialog
 
-![view validation profiles screen](../../dist/view-validation-profiles-screen.png)
+![view validation profiles dialog](../../dist/view-validation-profiles-dialog.png)
 
 From this screen the user can:
 
@@ -317,9 +331,9 @@ From this screen the user can:
 * Create a new profile by clicking the **Create New Profile** button
 * Return to the previous screen by clicking the **Close** button
 
-## Create Validation Profile Screen
+## Create Validation Profile Dialog 
 
-![create validation profile screen](../../dist/create-validation-profile-screen.png)
+![create validation profile dialog](../../dist/create-validation-profile-dialog.png)
 
 From this screen the user can:
 
@@ -334,16 +348,16 @@ From this screen the user can:
   the file. This is done using the **Upload Profile** button.
 * Cancel the creation with the **Cancel** button.
 
-## Edit Validation Profile Screen
+## Edit Validation Profile Dialog 
 
-![edit validation profile screen](../../dist/edit-validation-profile-screen.png)
+![edit validation profile dialog](../../dist/edit-validation-profile-dialog.png)
 
 This screen has the same functionality as the [Create Validation Profile](#create-validation-profile-screen)
 screen.
 
-## Delete Validation Profile Screen
+## Delete Validation Profile Dialog 
 
-![delete validation profile screen](../../dist/delete-validation-profile-screen.png)
+![delete validation profile dialog](../../dist/delete-validation-profile-dialog.png)
 
 Used to confirm if the user wants to delete a validation profile. From this 
 screen the user can:
@@ -352,18 +366,18 @@ screen the user can:
   button
 * Stop the deletion by clicking the **No** button
 
-## Choose Validation Profile Screen
+## Choose Validation Profile Dialog 
 
-![choose validation profile screen](../../dist/choose-validation-profile-screen.png)
+![choose validation profile screen](../../dist/choose-validation-profile-dialog.png)
 
 When uploading a validation profile, this screen allows the user to choose a 
 validation profile file from their computer. It should use the [File 
 Dialog](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file)
 provided by the browser.
 
-## Validation Report Screen
+## Validation Report Dialog 
 
-![view validation report screen](../../dist/validation-report-screen.png)
+![view validation report dialog](../../dist/validation-report-dialog.png)
 
 From this screen the user can:
 

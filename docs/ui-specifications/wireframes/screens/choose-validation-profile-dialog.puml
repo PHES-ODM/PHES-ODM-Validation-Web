@@ -2,6 +2,6 @@
 
 !include ./screens.puml
 
-$validating_screen()
+$choose_validation_profile_dialog()
 
 @enduml

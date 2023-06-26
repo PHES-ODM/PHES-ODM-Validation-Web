@@ -1,7 +1,0 @@
-@startuml
-
-!include ./screens.puml
-
-$configure_dataset_screen("<CSV file name>", 1)
-
-@enduml

@@ -10,11 +10,11 @@
 
 home_screen --> [User clicks on **View Validation Profiles** button]"
 {{
-    $view_validation_profiles_screen()
+    $view_validation_profiles_dialog()
 }}
-" as view_validation_profiles_screen        
+" as view_validation_profiles_dialog        
 
-view_validation_profiles_screen --> [User clicks on the **Close** button and \
+view_validation_profiles_dialog --> [User clicks on the **Close** button and \
 \n was on the **Home** screen] home_screen
 
 (*) --> [User is on the **View Dataset** screen]"
@@ -24,9 +24,9 @@ view_validation_profiles_screen --> [User clicks on the **Close** button and \
 " as view_dataset_screen
 
 view_dataset_screen --> [User clicks on the **View Validation Profiles** \
-button] view_validation_profiles_screen
+button] view_validation_profiles_dialog
 
-view_validation_profiles_screen --> [User clicks on the **Close** button and \
+view_validation_profiles_dialog --> [User clicks on the **Close** button and \
 \n was on the **View Dataset** screen] view_dataset_screen
 
 (*) --> [User is on the **Validation Summary** screen]"
@@ -36,9 +36,9 @@ view_validation_profiles_screen --> [User clicks on the **Close** button and \
 " as validation_summary_screen
 
 validation_summary_screen --> [User clicks on the **View Validation Profiles** \
-button] view_validation_profiles_screen
+button] view_validation_profiles_dialog
 
-view_validation_profiles_screen --> [User clicks on the **Close** button and \
+view_validation_profiles_dialog --> [User clicks on the **Close** button and \
 \n user was on the **Validation Summary Screen**] validation_summary_screen
 
 @enduml

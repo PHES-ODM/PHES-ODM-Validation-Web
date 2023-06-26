@@ -1,0 +1,7 @@
+@startuml
+
+!include ./screens.puml
+
+$configure_dataset_dialog("<Excel file name>", 0)
+
+@enduml
