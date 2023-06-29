@@ -39,7 +39,8 @@ salt
             ++ Hamilton Lab.xlsx
     }
 
-    [Close]
+    [Ok]
+    [Cancel]
 }
 !endprocedure
 

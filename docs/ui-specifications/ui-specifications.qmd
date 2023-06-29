@@ -192,7 +192,10 @@ The tool should use the [file chooser dialog](https://developer.mozilla.org/en-U
 that ships with every browser. The tool should also prevent the user from 
 choosing files that aren't CSV or Excel files.
 
-The **Close** button allows the user to cancel the dataset upload process, 
+The **Ok** button allows the user to select a file as their dataset and proceed
+to the next step.
+
+The **Cancel** button allows the user to cancel the dataset upload process, 
 taking them back to the screen from where they started the flow.
 
 ## Configure Dataset Dialog 

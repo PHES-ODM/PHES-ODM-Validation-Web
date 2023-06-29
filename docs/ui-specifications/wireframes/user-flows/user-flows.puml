@@ -15,9 +15,10 @@
     }}
     " as choose_dataset_dialog
 
-    choose_dataset_dialog --> [User clicks on the **Close** button] start_screen
+    choose_dataset_dialog --> [User clicks on the **Cancel** button] start_screen
 
-    choose_dataset_dialog --> [User chooses a CSV dataset]"
+    choose_dataset_dialog --> [User chooses a CSV dataset by selecting a CSV \
+file and \n clicking the **Ok** button]"
     {{
         $configure_dataset_dialog("Ontario Lab.csv", 1)
     }}
@@ -31,7 +32,8 @@
     }}
     " as view_dataset_screen
 
-    choose_dataset_dialog --> [User chooses an Excel dataset]"
+    choose_dataset_dialog --> [User chooses an Excel dataset by selecting an \
+Excel file and \n clicking the **Ok** button]"
     {{
         $configure_dataset_dialog("Hamilton Lab.xlsx", 0)
     }}
