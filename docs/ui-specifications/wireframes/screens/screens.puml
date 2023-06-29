@@ -1,16 +1,30 @@
 @startuml
 
+!procedure $render_top_bar($has_datasets = 0)
+    {* 
+        **Upload Dataset** | **Datasets** | **View Validation Profiles** | **Tutorials** 
+        **Datasets** | 
+        !if $has_datasets 
+            Ontario Lab.csv | Hamilton Lab.xlsx 
+        !else
+            No Dataset Uploaded
+        !endif
+    }
+
+        ...
+        ...
+        ...
+        ...
+!endprocedure
+
 !procedure $home_screen()
 salt
 {
     title Home Screen
-    {!
-        [Upload Dataset] | Welcome Text
 
-        [View Validation Profiles] | .
-
-        [Tutorial] | .
-    }
+    $render_top_bar(0)
+    
+    Welcome Text 
 }
 !endprocedure
 
@@ -61,44 +75,29 @@ salt
 {
     title View Dataset Screen
     
-    {
+    $render_top_bar(1)
+
+    {!
+        [Configure Dataset] | 
         {
-            {^"Choose Dataset"
-                [Ontario Lab.csv]
-                [Hamilton Lab.xlsx]
+            $file_name
+            {SI
+                Upload Report
+                .
+                .
+                .
+                .
             }
-
-            [Upload Dataset]
-        } | {
-                $file_name
-                [Configure Dataset]
-                {SI
-                    Upload Report
-                    .
-                    .
-                    .
-                    .
-                 }
-            }
-
-        ==
-
-        [View Validation Profiles] | .
-
-        ==
+        }
 
         !if ($show_validations)
-        {^"Previous Validations"
-            [Validation 1]
-            [Validation 2]
-        } | .
-        !endif
+            {^"Previous Validations"
+                [Validation 1]
+                [Validation 2]
+            } | . 
+        !endif 
 
         [Validate Dataset] | .
-
-        == 
-
-        [Tutorial]
     }
 }
 !endprocedure
@@ -144,41 +143,28 @@ salt
 salt
 {
     title Validation Summary Screen
+
+    $render_top_bar(1)
+
     {!
+            [Configure Dataset] | 
             {
-                {^"Choose Dataset"
-                    [Ontario Lab.csv]
-                    [Hamilton Lab.xlsx]
+                <File Name> 
+                {SI
+                    Validation Summary Text
+                    .
+                    .
+                    .
+                    .
                 }
-
-                [Upload Dataset]
-            } | {
-                    <File Name> 
-                    {SI
-                            Validation Summary Text
-                            .
-                            .
-                            .
-                            .
-                    }
-                }
-
-            ==
-
-            [View Validation Profiles] | [View Validation Report] 
-
-            ==
+            }
 
             {^"Previous Validations"
                 [Validation 1]
                 [Validation 2]
-            } | .
+            } | [View Validation Report] 
 
             [Validate Dataset] | .
-
-            == 
-
-            [Tutorial]
     }
 }
 !endprocedure

@@ -19,9 +19,18 @@ diagrams as well as flow diagrams.
 The different screens that are part of the UI can be broadly classified into 
 two categories:
 
-1. **Primary Screens**: These screens consist of two panels, a sidebar and an 
-   information panel. The sidebar has screen specific actions that the user can 
-   do. The information panel mainly consists of text.
+1. **Primary Screens**: These screens allow the user to perform a variety of
+   actions while also showing information based on the current context. For 
+   example, the [view dataset screen](#view-dataset-screen) shows the user 
+   information about a dataset, but also allows them to perform actions like 
+   uploading a new dataset, starting a new validation etc. These screens consist
+   of three main components:
+   1. Top Bar: Has actions that can be done from any screen.
+   2. Sidebar: Has actions relevant to the current screen. Currently, the 
+      sidebar is populated with common actions that the user can perform on a 
+      selected dataset.
+   3. Content: Has information for the current screen along with any additional
+      context specific actions.
 2. **Dialog Screens**: These screens are used when a process cannot be completed 
    in a single step (for e.g., [uploading a dataset](#dataset-upload), or for 
    actions that require confirmation from a user. They are overlaid on top of a 
@@ -164,8 +173,8 @@ diagrams above.
 
 ![home screen](../../dist/home-screen.png)
 
-The home screen is shown to the user when they land on the open the tool. From 
-the home screen they can:
+The home screen is shown to the user when they open the tool. From the home 
+screen they can:
 
 * **Upload a dataset**: Using the **Upload Dataset** button
 * **View their validation profiles**: Using the **View Validation Profiles** 
@@ -243,7 +252,7 @@ uploaded dataset.
 
 From this screen the user can:
 
-* Select another dataset from the **Choose Dataset** panel.
+* Select another dataset by clicking on an item in the **Datasets** dropdown.
 * Upload a new dataset using the **Upload Dataset** button
 * View their validation profiles using the **View Validation Profiles** button
 * Re-configure their dataset by clicking the **Configure Dataset** button
@@ -260,8 +269,8 @@ From this screen the user can:
 This screen provides summary for a particular dataset validation. From this
 screen the user can:
 
-* Navigate to the [View Dataset](#view-dataset-screen) by clicking on one of
-  them in the **Choose Dataset** panel.
+* Navigate to the [View Dataset](#view-dataset-screen) screen by clicking on one
+  of the items in the **Datasets** dropdown.
 * Upload a new dataset by clicking on the **Upload Dataset** button
 * View their validation profiles by clicking on the **View Validation Profiles**
   button
