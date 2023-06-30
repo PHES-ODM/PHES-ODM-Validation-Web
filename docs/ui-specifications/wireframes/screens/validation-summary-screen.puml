@@ -1,0 +1,7 @@
+@startuml
+
+!include ./screens.puml
+
+$validation_summary_screen()
+
+@enduml

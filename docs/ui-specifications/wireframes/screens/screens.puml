@@ -1,0 +1,263 @@
+@startuml
+
+!procedure $render_top_bar($has_datasets = 0)
+    {* 
+        **Upload Dataset** | **Datasets** | **View Validation Profiles** | **Tutorials** 
+        **Datasets** | 
+        !if $has_datasets 
+            Ontario Lab.csv | Hamilton Lab.xlsx 
+        !else
+            No Dataset Uploaded
+        !endif
+    }
+
+        ...
+        ...
+        ...
+        ...
+!endprocedure
+
+!procedure $home_screen()
+salt
+{
+    title Home Screen
+
+    $render_top_bar(0)
+    
+    Welcome Text 
+}
+!endprocedure
+
+!procedure $choose_dataset_dialog()
+salt
+{
+    title Choose Dataset Dialog 
+
+    {T
+        + Lab Data 
+            ++ Ontario Lab.csv
+            ++ Hamilton Lab.xlsx
+    }
+
+    [Ok]
+    [Cancel]
+}
+!endprocedure
+
+!procedure $configure_dataset_dialog($file_name, $is_csv_file)
+salt
+{
+    title Configure Dataset Dialog 
+
+    $file_name
+
+    ODM Version: | ^ODM version^
+
+    !if ($is_csv_file)
+        {! 
+            ODM Table | ^Table^
+        }    
+    !else
+        Tables
+        {#
+            Sheet Name | Table
+            Sample | ^Table^
+            lab | ^Table^
+        }
+    !endif
+
+    [Save]
+    [Close]
+}
+!endprocedure
+
+!procedure $view_dataset_screen($file_name, $show_validations)
+salt
+{
+    title View Dataset Screen
+    
+    $render_top_bar(1)
+
+    {!
+        [Configure Dataset] | 
+        {
+            $file_name
+            {SI
+                Upload Report
+                .
+                .
+                .
+                .
+            }
+        }
+
+        !if ($show_validations)
+            {^"Previous Validations"
+                [Validation 1]
+                [Validation 2]
+            } | . 
+        !endif 
+
+        [Validate Dataset] | .
+    }
+}
+!endprocedure
+
+!procedure $new_validation_dialog()
+salt
+{
+    title New Validation Dialog 
+    { Choose validation profile | ^validation profile^^ ODM profile^ }
+    ..
+    ..
+
+    {^"Validation Properties"
+        Rules Selected: greater_than_max_length... 
+    }
+
+    [Customize Validation]
+    [Start Validation]
+    [Cancel]
+}
+!endprocedure
+
+!procedure $validating_dialog()
+salt
+{
+    title Validating Dialog
+    Validating <file_name>....
+    [Cancel]
+}
+!endprocedure
+
+!procedure $cancel_validation_dialog()
+salt
+{
+    title Cancel Validation Dialog
+    Are you sure you want to stop the validation process?
+    [Yes]
+    [No]
+}
+!endprocedure
+
+!procedure $validation_summary_screen()
+salt
+{
+    title Validation Summary Screen
+
+    $render_top_bar(1)
+
+    {!
+            [Configure Dataset] | 
+            {
+                <File Name> 
+                {SI
+                    Validation Summary Text
+                    .
+                    .
+                    .
+                    .
+                }
+            }
+
+            {^"Previous Validations"
+                [Validation 1]
+                [Validation 2]
+            } | [View Validation Report] 
+
+            [Validate Dataset] | .
+    }
+}
+!endprocedure
+
+!procedure $view_validation_profiles_dialog()
+salt
+{
+    title View Validation Profiles Dialog
+    Validation Profile 1 | [Edit] | [Download] | [Delete]
+    Validation Profile 2 | [Edit] | [Download] | [Delete]
+    [Create New Profile]
+    [Close]
+}
+!endprocedure
+
+!procedure $delete_validation_profile_confirmation_dialog()
+salt
+{
+    title Delete Validation Profile Confirmation Dialog
+    Do you want to delete profile <profile_name>?
+    [Yes]
+    [No]
+}
+!endprocedure
+
+!procedure $construct_validation_profile_form_dialog(\
+    $screen_title, $confirm_button_text, $add_upload_button\
+)
+salt
+{
+    title $screen_title 
+    "Name "
+    "Description "
+    **Rules**: greater_than_max_length, less_than_min_value, ...
+    [$confirm_button_text]
+
+    !if ($add_upload_button) 
+    [Upload Profile] 
+    !endif
+
+    [Cancel]
+}
+!endprocedure
+
+!procedure $create_validation_profile_dialog()
+    $construct_validation_profile_form_dialog("Create Validation Profile Dialog", "Create Profile", 1)
+!endprocedure
+
+!procedure $edit_validation_profile_dialog()
+    $construct_validation_profile_form_dialog("Edit Validation Profile Dialog", "Save Profile", 0)
+!endprocedure
+
+!procedure $choose_validation_profile_dialog()
+salt
+{
+    title Choose Validation Profile Dialog 
+
+    {T
+        + Validation Profiles 
+            ++ MECP profile.yml
+            ++ PHAC profile.yml
+    }
+
+    [Close]
+}
+!endprocedure
+
+!procedure $validation_report_dialog()
+salt
+{
+    title Validation Report Dialog 
+
+    Validation Report Text
+
+    ^ Download Report ^^ Download as CSV ^^ Download as YAML ^^ Download as \
+JSON ^
+    .. 
+    .. 
+    ..
+    ..
+    ..
+    ..
+    ^ Download Options ^^ Full ^^ Errors ^^ Warnings ^^
+    .. 
+    .. 
+    ..
+    ..
+    ..
+    ..
+
+    [Close]
+}
+!endprocedure
+
+@enduml

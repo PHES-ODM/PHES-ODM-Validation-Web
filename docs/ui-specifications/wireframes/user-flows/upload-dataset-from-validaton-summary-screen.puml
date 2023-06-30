@@ -1,0 +1,9 @@
+@startuml
+
+!include ../screens/screens.puml
+!include ./user-flows.puml
+
+$upload_dataset_flow("$validation_summary_screen", "User is on the **Validation Summary** screen")
+
+@enduml
+

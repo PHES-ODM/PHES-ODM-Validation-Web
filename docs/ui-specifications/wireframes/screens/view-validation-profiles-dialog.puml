@@ -1,0 +1,7 @@
+@startuml
+
+!include ./screens.puml
+
+$view_validation_profiles_dialog()
+
+@enduml

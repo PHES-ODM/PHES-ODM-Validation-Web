@@ -1,0 +1,14 @@
+@startuml
+
+!include ../screens/screens.puml
+
+(*) --> [User is on the **View Validation Profiles** dialog]"
+{{
+    $view_validation_profiles_dialog()
+}}
+" as view_validation_profiles_dialog
+
+view_validation_profiles_dialog --> [User clicks on the **Download** button \
+and \n the file download has been initiated] view_validation_profiles_dialog
+
+@enduml

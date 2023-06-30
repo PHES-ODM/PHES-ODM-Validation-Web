@@ -1,0 +1,44 @@
+@startuml
+
+!include ../screens/screens.puml
+
+(*) --> [User opens the tool]"
+{{
+    $home_screen()
+}}
+" as home_screen
+
+home_screen --> [User clicks on **View Validation Profiles** button]"
+{{
+    $view_validation_profiles_dialog()
+}}
+" as view_validation_profiles_dialog        
+
+view_validation_profiles_dialog --> [User clicks on the **Close** button and \
+\n was on the **Home** screen] home_screen
+
+(*) --> [User is on the **View Dataset** screen]"
+{{
+    $view_dataset_screen("Ontario Lab.csv", 0)
+}}
+" as view_dataset_screen
+
+view_dataset_screen --> [User clicks on the **View Validation Profiles** \
+button] view_validation_profiles_dialog
+
+view_validation_profiles_dialog --> [User clicks on the **Close** button and \
+\n was on the **View Dataset** screen] view_dataset_screen
+
+(*) --> [User is on the **Validation Summary** screen]"
+{{
+    $validation_summary_screen()
+}}
+" as validation_summary_screen
+
+validation_summary_screen --> [User clicks on the **View Validation Profiles** \
+button] view_validation_profiles_dialog
+
+view_validation_profiles_dialog --> [User clicks on the **Close** button and \
+\n user was on the **Validation Summary Screen**] validation_summary_screen
+
+@enduml

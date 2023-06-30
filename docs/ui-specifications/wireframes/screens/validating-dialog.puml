@@ -1,0 +1,7 @@
+@startuml
+
+!include ./screens.puml
+
+$validating_dialog()
+
+@enduml

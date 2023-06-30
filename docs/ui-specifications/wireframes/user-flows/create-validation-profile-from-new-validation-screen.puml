@@ -1,0 +1,24 @@
+@startuml
+
+!include ../screens/screens.puml
+
+(*) --> [User is on the **New Validation** screen]"
+{{
+    $new_validation_dialog()
+}}
+" as new_validation_dialog
+
+new_validation_dialog --> [User clicks the **Customize Validation** \
+button]"
+{{
+    $create_validation_profile_dialog()
+}}
+" as create_validation_profile_dialog
+
+create_validation_profile_dialog --> [User clicks on the **Create Profile** \
+button] new_validation_dialog
+
+create_validation_profile_dialog --> [User clicks on the **Cancel** button]\
+new_validation_dialog
+
+@enduml
