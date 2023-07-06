@@ -1,0 +1,41 @@
+# Guideline for Plotly Dash
+
+## Callbacks
+
+### General
+
+Pass around references to components instead of using string constants
+(component ids).
+
+Ex:
+```
+my_button = button(...)
+@callback(
+    Input(my_button, 'n_clicks')
+)
+```
+
+### Inputs
+
+Try to only have one input per callback, unless you don't need to distinguish
+between them. This should enable you to avoid using dash.ctx. if you need it
+then it's a sign of bad design.
+
+### Outputs
+
+Prefer having multiple callbacks with the same outputs over one big callback
+with a context switch. Use `Output(allow_multiple=True)` to enable multiple
+callbacks with the same output. This also requires setting
+`@callback(prevent_initial_callback=True)`, except for callbacks directly on the
+app (`@app.callback`) which inherit the app config:
+
+```
+app = Dash(prevent_initial_callbacks=True)
+```
+
+### Stores
+
+Separate callbacks from/to different components with stores. ex: instead of
+directly connecting two components with a callback, you would write to a store
+associated with the target component, and have an additional callback for
+reacting to the store and mutating the target component.
