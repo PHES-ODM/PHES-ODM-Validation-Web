@@ -1,0 +1,56 @@
+# Dataset configuration
+
+## Components
+
+### Config modal
+
+This is the dataset configuration screen. It uses a modal just like the upload
+screen, mainly to force the user throught the configuration process after
+upload. The config screen is used to configure the odm-version and
+table-mapping of the dataset. It consists of pre-populated dropdowns for all
+settings, together with ok & cancel buttons.
+
+- odm-version dropdown:
+    - initialized to detected ODM version
+- table mapping dropdowns:
+    - initialized to detected ODM tables
+- save/ok button:
+    - update dataset properties with selected values
+- close/cancel button:
+    - discard changes
+
+## Implementation
+
+### Types
+
+See [dataset-upload](dataset-upload.md#types).
+
+### Stores
+
+global:
+- [dataset: Dataset](dataset-upload.md#general)
+- `conf-modal-flag: bool`:
+    - used as signal to show/hide modal
+
+### Callbacks
+
+app:
+- conf-modal-flag:
+    - on_modified(dataset):
+        - set filename text from dataset
+        - set odm version from dataset
+        - set table mapping from dataset
+        - set conf-modal.is_open
+
+main-menu:
+- button, 'configure':
+    - on_click(datasets):
+        - set dataset
+        - set conf-modal-flag
+
+conf-modal:
+- button, 'ok':
+    - on_click(odm_version, tables, dataset):
+        - set dataset.odm_version
+        - set dataset.tables
+        - unset conf-modal-flag

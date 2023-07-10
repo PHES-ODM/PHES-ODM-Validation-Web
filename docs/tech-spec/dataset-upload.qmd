@@ -1,0 +1,96 @@
+# Dataset upload
+
+## Components
+
+### Upload modal
+
+This is the upload screen, which uses a modal to prevent the user from
+interacting with other parts of the site until the dataset is either fully
+imported (and configured), or discarded. It has a file dialog to upload files
+and ok & cancel buttons to proceed or discard.
+
+- file dialog:
+    - select dataset file from local machine
+- ok button:
+    1. import dataset
+    1. hide upload modal
+    1. show conf modal
+- cancel button:
+    1. discard the uploaded file (if any)
+    1. close the modal
+
+## Implementation
+
+### Types
+
+```python
+FileData = byte array
+TableMap = Dict[TableName, OdmTableName]
+
+class DataFile:
+    name: str
+    content_type: str
+    data: FileData
+
+class Dataset:
+    name: str
+    odm_version: str
+    tables: TableMap
+    data: FileData
+```
+
+### Stores
+
+global:
+- `dataset: Dataset`:
+    - current/last dataset
+    - needed for transition to [dataset conf](dataset-conf.md)
+- `datasets: List[Dataset]`:
+    - all datasets
+- `upload-modal-flag: bool`:
+    - signal to show/hide modal
+    - callback: set upload-modal.is_open
+
+local:
+- `datafile: DataFile`:
+    - current uploaded file
+
+### Callbacks
+
+main-menu:
+- button 'upload':
+    - callback: set upload-modal-flag
+
+upload-modal:
+- file-dialog, allowed={'csv', 'xlsx'}, single-file:
+    - on_upload(filename, contentType, data):
+        - set datafile to DataFile(...)
+        - set modal status text to 'upload of x completed'
+        - enable ok button
+- button, 'ok', disabled:
+    - on_click(datafile, datasets):
+        - set dataset to [import_dataset](#import_dataset)(datafile)
+        - append dataset to datasets
+        - reset upload-modal-flag
+        - set conf-modal-flag
+- button, 'cancel':
+    - on_click(datafile):
+        - reset datafile
+        - reset upload-modal-flag
+
+### Functions
+
+#### import_dataset
+
+`def import_dataset(file: DataFile) -> Dataset`
+
+Returns a dataset object from `file`, with auto-detected values for ODM version
+and table mapping.
+
+auto-detects:
+- file type from:
+    - content type
+    - filename extension
+- ODM version and table mapping from:
+    - table names
+    - column names
