@@ -12,12 +12,13 @@ and ok & cancel buttons to proceed or discard.
 - file dialog:
     - select dataset file from local machine
 - ok button:
-    1. import dataset
-    1. hide upload modal
-    1. show conf modal
+    - import dataset
+    - hide upload modal
+    - show [conf modal](dataset-conf.md#config-modal), which in turn will
+      change location to /datasets
 - cancel button:
-    1. discard the uploaded file (if any)
-    1. close the modal
+    - discard the uploaded file (if any)
+    - close the modal
 
 ## Implementation
 

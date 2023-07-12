@@ -16,6 +16,7 @@ settings, together with ok & cancel buttons.
     - initialized to detected ODM tables
 - save/ok button:
     - update dataset properties with selected values
+    - go to /datasets page
 - close/cancel button:
     - discard changes
 
@@ -49,8 +50,9 @@ main-menu:
         - set conf-modal-flag
 
 conf-modal:
-- button, 'ok':
+- button, 'ok', href=/datasets:
     - on_click(odm_version, tables, dataset):
         - set dataset.odm_version
         - set dataset.tables
         - unset conf-modal-flag
+        - href-attr will transition user to datasets page
