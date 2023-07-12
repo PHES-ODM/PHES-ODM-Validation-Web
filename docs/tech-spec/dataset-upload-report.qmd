@@ -1,0 +1,48 @@
+# Dataset upload report
+
+This is the dataset summary shown when selecting a dataset.
+
+## Components
+
+### Upload report
+
+This component shows a visual summary of the selected `Dataset` object, on the
+`/datasets` page. Both valid (ODM compliant) and invalid tables are shown, but
+only the valid data is presented in depth.
+
+- filename
+- upload time
+- table count, valid table count
+- for each table (just one with a CSV dataset):
+    - table name
+    - if table is valid:
+        - column count, valid column count
+        - column names
+        - for each valid column:
+            - row count
+
+## Implementation
+
+### Types
+
+The existing [Dataset](dataset-upload.md#types) type is extended to include the
+necessary data for the upload report. The data should be populated during
+dataset import.
+
+```python
+class Dataset:
+    # original
+    name: str
+    odm_version: str
+    tables: TableMap
+    data: FileData
+
+    # extension
+    upload_time: datetime.datetime
+    row_counts: Dict[TableName, int]
+```
+
+### Stores
+
+The existing [dataset store](dataset-upload.md#stores) is used to access the
+selected dataset.
