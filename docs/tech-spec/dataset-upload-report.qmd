@@ -12,14 +12,28 @@ only the valid data is presented in depth.
 
 - filename
 - upload time
-- table count, valid table count
+- table count, invalid table count
 - for each table (just one with a CSV dataset):
     - table name
     - if table is valid:
-        - column count, valid column count
+        - column count, invalid column count, row count
         - column names
-        - for each valid column:
-            - row count
+        - invalid column names
+
+Example:
+
+```markdown
+lab.xlsx
+2023-01-01 13:00
+
+tables (1):
+- samples, 3 columns (1 invalid), 100 rows:
+    - columns: sampleID, value
+    - invalid: tempValue
+
+invalid tables (1):
+- holiday-plans
+```
 
 ## Implementation
 
@@ -46,3 +60,12 @@ class Dataset:
 
 The existing [dataset store](dataset-upload.md#stores) is used to access the
 selected dataset.
+
+### Callbacks
+
+page datasets:
+- dcc.Location(id='url'):
+    - callback(url.pathname, dataset):
+        - check that pathname is `/datasets`
+        - populate page content with the upload report (in markdown format)
+          from the current `dataset`
