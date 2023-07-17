@@ -1,0 +1,161 @@
+# Dataset validation
+
+## Flow
+
+Asserts that a dataset is uploaded and selected.
+
+1. click [validate dataset button](#validate-dataset-button)
+    - show [new validation modal](#new-validation-modal)
+2. select profile
+4. click "start validation":
+    - auto-select schema based on dataset odm-version
+    - show [validation modal](#validation-modal) and run validation
+    - append validation result
+    - show validation summary
+
+## Components
+
+### Validate dataset button
+
+This button is found in the sidebar when a dataset is selected. It should show
+the [new validation modal](#new-validation-modal) when clicked.
+
+### New validation modal
+
+This modal sets up a new validation to be run.
+
+- validation profile dropdown:
+    - decides which profile to use for the validation
+    - default is "ODM profile"
+- validation profile rule list:
+    - list all active rules in selected profile
+- customize validation button:
+    - show [edit validation profile modal](validation-profiles.md#edit-validation-profile-modal)
+- start validation button:
+    - close this modal
+    - show [validation modal](#validation-modal)
+- cancel button:
+    - close this modal
+
+### Validation modal
+
+This modal shows the validation progress. An Interval component is used to
+periodically run a callback which updates the progress bar value. When the
+validation completes, it will transition to the [validation summary screen](#validation-summary-screen).
+
+- dataset name text
+- validation progress-bar:
+    - progress-update interval
+- cancel button:
+    - ask for confirmation:
+        - cancel validation
+        - close this modal
+
+### Validation summary screen
+
+This screen shows the summary of the selected validation. It can be reached by
+clicking on a previous validation link in the sidebar. The user will also be
+transitioned to this screen after completing a validation.
+
+- dataset name text
+- validation summary text
+- view validation report button:
+    - show [validation report modal](#validation-report-modal)
+
+### Validation report modal
+
+This modal shows the validation report and provides options for download.
+
+- dataset name text
+- validation number (for the current dataset)
+- validation report text
+- download section:
+    - format dropdown (csv, yaml, json)
+    - error level dropdown (error, warning)
+    - download button:
+        - download report as specified above
+- close button:
+    - close modal
+
+## Implementation
+
+### State
+
+global variables [don't really work with Dash](https://dash.plotly.com/sharing-data-between-callbacks#why-global-variables-will-break-your-app),
+but it may work for validation progress if combined with a session id. The
+session id can be embedded into the page as a component, and passed into the
+validation function as an argument. This ensures that different users won't
+overwrite each others progress value.
+
+```python
+validation_progress: Dict[SessionId, float]
+```
+
+### Stores
+
+All flags have type `bool`, and are using ephemeral memory storage.
+
+#### Validation
+
+- new-validation-modal (flag)
+- validation-modal (flag)
+- validation-report-modal (flag)
+- validation-reports:
+    - type: `Dict[DatasetId, List[CompressedText]]`
+    - storage: local
+
+    Validation reports can be big (> 1 MB) which makes it difficult to store
+    multiple of them in local storage (which has a limit of 10 MB), however,
+    they can be compressed (with the zlib package), which should make it
+    feasable since they contain a lot of duplicate data.
+
+- validation-start-signal (flag):
+
+    Signals the validation to start. The actual validation must be run in a
+    separate callback because it's blocking. Dash is multi-threaded, so other
+    callbacks can continue as normal while it's running.
+
+### Callbacks
+
+new-validation-modal:
+- on_new_validation_modal(flag):
+    - set new-validation-modal.is_open = flag
+- on_profile_selected(profile):
+    - set rule list to profile.rules.names
+- on_customize_validation_btn:
+    - set [edit-profile-modal](validation-profiles.md#stores)
+- on_start_validation_btn:
+    - reset new-validation-modal
+    - set validation-modal
+    - set validation-modal.dataset-name
+    - set validation-modal.progress-bar
+- on_cancel_new_validation_btn:
+    - reset new-validation-modal
+
+validation-modal:
+- on_validation_modal(flag):
+    - set validation-modal.is_open = flag
+    - set validation-start-signal
+- on_validation_start(dataset):
+    - access dataset (refer to [dataset upload](dataset-upload.md) for details)
+    - call [validate](#validate-function) (blocking)
+    - append result to validation-reports[dataset.id]
+- on_validation_interval:
+    - set progress-bar.value = validation_progress
+
+### Functions
+
+#### Validate function
+
+```python
+from odm_validation.validation import validate_data_ext
+
+def validate(..., on_progress, session_id) -> report:
+    global validation_progress
+    validation_progress[session_id] = 0
+
+    def on_progress(..., current, total):
+        validation_progress[session_id] = current / total * 100
+
+    return validate_data_ext(..., on_progress)
+```
