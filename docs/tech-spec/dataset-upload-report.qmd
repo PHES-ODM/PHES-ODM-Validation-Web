@@ -45,27 +45,22 @@ dataset import.
 
 ```python
 class Dataset:
-    # original
-    name: str
-    odm_version: str
-    tables: TableMap
-    data: FileData
-
-    # extension
+    # original fields not shown
+    # new fields:
     upload_time: datetime.datetime
     row_counts: Dict[TableName, int]
 ```
 
 ### Stores
 
-The existing [dataset store](dataset-upload.md#stores) is used to access the
-selected dataset.
+The existing [datasets](dataset-upload.md#stores) store is used to access the
+last/current dataset.
 
 ### Callbacks
 
-page datasets:
+datasets-page:
 - dcc.Location(id='url'):
-    - callback(url.pathname, dataset):
+    - callback(url.pathname, datasets):
         - check that pathname is `/datasets`
-        - populate page content with the upload report (in markdown format)
-          from the current `dataset`
+        - populate page content with the upload report from the last/current
+          dataset in `datasets`
