@@ -4,48 +4,47 @@
 
 ### Config modal
 
-This is the dataset configuration screen. It uses a modal just like the upload
-screen, mainly to force the user through the configuration process after
-upload. The config screen is used to configure the odm-version and
-table-mapping of the dataset. It consists of pre-populated dropdowns for all
-settings, together with ok & cancel buttons.
+This is the dataset configuration screen. It uses a modal to force the user
+through the configuration process after uploading a new dataset. It is used to
+configure the odm-version and table-mapping of the dataset, and consists of
+pre-populated dropdowns for all settings, together with ok & cancel buttons.
 
 - odm-version dropdown:
     - initialized to detected ODM version
 - table mapping dropdowns:
     - initialized to detected ODM tables
-- save/ok button:
+- ok button:
     - update dataset properties with selected values
-    - go to /datasets page
-- close/cancel button:
-    - discard changes
+    - go to `/datasets` page (using `href` property)
 
 ## Implementation
 
 ### Stores
 
+**memory**:
+- conf-modal-flag: bool
+- selected-dataset-path: str
+
+**local**:
 - [datasets](dataset-upload.md#stores)
-- [conf-modal-flag](dataset-upload.md#stores)
 
 ### Callbacks
 
-**main-menu**:
-- configure-button:
-    - on_click: set conf-modal-flag
+The following callbacks assert that a dataset is selected (using
+`selected-dataset-path`, either from being in a dataset context (`/datasets`
+page), or when coming directly from the dataset upload screen.
 
-**conf-modal**:
-- conf-modal-flag:
-    - callback(datasets):
-        - use last dataset from `datasets`
-        - set filename text from dataset
-        - set odm version from dataset
-        - set table mapping from dataset
-        - set conf-modal.is_open
-- ok-button:
-    - href=/datasets
-    - on_click(odm_version, tables, datasets):
-        - use last dataset from `datasets`
-        - set dataset.odm_version
-        - set dataset.tables
-        - unset conf-modal-flag
-        - href-attr will transition user to datasets page
+**dataset-menu.configure-button.n_clicks**:
+- set conf-modal-flag
+
+**conf-modal-flag.data**:
+- using selected dataset:
+    - set filename text
+    - set odm version
+    - set table mapping
+
+**conf-modal.ok-button.n_clicks**:
+- using selected dataset:
+    - set dataset.odm_version
+    - set dataset.tables
+    - unset conf-modal-flag

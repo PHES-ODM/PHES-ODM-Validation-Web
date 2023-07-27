@@ -1,136 +1,87 @@
 # Dataset upload
 
+## Flow
+
+1. user clicks [import-dataset button](#import-dataset-button)
+2. [import-dataset modal](#import-dataset-modal) is shown
+3. user clicks the [open-file button](#filepicker) and selects a spreadsheet
+   file
+4. the file is copied to the browser's virtual filesystem, dataset metadata is
+   extracted, and the ok button is enabled
+5. user clicks the [ok button](#ok-button)
+6. version and table-mapping inference is performed, and import is complete
+
 ## Components
 
-### Spreadsheet loader
+### Import dataset button
 
-The spreadsheet-loader component asks the user to select a file from their
-machine with a file dialog, which is then parsed to extract metadata, and
-stored in OPFS (which is a virtual filesystem in the users's browser). All of
-this happens on the client side, only the spreadsheet metadata is provided to
-the server, and presented as the component's properties.
-
-This component must be custom made since there is no pre-existing equivalent.
-See [requirements](#requirements) for the reasoning behind using OPFS.
-
-Children:
-- upload button:
-    - open file dialog to get file path
-    - import file to OPFS and extract metadata
-    - present metadata to server as properties
-
-Properties:
-- `opfs_path: str`
-- `table_names: List[str]`
-- `column_names: Dict[TableName, str]`
+This is the (prev. known as "upload dataset") menu-button that opens up the
+[import-dataset modal](#import-dataset-modal).
 
 ### Import dataset modal
 
 This is the import screen (prev. known as the "upload screen"), which uses a
 (dash bootstrap) modal to prevent the user from interacting with other parts of
-the site until the dataset is imported or discarded. It has a
-[spreadsheet-loader](#spreadsheet-loader) component to import files, and ok &
-cancel buttons to proceed or discard.
+the site until the dataset is fully imported or discarded. It has a file dialog
+to import files, and ok & cancel buttons to proceed or discard.
 
-Children:
-- [spreadsheet loader](#spreadsheet-loader)
-- ok button:
-    - finalize import
-    - hide modal
-    - show [conf modal](dataset-conf.md#config-modal) (which in turn
-      transitions the user to the datasets page)
-- cancel button:
-    - discard import
-    - hide modal
+#### filepicker
+- show file dialog and import selected file:
+    - allowed={'csv', 'xlsx'}
+    - multiple=false
+
+#### ok button
+- finalize import
+- hide modal
+- transition to dataset configuration, which in turn takes the user to the
+  datasets page
+
+#### cancel button
+- delete imported file
+- hide modal
 
 ## Implementation
 
-See [requirements](#requirements) at the bottom for the reasons behind this
-implementation.
+See [requirements](#requirements) for the reasons behind this implementation.
 
 ### Stores
 
-Boolean flags are used to toggle modal visibility. All modal-flags have type
-`bool` and a callback to set its modal `is_open` property.
+Memory stores are cleared on page reload, while local stores persist across
+sessions.
 
-- datasets: list of [Dataset](#python-types)
-- import-modal-flag
-- conf-modal-flag
+**memory**:
+- `dataset-content`: file content of current dataset
+- `import-modal-flag`: import-modal visibility toggle
+- `imported-dataset`: metadata of last [imported
+  spreadsheet](#imported-spreadsheet-type) file
 
-### Callbacks
+**local**:
+- `datasets`: list of [Dataset](#dataset-type)
 
-**main-menu**:
-- upload-button:
-    - on_click: set import-modal-flag
+### Types
 
-**import-modal**:
-- ok-button (disabled):
-    - on_click(opfs_path, tables_names, column_names):
-        - append dataset metadata to datasets
-        - reset import-modal-flag
-        - set conf-modal-flag
-- cancel-button:
-    - on_click(opfs_path):
-        - call [delete_file(opfs_path)](#delete_file)
-        - reset import-modal-flag
+#### Imported spreadsheet type
 
-**spreadsheet-loader**:
-- allowed={'csv', 'xlsx'}
-- multiple=false
-- upload-button:
-    - on_click:
-        - javascript:
-            - call [import_file](#import_file) -> opfs_path
-            - call [get_spreadsheet_metadata](#import_file)(opfs_path) -> metadata
-        - python:
-            - call [add_dataset](#add_dataset)(metadata)
-            - enable parent ok button
+Used to store intermediate spreadsheet metadata on the client-side, before it's
+processed into a [Dataset](#dataset-type).
 
-### Javascript types
+This is not really a type, just a object/dict structure.
 
-```typescript
-type SpreadsheetMeta = {
-    opfs_path: string
-    table_names: string[]
-    column_names: Map<TableName, string[]>
+```javascript
+{
+    'path': 'data.xlsx',
+    'tables': {
+        'samples': {
+            'columns': ['sampleID', ...],
+        },
+        'measures': ...,
+    }
 }
 ```
 
-### Javascript functions
+#### Dataset type
 
-Javascript functions can either be called within a [clientside
-callback](https://dash.plotly.com/clientside-callbacks), or be used in custom
-components.
-
-#### import_file
-
-`function import_file(): string`
-
-Imports a file from the users machine, stores it in OPFS, and returns the
-internal file path.
-
-1. select file via file dialog
-2. load file from local machine
-3. save in opfs
-4. return opfs path
-
-#### get_spreadsheet_metadata
-
-`function get_spreadsheet_metadata(opfs_path): SpreadsheetMeta`
-
-Extracts spreadsheet metadata from a spreadsheet file stored in OPFS.
-
-1. read file from opfs
-2. use excel/csv libraries to parse metadata
-3. return metadata
-
-#### delete_file
-
-`function delete_file(opfs_path)`
-
-Removes file from OPFS.
-
-### Python types
+Used for persistent storage of processed dataset metadata.
 
 ```python
 class Dataset:
@@ -141,22 +92,163 @@ class Dataset:
     tables: Dict[TableName, OdmTableName]
 ```
 
+### Javascript callbacks
+
+Javascript/client-callbacks are used to perform client-side actions without
+actually transferring data to the server, however, they must be written in
+Javascript which is quite tedious, so the amount of client-side functionality
+should be limited.
+
+The import-button and the import-modal's ok-button's callback are on the
+[python side](#python-callbacks).
+
+When importing a dataset, the path from [filepicker](#filepicker) is used to
+copy the file to OPFS and extract metadata which is added to
+`imported-dataset`.
+
+Selecting a dataset with the (hypothetical) `dataset-selector` component will
+populate `dataset-content` with the actual file content, which in turn may be
+uploaded to the server through a callback.
+
+**import-modal.filepicker.value**:
+- imported-dataset.data =
+    - [get_spreadsheet_metadata](#get_spreadsheet_metadata)
+        - [get_file_content](#get_file_content)
+            - [import_selected_file](#import_selected_file)
+- ok-button.disabled = false
+
+**import-modal.cancel-button.n_clicks**:
+- call [delete_file](#delete_file)
+- reset import-modal-flag
+
+**datasets.data**:
+- dataset-selector.options = datasets.data.map(opfs_path)
+
+**dataset-selector.value**:
+- dataset-content.data = [get_file_content](#get_file_content)
+
+### Javascript functions
+
+Javascript functions are used with [clientside
+callbacks](https://dash.plotly.com/clientside-callbacks).
+
+An external JS module (for the functions below) can be loaded using:
+
+`external_scripts = [{'src': '../static/mycustom.js', 'type': 'module'}]`
+
+The following javascript snippets are only proofs of concept, and lack error
+handling, etc.
+
+#### import_selected_file
+
+Copies the selected file from the users local machine to the browser's virtual
+filesystem (OPFS), and returns the new path.
+
+[filepicker](#filepicker) is an html input element with `type=file`.
+
+```javascript
+async function () {
+    let file = filepicker.files[0];
+    let opfs_path = file.name // relative to opfs root
+    let opfs_root = await navigator.storage.getDirectory()
+    let opfs_file = await opfs_root.getFileHandle(opfs_path, {'create': true})
+    let writer = await opfs_file.createWritable()
+    await writer.write(file)
+    await writer.close()
+    return opfs_path
+}
+```
+
+#### get_file_content
+
+Returns the contents of a file stored in OPFS (encoded as base64).
+
+```javascript
+async function (opfs_path) {
+    let root = await navigator.storage.getDirectory()
+    let handle = await root.getFileHandle(opfs_path)
+    let file = await handle.getFile()
+    let data = await file.arrayBuffer()
+    return await encode_base64(data)
+}
+```
+
+#### get_filenames
+
+Returns a list of stored opfs filenames.
+
+```javascript
+async function () {
+    let root = await navigator.storage.getDirectory()
+    names = []
+    for await (const handle of root.values())
+        names.push(handle.name)
+    return names
+}
+```
+
+#### delete_file
+
+```javascript
+async function delete_file(opfs_path) {
+    let root = await navigator.storage.getDirectory()
+    await root.removeEntry(opfs_path)
+}
+```
+
+#### get_spreadsheet_metadata
+
+Returns metadata from spreadsheet file data. Use excel/csv libraries to
+extract the metadata.
+
+Returns the structure of `imported-dataset` as shown in [stores](#stores)
+
+```javascript
+function get_spreadsheet_metadata(file_content)
+```
+Removes file from OPFS.
+
+#### encode_base64
+
+Returns the base64 encoding of a blob.
+
+#### decode_base64
+
+Compliments [encode_base64](#encode_base64).
+
+### Python callbacks
+
+**import-button.n_clicks**:
+- set import-modal-flag
+
+**import-modal.ok-button.n_clicks**:
+- datasets.data +=
+  [add_dataset](#add_dataset)(imported-dataset.data[imported-path.data])
+- reset import-modal-flag
+- transition to dataset configuration
+
 ### Python functions
 
 #### add_dataset
 
 `def add_dataset(opfs_path, table_names, column_names) -> Dataset`
 
-Returns a dataset (metadata) object from the metadata provided, including auto-detected
-values for ODM version and table mapping.
+Returns a dataset (metadata) object from the metadata provided, including
+auto-detected values for ODM version and table mapping.
 
 auto-detects:
 - file type from filename extension
 - ODM version and table mapping from table/column names
 
-### Requirements
+## Requirements
 
-#### Privacy
+### Persistence
+
+Imported datasets must be persisted between browsing sessions. We can't
+require the user to re-select/import/configure the datasets every time they
+close the browser.
+
+### Privacy
 
 Datasets must not be persisted on the server for privacy reasons. This also has
 the added benefit of not requiring server storage space. Datasets must,
@@ -171,17 +263,16 @@ however, be stored somewhere accessible to the application.
       wouldn't persist through server restart anyway
     - we don't want to use some complex server storage solution, so
       server-side db is out of the question
-    - dcc.Store is client side (!), which that may be a good thing, however:
-        - dcc.Store(memory/session) is not persistent
-        - dcc.Store(local) can only hold 5-10 MB
     - can't use client filesystem since it requires to ask the user to pick the
       file every time (with the file dialog)
+    - dcc.Store is client side (!), however:
+        - dcc.Store(memory/session) is not persistent
+        - dcc.Store(local) can only hold 5-10 MB
 - solution:
     - use [OPFS](https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API#origin_private_file_system).
       The user will only be asked once to pick the file, after which it will be
-      stored in the browser's OPFS for future access.
-    - examples:
-        - https://stackoverflow.com/a/71581910
-        - https://webkit.org/blog/12257/the-file-system-access-api-with-origin-private-file-system/
-    - only store metadata about the datasets in localStorage (if at all needed)
-    - access dataset from client (to server) on demand (during validation)
+      stored in the browser's virtual filesystem for future access.
+        - examples:
+            - https://stackoverflow.com/a/71581910
+            - https://webkit.org/blog/12257/the-file-system-access-api-with-origin-private-file-system/
+    - upload dataset on demand during validation
