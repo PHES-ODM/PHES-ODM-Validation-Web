@@ -1,0 +1,82 @@
+# Validation summary report
+
+## Components
+
+### Validation summary screen
+
+This screen is located in the datasets-page and shows the name of the selected
+dataset together with the selected validation's summary report. There's also a
+button for downloading the entire validation report.
+
+- dataset name text
+- summary text
+- view validation report button
+
+#### summary text
+
+```markdown
+# validation summary
+
+## dataset
+
+invalid tables: 5
+
+## tables
+
+### samples
+
+- invalid columns: 4
+- invalid rows: 4
+- errors: 4
+- warnings: 3
+
+### measures
+
+- invalid columns: 4
+- invalid rows: 4
+- errors: 4
+- warnings: 3
+```
+
+## Implementation
+
+### Stores
+
+**memory**:
+- selected-dataset-path: str
+
+    Id/path of the selected dataset.
+
+- selected-validation: int
+
+    Index of the selected validation.
+
+- datasets-screen: enum
+
+    Decides which screen is active on the datasets page.
+
+### Callbacks
+
+**datasets-screen.data**:
+
+Initialize validation summary screen when dataset-screen changes.
+
+- if value == validation-summary-screen:
+    - if no validation is selected, then default to latest
+    - call [gen_validation_summary_report](#gen_validation_summary_report)
+    - init this screen
+
+**selected-validation.data**:
+
+Transition to the validation summary screen when a validation is selected.
+
+- set datasets-screen.data = validation-summary-screen
+
+### Functions
+
+#### gen_validation_summary_report
+
+`def gen_validation_summary_report(validation_report) -> str:`
+
+Returns a markdown formatted string with the validation summary report for
+`validation_report`.
