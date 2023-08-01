@@ -2,16 +2,13 @@
 
 ## Flow
 
-Asserts that a dataset is uploaded and selected.
-
-1. click [validate dataset button](#validate-dataset-button)
-    - show [new validation modal](#new-validation-modal)
-2. select profile
-4. click "start validation":
-    - auto-select schema based on dataset odm-version
-    - show [validation modal](#validation-modal) and run validation
-    - append validation result
-    - show validation summary
+1. user selects a dataset
+2. user clicks [validate dataset button](#validate-dataset-button)
+3. the [new validation modal](#new-validation-modal) is shown
+4. user selects a profile
+5. user clicks "start validation"
+5. the [validating modal](#validating-modal) is shown and validation is
+   performed
 
 ## Components
 
@@ -20,7 +17,7 @@ Asserts that a dataset is uploaded and selected.
 This button is found in the sidebar when a dataset is selected. It should show
 the [new validation modal](#new-validation-modal) when clicked.
 
-### New validation modal
+### new validation modal
 
 This modal sets up a new validation to be run.
 
@@ -32,12 +29,11 @@ This modal sets up a new validation to be run.
 - customize validation button:
     - show [edit validation profile modal](validation-profiles.md#edit-validation-profile-modal)
 - start validation button:
-    - close this modal
-    - show [validation modal](#validation-modal)
+    - transition to [validating modal](#validating-modal)
 - cancel button:
     - close this modal
 
-### Validation modal
+### Validating modal
 
 This modal shows the validation progress. An Interval component is used to
 periodically run a callback which updates the progress bar value. When the
@@ -47,18 +43,18 @@ validation completes, it will transition to the [validation summary screen](#val
 - validation progress-bar:
     - progress-update interval
 - cancel button:
-    - ask for confirmation:
+    - ask for confirmation, then:
         - cancel validation
         - close this modal
 
 ### Validation summary screen
 
-This screen shows the summary of the selected validation. It can be reached by
-clicking on a previous validation link in the sidebar. The user will also be
-transitioned to this screen after completing a validation.
+This screen shows the summary of the selected/last validation. It can be
+reached by clicking on a previous validation link in the sidebar. The user will
+also be transitioned to this screen after completing a validation.
 
 - dataset name text
-- validation summary text
+- [validation summary report](validation-summary-report.md) text
 - view validation report button:
     - show [validation report modal](#validation-report-modal)
 
@@ -81,9 +77,14 @@ This modal shows the validation report and provides options for download.
 
 ### State
 
-global variables [don't really work with Dash](https://dash.plotly.com/sharing-data-between-callbacks#why-global-variables-will-break-your-app),
-but it may work for validation progress if combined with a session id. The
-session id can be embedded into the page as a component, and passed into the
+Validation progress needs to be shared between the running validation and the
+validating-modal progress-bar. The validation is blocking, and won't be able to
+trigger any callbacks during that time. Shared memory has to be used, but
+global variables
+[don't really work with Dash](https://dash.plotly.com/sharing-data-between-callbacks#why-global-variables-will-break-your-app),
+but it may work if combined with a session id, so that different users won't
+overwrite each others progress value. The session id (which must be unique per
+user/session) can be embedded into the page as a component, and passed into the
 validation function as an argument. This ensures that different users won't
 overwrite each others progress value.
 
@@ -93,31 +94,27 @@ validation_progress: Dict[SessionId, float]
 
 ### Stores
 
-All flags have type `bool`, and are using ephemeral memory storage.
-
-#### Validation
-
-- new-validation-modal (flag)
-- validation-modal (flag)
-- validation-report-modal (flag)
-- validation-reports:
-    - type: `Dict[DatasetId, List[CompressedText]]`
-    - storage: local
-
-    Validation reports can be big (> 1 MB) which makes it difficult to store
-    multiple of them in local storage (which has a limit of 10 MB), however,
-    they can be compressed (with the zlib package), which should make it
-    feasable since they contain a lot of duplicate data.
-
-- validation-start-signal (flag):
+**memory**:
+- new-validation-modal-flag
+- validating-modal-flag
+- validation-report-modal-flag
+- validation-start-flag
 
     Signals the validation to start. The actual validation must be run in a
     separate callback because it's blocking. Dash is multi-threaded, so other
     callbacks can continue as normal while it's running.
 
+**local**:
+- validation-reports: `Dict[DatasetId, List[ReportId]]`
+
+    Validation reports can be big (> 1 MB) which makes it difficult to store
+    multiple of them in local storage (which has a limit of 5-10 MB), so we'll
+    store the report content in OPFS and only store a reference/path here. (see
+    [dataset upload](dataset-upload.qmd) for details on OPFS).
+
 ### Callbacks
 
-new-validation-modal:
+**new-validation-modal**:
 - on_new_validation_modal(flag):
     - set new-validation-modal.is_open = flag
 - on_profile_selected(profile):
@@ -125,19 +122,20 @@ new-validation-modal:
 - on_customize_validation_btn:
     - set [edit-profile-modal](validation-profiles.md#stores)
 - on_start_validation_btn:
-    - reset new-validation-modal
-    - set validation-modal
-    - set validation-modal.dataset-name
-    - set validation-modal.progress-bar
+    - reset new-validation-modal-flag
+    - set validating-modal-flag
+    - set validating-modal.dataset-name
+    - set validating-modal.progress-bar
 - on_cancel_new_validation_btn:
-    - reset new-validation-modal
+    - reset new-validation-modal-flag
 
-validation-modal:
+**validating-modal**:
 - on_validation_modal(flag):
-    - set validation-modal.is_open = flag
-    - set validation-start-signal
+    - set validating-modal.is_open = flag
+    - set validation-start-flag
 - on_validation_start(dataset):
     - access dataset (refer to [dataset upload](dataset-upload.md) for details)
+    - auto-select schema based on dataset odm-version
     - call [validate](#validate-function) (blocking)
     - append result to validation-reports[dataset.id]
 - on_validation_interval:
