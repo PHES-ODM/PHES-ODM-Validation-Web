@@ -1,0 +1,130 @@
+# Validation profiles
+
+## Components
+
+### view profiles button
+
+Main menu button for showing the validation profiles.
+
+### view profiles modal
+
+This screen lists all validation profiles. Each profile in the list has buttons
+for editing, downloading and deleting it.
+
+- list of profiles:
+    - name text
+    - edit button:
+        - show [edit profile modal](#edit-profile-modal)
+    - download button:
+        - triggers downloader
+    - delete button:
+        - ask for confirmation, then:
+            - delete profile
+- create new profile button:
+    - close modal
+    - show [create profile modal](#create-profile-modal)
+- close button:
+    - close modal
+- downloader (dcc.Download):
+    - download file content when a download button is pressed
+
+### create profile modal
+
+This screen is used to create a new validation profile. Name, description and
+rule-ids are specified, either manually or from a file upload.
+
+- name text
+- desc text
+- rule id list
+- create profile button:
+    - store profile
+    - associate it with the selected dataset
+    - close modal
+- uploader button/area (dcc.Upload):
+    - populate name, desc and rule-ids from uploaded file
+- cancel button:
+    - close modal
+
+### edit profile modal
+
+This screen is used to modify an existing validation profile.
+
+- name text
+- desc text
+- rule id list
+- save profile button:
+    - overwrite stored profile
+    - close modal
+- cancel button:
+    - close modal
+
+## Implementation
+
+### Types
+
+```python
+class ValidationProfile:
+    desc: str
+    rules: List[RuleId]
+```
+
+### Stores
+
+**memory**:
+- `selected-profile-id: ProfileId`
+- `view-profiles-modal-flag: bool`
+
+**local**:
+- `profiles: Dict[ProfileId, ValidationProfile]`
+- `dataset-profiles: Dict[DatasetId, ProfileId]`
+
+### Callbacks
+
+**main-menu**:
+- **main-menu.view-profiles-btn.n_clicks**:
+    - set view-profiles-modal-flag
+
+**view-profiles-modal**:
+- **view-profiles-modal-flag.data**:
+    - populate with elements from `profiles`
+    - set view-profiles-modal.is_shown
+- **edit-btn-`i`.n_clicks**:
+    - reset view-profiles-modal-flag
+    - set `selected-profile-id = profiles.keys[i]`
+    - set edit-profile-modal-flag
+- **download-btn-`i`.n_clicks**:
+    - set downloader.data to `profiles[i]`
+- **delete-btn-`i`.n_clicks**:
+    - delete `profiles[i]`
+    - reset `selected-profile-id`
+    - update list
+- **create-btn.n_clicks**:
+    - reset view-profiles-modal-flag
+    - set create-profile-modal-flag
+- **close-btn.n_clicks**:
+    - reset view-profiles-modal-flag
+
+**create-profile-modal**:
+- **create-profile-modal-flag.data**:
+    - set create-profile-modal.is_shown
+- **create-btn.n_clicks**:
+    - append profile to `profiles`
+    - assign profile to current dataset if it doesn't already have one, using
+      `dataset-profiles`
+    - reset view-profiles-modal-flag
+- **uploader.contents**:
+    - parse file and populate fields (name, desc, rule ids)
+- **cancel-btn.n_clicks**:
+    - reset create-profile-modal-flag
+
+**edit-profile-modal**:
+- **edit-profile-modal-flag.data**:
+    - populate with elements from `profiles[selected-profile-id]`
+    - set edit-profile-modal.is_shown
+- **save-btn.n_clicks**:
+    - delete `profiles[selected-profile-id]`
+    - set `selected-profile-id` to new name
+    - set `profiles[selected-profile-id]` to new data
+- **cancel-btn.n_clicks:**
+    - reset edit-profile-modal-flag
+    - set view-profiles-modal-flag
