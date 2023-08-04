@@ -1,0 +1,58 @@
+# Validation report download
+
+## Components
+
+### Download report button
+
+Also known as the "view validation report" button.
+
+### Report download modal
+
+This screen lets the user download the selected validation report in the format
+and with the error-level they choose.
+
+The UI spec suggests having the error-level options "full, errors, warnings",
+but it'll be easier to use the same convention as the validation library uses,
+which is to include either just errors or both errors and warnings. I don't
+think users would want to see just warnings while ignoring the more serious
+errors.
+
+- format dropdown:
+    - values: csv, yaml, json
+- error-level dropdown:
+    - decides the error-level
+    - values: "warnings, errors" OR "all, errors only"
+- download button:
+    - initiates the download
+- downloader (dcc.Download):
+    - handles the actual file saving/download
+
+## Implementation
+
+### Stores
+
+**memory**:
+- `report-content: str`
+- `report-download-modal-flag: bool`
+- `selected-report-path: str`
+
+### Callbacks
+
+The report content has to be loaded into memory on the client-side before the
+modal flag is set, so that the download-btn has content to process.
+
+**download-report-btn.n_clicks (clientside)**:
+- load `selected-report-path` into `report-content` from OPFS storage
+- set report-download-modal-flag
+
+**report-download-modal-flag.data**:
+- set report-download-modal.is_shown
+
+**report-download-modal**:
+- **download-btn.n_clicks**:
+    - read format from `format-dropdown`
+    - read error-level from `error-level-dropdown`
+    - call `odm_validation/tools/reportutils.write_<format>_report` with
+      `report-content`
+    - set `downloader.data` to the final formatted report data
+    - reset report-download-modal-flag
