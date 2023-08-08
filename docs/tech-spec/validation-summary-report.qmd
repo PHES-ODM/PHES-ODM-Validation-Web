@@ -12,33 +12,26 @@ button for downloading the entire validation report.
 - summary text
 - view validation report button
 
-#### summary text
-
-```markdown
-# validation summary
-
-## dataset
-
-invalid tables: 5
-
-## tables
-
-### samples
-
-- invalid columns: 4
-- invalid rows: 4
-- errors: 4
-- warnings: 3
-
-### measures
-
-- invalid columns: 4
-- invalid rows: 4
-- errors: 4
-- warnings: 3
-```
-
 ## Implementation
+
+### Presentation
+
+The validation summary report is kept simple and neat.
+
+```txt
+tables (2):
+- samples
+    - invalid columns: 2
+    - invalid rows: 4
+    - errors: 6
+    - warnings: 3
+- measures
+    - ...
+
+invalid tables (2):
+- some-table
+- some-other-table
+```
 
 ### Stores
 
