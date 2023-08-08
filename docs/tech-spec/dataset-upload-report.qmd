@@ -4,63 +4,106 @@ This is the dataset summary shown when selecting a dataset.
 
 ## Components
 
+### Location
+
+A `dcc.Location` component is needed to tell if the user is on the
+datasets-page, so that the upload report for the selected/last dataset can be
+loaded and shown.
+
 ### Upload report
 
 This component shows a visual summary of the selected `Dataset` object, on the
 `/datasets` page. Both valid (ODM compliant) and invalid tables are shown, but
 only the valid data is presented in depth.
 
+Report elements:
 - filename
-- upload time
-- table count, invalid table count
-- for each table (just one with a CSV dataset):
+- upload datetime (shown in local timezone, stored in utc)
+- valid table count
+- for each valid table (just one with a CSV dataset):
     - table name
-    - if table is valid:
-        - column count, invalid column count, row count
-        - column names
-        - invalid column names
-
-Example:
-
-```markdown
-lab.xlsx
-2023-01-01 13:00
-
-tables (1):
-- samples, 3 columns (1 invalid), 100 rows:
-    - columns: sampleID, value
-    - invalid: tempValue
-
-invalid tables (1):
-- holiday-plans
-```
+    - column names, column count, row count
+    - invalid column names and count
+- invalid table count
+- list of invalid table names
 
 ## Implementation
 
+### Presentation
+
+The upload report is presented in a reasonably formatted text format.
+
+A list of warnings is used for invalid tables/columns, which gives a clear
+separation between valid and invalid parts, while also acting as an easy to
+read todo-list. It only shows the total count of invalid elements, but having
+individual counts seems to make it less readable without adding much value.
+
+```txt
+Lab Data (lab.xlsx)
+2023-01-01 13:00
+
+tables (2):
+- samples, 100 rows:
+    - columns (2):
+        - sampleID
+        - value
+- measures, 200 rows:
+    - ...
+
+warnings (3):
+- invalid column 'tempValue' in table 'samples'
+- invalid table 'holiday-plans'
+- invalid table 'temp'
+```
+
 ### Types
 
-The existing [Dataset](dataset-upload.md#types) type is extended to include the
-necessary data for the upload report. The data should be populated during
-dataset import.
+Different dataset-releated data used for different purposed are in different
+types to make both the code and the documentation modular, as well as providing
+great isolation and separation of concern.
 
 ```python
-class Dataset:
-    # original fields not shown
-    # new fields:
-    upload_time: datetime.datetime
-    row_counts: Dict[TableName, int]
+class DatasetUpload:
+    name: str  # in case it's different from filename
+    time: datetime
+    row_counts: Dict[TableId, int]
+
+class DatasetReport:
+    time: datetime
+    text: str
 ```
 
 ### Stores
 
-The existing [datasets](dataset-upload.md#stores) store is used to access the
-last/current dataset.
+Column counts are read from the [datasets](dataset-upload.md#stores) store.
+
+**memory**:
+- `selected-dataset-id: str`
+
+  A dataset id is the OPFS path of the dataset file.
+
+- `dataset-uploads: Dict[DatasetId, DatasetUpload]`
+
+  This must be incorporated into the [dataset import process](dataset-upload.md).
+
+**local**:
+- `dataset-upload-reports: Dict[DatasetId, DatasetReport]`
+
+  Dataset upload reports should be small enough to fit directly in local
+  storage.
 
 ### Callbacks
 
-datasets-page:
-- dcc.Location(id='url'):
-    - callback(url.pathname, datasets):
-        - check that pathname is `/datasets`
-        - populate page content with the upload report from the last/current
-          dataset in `datasets`
+**dataset-uploads.data**:
+- for each dataset_id, upload in `dataset-uploads`:
+    - if no report exists for dataset_id or upload.time is newer than
+      report.time:
+        - generate report to `dataset-upload-reports`
+
+**selected-dataset-id.data**:
+- if pathname is `/datasets`:
+    - populate page content with the upload report from
+      `dataset-upload-reports` for `selected-dataset-id`
+
+**datasets-page.location.pathname**:
+- same as above
