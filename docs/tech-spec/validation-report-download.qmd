@@ -42,7 +42,8 @@ The report content has to be loaded into memory on the client-side before the
 modal flag is set, so that the download-btn has content to process.
 
 **download-report-btn.n_clicks (clientside)**:
-- load `selected-report-path` into `report-content` from OPFS storage
+- load `selected-report-path`'s file content into `report-content` from OPFS
+  storage
 - set report-download-modal-flag
 
 **report-download-modal-flag.data**:
