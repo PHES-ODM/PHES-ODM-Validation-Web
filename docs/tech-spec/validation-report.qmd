@@ -1,4 +1,4 @@
-# Validation report download
+# Validation report
 
 ## Components
 
@@ -6,7 +6,29 @@
 
 Also known as the "view validation report" button.
 
-### Report download modal
+### Report modal
+
+This will be a rather large modal, possibly fullscreen, where the entire
+validation report is shown, as well as the download selection.
+
+#### Data table
+
+The data table component (dcc.DataTable) shows the entire validation report as
+a set of columns and rows.
+
+The columns are:
+- error table name
+- error column name
+- error row number
+- error level (error, warning)
+- error id (rule id)
+- error message
+
+It should be sorted in the same order as the columns above by default, and the
+user should be able to sort by a specific column as well. It may also be
+beneficial to have an option to hide warnings, etc.
+
+#### Download selection
 
 This screen lets the user download the selected validation report in the format
 and with the error-level they choose.
@@ -48,6 +70,7 @@ modal flag is set, so that the download-btn has content to process.
 
 **report-download-modal-flag.data**:
 - set report-download-modal.is_shown
+- populate data table
 
 **report-download-modal**:
 - **download-btn.n_clicks**:
