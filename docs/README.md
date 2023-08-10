@@ -5,6 +5,7 @@ folder structure is described below:
 
 * **tool-spec/**: Contains the high level specifications for the tool
 * **ui-spec/**: Contains the UI specifications for the tool
+* **tech-spec/**: Contains the low level technical specifications for the tool
 
 ## UI Specifications
 

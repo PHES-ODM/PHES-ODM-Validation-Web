@@ -1,0 +1,73 @@
+---
+title: Technical Specifications
+format:
+  html:
+    toc: true
+---
+
+# Pages
+
+## Home page
+
+The home screen is shown to the user when they open the tool. It features a
+piece of welcome text, introducing the user to the site and guiding them to the
+various functionalities.
+
+Components:
+
+- [Top bar menu](#top-bar-menu)
+- Welcome text
+
+Welcome text example:
+```txt
+Welcome to the ODM Validation web tool.
+
+Here you can upload and validate your ODM compliant datasets.
+
+See [tutorials] for more info.
+```
+
+# Dialogs
+
+## Choose dataset dialog
+
+stub
+
+## View validation profiles dialog
+
+stub
+
+# UI Components
+
+## Top bar menu
+
+This is the main-menu bar at the top of every page.
+
+Menu items:
+
+- Upload dataset
+- Datasets: *list of datasets*
+- View validation profiles
+- Tutorials
+
+Behavior:
+
+1.  The bar should be fixed to the top of the screen. Even if the user
+    scrolls, the position of the bar should not change.
+2.  When the user clicks on the **Upload Dataset** button, the
+    [Choose dataset dialog](#choose-dataset-dialog) dialog should be opened.
+4.  When the user clicks on the **Datasets** button, a dropdown should
+    be opened that lists all the datasets that the user has uploaded.
+    The dropdown should be closed when the user clicks on any part of
+    the app again.
+    1.  Each dataset should be presented to the user using its file
+        name.
+    2.  When the user clicks on a dataset, it should be selected, and
+        the user taken to the **View Dataset** screen. The dropdown
+        should be closed.
+    3.  When the user has not uploaded any datasets, the dropdown should
+        only have one item that says **No Datasets Uploaded**.
+5.  When the user clicks on the **View Validation Profiles** button, the
+    [View validation profiles dialog](#view-validation-profiles-dialog) should
+    be opened.
+6.  The **Tutorials** button can be disabled for now.
