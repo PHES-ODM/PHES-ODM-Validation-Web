@@ -1,0 +1,43 @@
+# View dataset screen
+
+This screen is shown when the user uploads a new dataset or selects a dataset
+on another screen. It allows the user to view summary details about the
+uploaded dataset.
+
+## Components
+
+- main menu:
+    - dataset list
+- sidebar:
+    - configure dataset button
+    - previous validation button list
+    - validate dataset button
+- content:
+    - selected dataset name text
+    - upload report
+
+## Implementation
+
+The [configure dataset](dataset-conf.md#implementation) and
+[validate dataset](dataset-validation.md#implementation) buttons are described
+in their respective documents.
+
+### Stores
+
+**memory**:
+- `selected-dataset-id: str`
+
+### Callbacks
+
+See [dataset upload report](dataset-upload-report.md#callbacks) for the upload
+report callback.
+
+The callback for populating the main-menu dataset-list should be in a separate
+main-menu document, but it doesn't exist yet.
+
+**location.pathname**:
+- if page is '/datasets':
+    - populate previous-validation-buttons-list from
+      [validation-reports](dataset-validation.md#stores), indexed by
+      `selected-dataset-id`.
+    - set dataset-name-text from `selected-dataset-id`
