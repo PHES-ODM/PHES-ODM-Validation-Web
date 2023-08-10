@@ -2,6 +2,12 @@
 
 ## Components
 
+### Previous validation button
+
+The prev. validation buttons make up a list in the sidebar, one for each
+validation previously run. Clicking them will show the summary for validation,
+as well as giving access to the validation report.
+
 ### Validation summary screen
 
 This screen is located in the datasets-page and shows the name of the selected
@@ -58,6 +64,9 @@ Initialize validation summary screen when dataset-screen changes.
     - if no validation is selected, then default to latest
     - call [gen_validation_summary_report](#gen_validation_summary_report)
     - init this screen
+
+**prev-validation-button`<i>`.n_clicks**:
+- set selected-validation
 
 **selected-validation.data**:
 
