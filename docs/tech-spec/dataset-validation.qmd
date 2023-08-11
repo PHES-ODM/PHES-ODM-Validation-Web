@@ -27,7 +27,7 @@ This modal sets up a new validation to be run.
 - validation profile rule list:
     - list all active rules in selected profile
 - customize validation button:
-    - show [edit validation profile modal](validation-profiles.md#edit-validation-profile-modal)
+    - show [create validation profile modal](validation-profiles.md#create-profile-modal)
 - start validation button:
     - transition to [validating modal](#validating-modal)
 - cancel button:
@@ -120,7 +120,7 @@ validation_progress: Dict[SessionId, float]
 - on_profile_selected(profile):
     - set rule list to profile.rules.names
 - on_customize_validation_btn:
-    - set [edit-profile-modal](validation-profiles.md#stores)
+    - set [create-profile-modal-flag](validation-profiles.md#stores)
 - on_start_validation_btn:
     - reset new-validation-modal-flag
     - set validating-modal-flag
