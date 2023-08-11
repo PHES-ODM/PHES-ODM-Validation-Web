@@ -71,12 +71,14 @@ class ValidationProfile:
 ### Stores
 
 **memory**:
+- `create-profile-modal-flag: bool`
+- `edit-profile-modal-flag: bool`
 - `selected-profile-id: ProfileId`
 - `view-profiles-modal-flag: bool`
 
 **local**:
-- `profiles: Dict[ProfileId, ValidationProfile]`
 - `dataset-profiles: Dict[DatasetId, ProfileId]`
+- `profiles: Dict[ProfileId, ValidationProfile]`
 
 ### Callbacks
 
