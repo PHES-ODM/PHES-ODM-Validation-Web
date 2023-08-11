@@ -81,7 +81,7 @@ class ValidationProfile:
 ### Callbacks
 
 **main-menu**:
-- **main-menu.view-profiles-btn.n_clicks**:
+- **view-profiles-btn.n_clicks**:
     - set view-profiles-modal-flag
 
 **view-profiles-modal**:
