@@ -1,0 +1,14 @@
+~/Work/WasteWater/Code/PHES-ODM-Validation-Tool/..
+  .git
+  docs
+    tech-spec
+       dataset-conf.qmd
+       dataset-upload.qmd
+    tool-specifications
+    ui-specifications
+     .gitignore
+     _quarto.yml
+     README.md
+  ★ src
+   .gitignore
+   README.md
