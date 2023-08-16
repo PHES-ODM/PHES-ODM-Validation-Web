@@ -1,14 +1,151 @@
-~/Work/WasteWater/Code/PHES-ODM-Validation-Tool/..
-  .git
-  docs
-    tech-spec
-       dataset-conf.qmd
-       dataset-upload.qmd
-    tool-specifications
-    ui-specifications
-     .gitignore
-     _quarto.yml
-     README.md
-  ★ src
-   .gitignore
-   README.md
+---
+title: Technical Specifications
+format: 
+    html:
+        embed-resources: true
+---
+
+This document contains the technical specifications for the validation tool.
+The specifications have been written based on the contents of the tool and 
+UI specifications document.
+
+# Features
+
+## Dataset Upload
+
+The following screens will need to be implemented for this feature:
+
+* [Home Screen](#home-screen)
+* [View Dataset Screen](#view-dataset-screen)
+
+# Screens
+
+This section goes over the different screens that are contained in the tool 
+and the components that should be used to implement them.
+
+## Home Screen
+
+* [Top Bar](#top-bar)
+* [Choose Dataset Dialog](#choose-dataset-dialog)
+* [Configure Dataset Dialog](#configure-dataset-dialog)
+* An element to render the welcome text
+
+## View Dataset Screen
+
+# UI Components
+
+This section will go through all the UI components used by the different 
+screens in the tool. Each sub-section contains the details for a UI component 
+which includes the following:
+
+* A brief description
+* Its behavior which mainly goes over how the user is allowed to interact with 
+  it
+* Its API which describes how another component can use it.
+
+## Top Bar
+
+This component will be used to render the bar at the top of the **Home**, 
+**View Datatset**, and **Validation Summary** screens.
+
+### Behavior
+
+1. The bar should be fixed to the top of the screen. Even if the user scrolls, 
+   the position of the bar should not change.
+2. When the user clicks on the **Upload Dataset** button, the **Choose Dataset
+   ** dialog should be opened.
+3. When the user clicks on the **Datasets** button, a dropdown should be 
+   opened that lists all the datasets that the user has uploaded. The dropdown 
+   should be closed when the user clicks on any part of the app again.
+    1. Each dataset should be presented to the user using its file name.
+    2. When the user clicks on a dataset, it should be selected, and the user 
+       taken to the **View Dataset** screen. The dropdown should be closed.
+    3. When the user has not uploaded any datasets, the dropdown should only 
+       have one item that says **No Datasets Uploaded**.
+4. When the user clicks on the **View Validation Profiles** button, the 
+   **View Validation Profiles** dialog should be opened.
+5. The **Tutorials** button can be disabled for now.
+
+### API 
+
+None
+
+## Choose Dataset Dialog
+
+## Configure Dataset Dialog
+
+## View Dataset Screen
+
+# Stores
+
+This section includes the different stores where the app will persist data. Each
+sub-section goes over the details of each store and the data stored within it.
+
+## Memory Store
+
+## Local Store
+
+## OPFS Store
+
+# Types
+
+This section goes over the structure of the different data that the tool will 
+store.
+
+## DatasetFile
+
+Abstract class for a file uploaded by a user
+
+**Type**: [abstract class](https://docs.python.org/3/library/abc.html)
+
+### Properties
+
+#### name
+
+The name of the file
+
+**Type**: string
+
+#### odm_version
+
+The version of the ODM the file is for
+
+**Type**: [ODMVersion](#odmversion)
+
+## CSVFile
+
+Represents a CSV file uploaded by the user
+
+**Type**: [class](https://docs.python.org/3/tutorial/classes.html)
+**Extends**: [DatasetFile](#datasetfile)
+
+### Properties
+
+#### table 
+
+The table data contained in the file
+
+**Type**: [ODMTable](#odmtable) 
+
+## ExcelFile
+
+Represents a Excel file uploaded by the user
+
+**Type**: class
+**Extends**: [DatasetFile](#datasetfile)
+
+### Properties
+
+#### tables
+
+The data contained in each sheet of the file
+
+**Type**: [ODMTable](#odmtable)[]
+
+## ODMVersion
+
+The supported ODM versions. The tool specifications contains the versions that 
+the tool will need to support.
+
+**Type**: [enum](#https://docs.python.org/3/library/enum.html)
+
