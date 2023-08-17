@@ -13,10 +13,15 @@ UI specifications document.
 
 ## Dataset Upload
 
-The following screens will need to be implemented for this feature:
+The following screens and components will need to be implemented for this 
+feature:
 
 * [Home Screen](#home-screen)
 * [View Dataset Screen](#view-dataset-screen)
+
+The following data store will need to be implmented for this feature:
+
+* [Datasets](#datasets)
 
 # Screens
 
@@ -83,6 +88,24 @@ sub-section goes over the details of each store and the data stored within it.
 
 ## Memory Store
 
+All the data in this store is stored in the browser memory. The data is 
+transient meaning that when the user reloads/close the tool, the data in this 
+store is lost.
+
+### Datasets 
+
+ This contains all the datasets that the user has uploaded to the tool. 
+
+ The fact that users cannot edit a dataset in the tool forces them to update 
+ it in their local file system after validation. After making the required 
+ changes to the dataset, they will need to re-upload it to the tool if they 
+ wish to validate it again. This upload, validate, fix, re-upload cycle means 
+ that there is no need to permanently store a dataset in the OPFS store, since
+ it will always be out of sync with the version on the user's local file 
+ system.
+
+ **Type**: [DatasetFile](#datasetfile)[] 
+
 ## Local Store
 
 ## OPFS Store
@@ -91,6 +114,39 @@ sub-section goes over the details of each store and the data stored within it.
 
 This section goes over the structure of the different data that the tool will 
 store.
+
+## Row
+
+Represents a row of data in an ODM table
+
+**Type**: [dictionary](https://docs.python.org/3/tutorial/datastructures.html#dictionaries)
+
+Each field-value pair contains the data for a column in the row. The field name
+contains the name of a column and the value contains the value for the column 
+in the row.
+
+The value should be a **string**.
+
+## ODMTable
+
+Represents an ODM table
+
+**Type**: [class](https://docs.python.org/3/tutorial/classes.html) 
+
+### Properties
+
+#### name
+
+The name of the ODM table. Should match up with a table defined in the ODM
+dictionary.
+
+**Type**: string
+
+#### rows
+
+The data rows in the table
+
+**Type**: [Row](#row)[]
 
 ## DatasetFile
 
