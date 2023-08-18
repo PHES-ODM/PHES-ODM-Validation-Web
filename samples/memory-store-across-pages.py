@@ -17,7 +17,7 @@ app = Dash(__name__, use_pages=True, pages_folder="")
 dash.register_page("home",  path='/', layout=html.Div('Home Page'))
 dash.register_page("analytics", layout=html.Div('Analytics'))
 
-store = dcc.Store(id='store')
+store = dcc.Store(id='store', data = datetime.datetime.now())
 trigger = html.Div(id='trigger')
 timestamp = html.Div(id='timestamp')
 
@@ -37,15 +37,6 @@ app.layout = html.Div([
     ),
     dash.page_container,
 ])
-
-
-@callback(
-    Output(store, 'data'),
-    Input(trigger, 'children'),
-)
-def on_load(dummy):
-    return datetime.datetime.now()
-
 
 @callback(
     Output(timestamp, 'children'),
