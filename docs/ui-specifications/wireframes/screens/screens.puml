@@ -1,6 +1,8 @@
 @startuml
 
-!procedure $render_top_bar($has_datasets = 0)
+!include ../components/components.puml
+
+!procedure $top_bar($has_datasets = 0)
     {* 
         **Upload Dataset** | **Datasets** | **View Validation Profiles** | **Tutorials** 
         **Datasets** | 
@@ -22,7 +24,7 @@ salt
 {
     title Home Screen
 
-    $render_top_bar(0)
+    $top_bar(0)
     
     Welcome Text 
 }
@@ -76,7 +78,6 @@ salt
 {
     title View Dataset Screen
     
-    $render_top_bar(1)
 
     {!
         [Configure Dataset] | 
@@ -89,6 +90,7 @@ salt
                 .
                 .
             }
+    $top_bar(1)
         }
 
         !if ($show_validations)
@@ -145,7 +147,6 @@ salt
 {
     title Validation Summary Screen
 
-    $render_top_bar(1)
 
     {!
             [Configure Dataset] | 
@@ -166,6 +167,7 @@ salt
             } | [View Validation Report] 
 
             [Validate Dataset] | .
+    $top_bar(1)
     }
 }
 !endprocedure

@@ -1,0 +1,20 @@
+@startuml
+
+!procedure $top_bar($has_datasets = 0)
+    {*
+        **Upload Dataset** | **Datasets** | **View Validation Profiles** | **Tutorials** 
+        **Datasets** | 
+        !if $has_datasets 
+            Ontario Lab.csv | Hamilton Lab.xlsx 
+        !else
+            No Dataset Uploaded
+        !endif
+    }
+
+        ...
+        ...
+        ...
+        ...
+!endprocedure
+
+@enduml

@@ -25,8 +25,8 @@ two categories:
    information about a dataset, but also allows them to perform actions like 
    uploading a new dataset, starting a new validation etc. These screens consist
    of three main components:
-   1. Top Bar: Has actions that can be done from any screen.
    2. Sidebar: Has actions relevant to the current screen. Currently, the 
+   1. [Top Bar](#top-bar): Has actions that can be done from any screen.
       sidebar is populated with common actions that the user can perform on a 
       selected dataset.
    3. Content: Has information for the current screen along with any additional
@@ -176,10 +176,7 @@ diagrams above.
 The home screen is shown to the user when they open the tool. From the home 
 screen they can:
 
-* **Upload a dataset**: Using the **Upload Dataset** button
-* **View their validation profiles**: Using the **View Validation Profiles** 
-  button. 
-* **View Tutorials**: Using the **Tutorial** button
+* Perform an action from the [top bar](#top-bar)
 
 ## Choose Dataset Dialog 
 
@@ -255,10 +252,7 @@ uploaded dataset.
 
 From this screen the user can:
 
-* Select another dataset by clicking on an item in the **Datasets** dropdown.
-* Upload a new dataset using the **Upload Dataset** button
-* View their validation profiles using the **View Validation Profiles** button
-* Re-configure their dataset by clicking the **Configure Dataset** button
+* Perform an action from the [top bar](#top-bar)
 * View the **Upload Report** which summarizes the uploaded dataset.
 * Navigate to the [Validation Summary](#validation-summary-screen) by clicking 
   on one of them in the **Previous Validations** panel.
@@ -272,15 +266,10 @@ From this screen the user can:
 This screen provides summary for a particular dataset validation. From this
 screen the user can:
 
-* Navigate to the [View Dataset](#view-dataset-screen) screen by clicking on one
-  of the items in the **Datasets** dropdown.
-* Upload a new dataset by clicking on the **Upload Dataset** button
-* View their validation profiles by clicking on the **View Validation Profiles**
-  button
 * Navigate to the summary for another validation by clicking on one of them
   in the **Previous Validations** panel.
 * Start a new validation by clicking the **Validate Dataset** button
-* View the tutorials by clicking the **Tutorials** button
+* Perform an action from the [top bar](#top-bar)
 * View the upload report for the selected validation
 * View the entire validation report by clicking the **Validation Report** button
 
@@ -399,6 +388,24 @@ From this screen the user can:
 * Set what they want to include in the downloaded report by using the **Download
   Options** dropdown.
 * Close the validation report by clicking the **Close** button
+## Top Bar
+
+The top bar is used in the [Home Screen](#home-screen), 
+[View Dataset](#view-dataset-screen), and [Validation Summary](#validation-summary-screen)
+screens. Its affixed to the top and contains actions that can be done from all 
+these screens.
+
+![top bar](../../dist/top-bar.png)
+
+From the top bar the user can:
+
+* Upload a new dataset by clicking on the **Upload Dataset** button
+* Navigate to the [View Dataset](#view-dataset-screen) screen by clicking on one
+  of the items in the **Datasets** dropdown.
+* View their validation profiles by clicking on the **View Validation Profiles**
+  button
+* View the tutorials by clicking the **Tutorials** button
+
   
 # Appendix
 
