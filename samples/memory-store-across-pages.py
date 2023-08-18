@@ -17,7 +17,7 @@ app = Dash(__name__, use_pages=True, pages_folder="")
 dash.register_page("home",  path='/', layout=html.Div('Home Page'))
 dash.register_page("analytics", layout=html.Div('Analytics'))
 
-store = dcc.Store(id='store', data = datetime.datetime.now())
+store = dcc.Store(id='store', data=datetime.datetime.now())
 trigger = html.Div(id='trigger')
 timestamp = html.Div(id='timestamp')
 
@@ -29,7 +29,8 @@ app.layout = html.Div([
         [
             html.Div(
                 dcc.Link(
-                    f"{page['name']} - {page['path']}", href=page["relative_path"]
+                    f"{page['name']} - {page['path']}",
+                    href=page["relative_path"]
                 )
             )
             for page in dash.page_registry.values()
@@ -37,6 +38,7 @@ app.layout = html.Div([
     ),
     dash.page_container,
 ])
+
 
 @callback(
     Output(timestamp, 'children'),
