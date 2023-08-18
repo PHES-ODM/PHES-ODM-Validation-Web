@@ -90,7 +90,7 @@ The flow diagram for this feature is shown below.
 
 From the **Customize Validation** screen the user can customize pieces of the
 validation by creating a new validation profile. This flow is shown in the 
-[validation profiles](#validation-profiles) section.
+[validation profiles](#validation-customization-and-validation-profiles) section.
 
 ## [Validation Customization](../spec.qmd$validation-customization) and [Validation Profiles](../spec.qmd#validation-profiles)
 
@@ -111,8 +111,8 @@ screen](#home-screen), the [view dataset](#view-dataset-screen), or the
 ### Creating a Validation Profile
 
 The flow for creating a new validation profile can be started from the [View 
-Validation Profiles](#view-validation-profiles-screen) screen, or the [new
-Validation](#new-validation-screen) screen.
+Validation Profiles](#view-validation-profiles-dialog), or the [New
+Validation](#new-validation-dialog) dialogs.
 
 ![create validation profile from view validations profile screen](../../dist/create-validation-profile-from-view-validation-profiles-screen.png)
 
@@ -161,8 +161,8 @@ The flow diagram is shown below:
 
 ## [Validation Report Download](../spec.qmd#validation-report-download)
 
-Users can download the validation report from the [Validation Report](#validation-report-screen)
-screen.
+Users can download the validation report from the [Validation Report](#validation-report-dialog)
+dialog.
 
 # Screens
 
@@ -182,7 +182,7 @@ screen they can:
 
 ![choose dataset dialog](../../dist/choose-dataset-dialog.png)
 
-This screen is part of the [upload dataset flow](#dataset-upload-and-dataset-metadata)
+This screen is part of the [upload dataset flow](#dataset-upload)
 where the user can choose a CSV or Excel file they want uploaded to the tool.
 
 The tool should use the [file chooser dialog](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file)
@@ -353,8 +353,8 @@ From this screen the user can:
 
 ![edit validation profile dialog](../../dist/edit-validation-profile-dialog.png)
 
-This screen has the same functionality as the [Create Validation Profile](#create-validation-profile-screen)
-screen.
+This screen has the same functionality as the [Create Validation Profile](#create-validation-profile-dialog)
+dialog.
 
 ## Delete Validation Profile Dialog 
 
