@@ -25,8 +25,8 @@ two categories:
    information about a dataset, but also allows them to perform actions like 
    uploading a new dataset, starting a new validation etc. These screens consist
    of three main components:
-   2. Sidebar: Has actions relevant to the current screen. Currently, the 
    1. [Top Bar](#top-bar): Has actions that can be done from any screen.
+   2. [Sidebar](#sidebar): Has actions relevant to the current screen. Currently, the 
       sidebar is populated with common actions that the user can perform on a 
       selected dataset.
    3. Content: Has information for the current screen along with any additional
@@ -62,6 +62,18 @@ Dataset** screens unless all the dataset metadata is valid.
 This flow can also be initiated from the [Validation Summary](#from-the-validation-summary-screen) 
 screen and [View Dataset](#from-the-view-dataset-screen) screen. The flows are 
 identical to the one above, with the only difference being the start screen.
+
+### Uploading a Duplicate Dataset 
+
+The red arrows in the above image represents the flow when the user uploads the
+same dataset as an existing one. Two datasets are considered the same when they 
+have the same file names.
+
+Since users cannot edit their dataset within the tool, after validation, they 
+will need to reupload it in order to validate it again. By allowing users to 
+replace an existing dataset during the upload process, they can have a history 
+of all the previous validations done on the different versions of the same 
+dataset.
 
 ## [Dataset Metadata](../spec.qmd#dataset-metadata)
 
@@ -254,10 +266,7 @@ From this screen the user can:
 
 * Perform an action from the [top bar](#top-bar)
 * View the **Upload Report** which summarizes the uploaded dataset.
-* Navigate to the [Validation Summary](#validation-summary-screen) by clicking 
-  on one of them in the **Previous Validations** panel.
-* Start a new validation using the **Validate Dataset** button
-* View the tutorials using the **Tutorial** button.
+* Perform an action from the [sidebar](#sidebar)
 
 ## Validation Summary Screen
 
@@ -266,12 +275,10 @@ From this screen the user can:
 This screen provides summary for a particular dataset validation. From this
 screen the user can:
 
-* Navigate to the summary for another validation by clicking on one of them
-  in the **Previous Validations** panel.
-* Start a new validation by clicking the **Validate Dataset** button
 * Perform an action from the [top bar](#top-bar)
 * View the upload report for the selected validation
 * View the entire validation report by clicking the **Validation Report** button
+* Perform an action from the [sidebar](#sidebar)
 
 ## New Validation Dialog 
 
@@ -388,6 +395,37 @@ From this screen the user can:
 * Set what they want to include in the downloaded report by using the **Download
   Options** dropdown.
 * Close the validation report by clicking the **Close** button
+
+## Duplicate Dataset Dialog
+
+![duplicate dataset dialog](../../dist/duplicate-dataset-dialog.png)
+
+This dialog is shown during the [dataset upload](#dataset-upload) flow when the
+user tries to upload a file with the same name as an existing dataset.
+
+The `<File Name>` text should be replaced with the name of the duplicate dataset.
+From this dialog the user can:
+
+* Choose to update the dataset by clicking the **Update the Dataset** button
+* Choose to replace the dataset by clicking the **Replace the Dataset** button
+
+## Replace Dataset Confirm Dialog
+
+![replace dataset confirm dialog](../../dist/replace-dataset-confirm-dialog.png)
+
+This dialog is shown during the [dataset upload](#dataset-upload) flow to 
+confirm that user wants to replace an existing dataset.
+
+From this dialog the user can:
+
+* Choose to not replace the existing dataset by clicking the **No** button
+* Choose to replace the existing dataset by clicking the **Yes** button
+
+# UI Components 
+
+This section contains UI components that are used in multiple screens and/or 
+dialogs.
+
 ## Top Bar
 
 The top bar is used in the [Home Screen](#home-screen), 
@@ -406,6 +444,39 @@ From the top bar the user can:
   button
 * View the tutorials by clicking the **Tutorials** button
 
+## Sidebar 
+
+The sidebar is used in the [View Dataset](#view-dataset-screen) and [Validation 
+Summary](#validation-summary-screen) screens. It shows user actions for a 
+particular dataset.
+
+There are two versions of the sidebar depending on whether there are [multiple 
+versions](#uploading-a-duplicate-dataset) of the current dataset as shown below:
+
+![sidebar with a single dataset version](../../dist/sidebar-no-multiple-versions.png)
+
+![sidebar with multiple dataset versions](../../dist/sidebar-multiple-versions.png)
+
+From the sidebar the user can:
+
+* Configure the currently selected dataset by clicking the **Configure 
+  Dataset** button
+* View their previous validations by clicking on one of them in the 
+  **Previous Validations** section.
+  * If there are multiple versions of a dataset then:
+    * The previous validations should be presented grouped by the dataset 
+      version they belong to. 
+    * The groupings should be in reverse chronological order, i.e. the 
+      latest uploaded dataset version should be presented first.
+    * If a dataset version has only one previous validation, it should not be 
+      grouped under the dataset version number. Instead, a button should be 
+      shown to the user whose text includes the version number and the 
+      validation title. For example, the v2 button shown in the above image.
+    * If a dataset version has multiple previous validations, they should be 
+      grouped within the dataset version name. A button for each previous 
+      validation should be shown, with the name of the validation in the button 
+      text. For example, the v1 grouping shown in the above image.
+* Start a new validation by clicking the **Validate Dataset** button 
   
 # Appendix
 

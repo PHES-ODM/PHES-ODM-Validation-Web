@@ -89,3 +89,6 @@ Build Steps:
   To go around this limitation we use [`%invoke_procedure`](https://plantuml.com/preprocessing#5a1670d800446678)
   and if the procedure takes an argument we create a wrapped procedure and pass
   it in to be invoked
+* In the **Validation Summary** and **View Dataset** screens, there is a large
+  space between the sidebar and the main content. This is not intended but 
+  we're unsure how to fix it.

@@ -17,4 +17,30 @@
         ...
 !endprocedure
 
+!procedure $sidebar($file_name, $show_validations, $multiple_versions)
+{^"Sidebar"
+    [Configure Dataset] 
+    [Validate Dataset]
+
+    !if ($show_validations) && ($multiple_versions == 0)
+        {^"Previous Validations"
+            [Validation 1]
+            [Validation 2]
+        } 
+    !endif 
+
+    !if ($show_validations) && ($multiple_versions == 1)
+        {^"Previous Validations"
+
+            [v2 (Current) - validation 1]
+
+            {^"v1" 
+                [Validation 2]
+                [Validation 3]
+            }
+        }
+    !endif
+}
+!endprocedure
+
 @enduml
