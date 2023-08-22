@@ -1,6 +1,8 @@
 @startuml
 
-!procedure $render_top_bar($has_datasets = 0)
+!include ../components/components.puml
+
+!procedure $top_bar($has_datasets = 0)
     {* 
         **Upload Dataset** | **Datasets** | **View Validation Profiles** | **Tutorials** 
         **Datasets** | 
@@ -22,7 +24,7 @@ salt
 {
     title Home Screen
 
-    $render_top_bar(0)
+    $top_bar(0)
     
     Welcome Text 
 }
@@ -76,29 +78,17 @@ salt
 {
     title View Dataset Screen
     
-    $render_top_bar(1)
+    $top_bar(1)
 
-    {!
-        [Configure Dataset] | 
-        {
-            $file_name
-            {SI
-                Upload Report
-                .
-                .
-                .
-                .
-            }
+    $sidebar($file_name, $show_validations, 0) | {
+        <File Name> 
+        {SI
+            Validation Summary Text
+            .
+            .
+            .
+            .
         }
-
-        !if ($show_validations)
-            {^"Previous Validations"
-                [Validation 1]
-                [Validation 2]
-            } | . 
-        !endif 
-
-        [Validate Dataset] | .
     }
 }
 !endprocedure
@@ -145,27 +135,19 @@ salt
 {
     title Validation Summary Screen
 
-    $render_top_bar(1)
+    $top_bar(1)
 
-    {!
-            [Configure Dataset] | 
-            {
-                <File Name> 
-                {SI
-                    Validation Summary Text
-                    .
-                    .
-                    .
-                    .
-                }
-            }
-
-            {^"Previous Validations"
-                [Validation 1]
-                [Validation 2]
-            } | [View Validation Report] 
-
-            [Validate Dataset] | .
+    $sidebar("<File Name>", 1, 0) | 
+    {^"Main Content"
+        <File Name> 
+        {SI
+            Validation Summary Text
+            .
+            .
+            .
+            .
+        }
+        [View Validation Report]
     }
 }
 !endprocedure
@@ -259,5 +241,40 @@ JSON ^
     [Close]
 }
 !endprocedure
+
+!procedure $duplicate_dataset_dialog()
+salt
+{
+    title Duplicate Dataset Dialog
+
+    We detected another dataset with the name <File Name> already uploaded to the tool.
+    The tool currently does not allow two datasets with the same name to be 
+    uploaded. You can either:
+    1. **Update the existing dataset**: This updates the current dataset in the
+    tool with the new one. You won't lose any validations attached to the 
+    existing dataset, they will be moved over.
+    2. **Replace the existing dataset**: This will delete the old dataset and 
+    any validations associated with it, replacing it with the new one.
+
+    What do you want to do?
+
+    [Update the Dataset]
+    [Replace the Dataset]
+}
+!endprocedure
+
+!procedure $replace_dataset_confirm_dialog()
+salt
+{
+    title Replace Dataset Confirm Dialog
+
+    Are you sure you want to replace the existing dataset? You will lose all 
+    data associated with it, including any validations.
+
+    [No - Do not replace]
+    [Yes - Replace the dataset]
+}
+!endprocedure
+
 
 @enduml

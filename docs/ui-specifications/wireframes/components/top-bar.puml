@@ -1,0 +1,12 @@
+@startuml
+
+!include ./components.puml
+
+salt
+{
+    Title Top Bar
+
+    $top_bar(1)
+}
+
+@enduml

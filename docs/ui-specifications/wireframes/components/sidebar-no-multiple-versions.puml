@@ -1,0 +1,12 @@
+@startuml
+
+!include ./components.puml
+
+salt
+{
+    title Sidebar No Multiple Dataset Versions
+
+    $sidebar("<File Name>", 1, 0)
+}
+
+@enduml
