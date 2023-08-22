@@ -13,26 +13,23 @@ stylesheets = [
 app = Dash(__name__, use_pages=True, external_stylesheets=stylesheets,
            prevent_initial_callbacks=True)
 
-
-def gen_menu_link(page):
-    name = page['name']
-    path = page['relative_path']
-    if name == 'Datasets':
-        return dbc.DropdownMenu(
-            children=[
-                dbc.DropdownMenuItem('a', href='/datasets'),
-                dbc.DropdownMenuItem('b', href='/datasets'),
-            ],
-            nav=True,
-            in_navbar=True,
-            label=name,
-        )
-    else:
-        return dbc.NavItem(dbc.NavLink(name, href=path))
-
+main_menu = [
+    dbc.NavItem(dbc.NavLink('Upload')),
+    dbc.DropdownMenu(
+        label='Datasets',
+        children=[
+            dbc.DropdownMenuItem('a', href='/datasets'),
+            dbc.DropdownMenuItem('b', href='/datasets'),
+        ],
+        nav=True,
+        in_navbar=True,
+    ),
+    dbc.NavItem(dbc.NavLink('Profiles')),
+    dbc.NavItem(dbc.NavLink('Tutorial')),
+]
 
 topbar = dbc.NavbarSimple(
-    children=list(map(gen_menu_link, dash.page_registry.values())),
+    children=main_menu,
     brand="ODM Validation",
     brand_href="/",
     color="primary",
