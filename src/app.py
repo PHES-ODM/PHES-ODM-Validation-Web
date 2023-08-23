@@ -14,17 +14,16 @@ app = Dash(__name__, use_pages=True, external_stylesheets=stylesheets,
            prevent_initial_callbacks=True)
 
 main_menu = [
-    dbc.NavItem(dbc.NavLink('Upload')),
+    dbc.NavItem(dbc.NavLink('Upload dataset')),
     dbc.DropdownMenu(
         label='Datasets',
         children=[
-            dbc.DropdownMenuItem('a', href='/datasets'),
-            dbc.DropdownMenuItem('b', href='/datasets'),
+            dbc.DropdownMenuItem('No datasets uploaded'),
         ],
         nav=True,
         in_navbar=True,
     ),
-    dbc.NavItem(dbc.NavLink('Profiles')),
+    dbc.NavItem(dbc.NavLink('Validation profiles')),
     dbc.NavItem(dbc.NavLink('Tutorial')),
 ]
 
