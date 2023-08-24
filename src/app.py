@@ -46,15 +46,7 @@ sidebar = html.Div(
             pills=True,
         ),
     ],
-    style={
-        'position': 'fixed',
-        'top': 44,
-        'left': 0,
-        'bottom': 0,
-        'width': '16rem',
-        'padding': '2rem 1rem',
-        'background-color': '#f8f9fa',
-    },
+    id='sidebar',
 )
 
 app.layout = html.Div([
@@ -63,11 +55,6 @@ app.layout = html.Div([
     html.Div(
         dash.page_container,
         id="page-content",
-        style={
-            'margin-left': '18rem',
-            'margin-right': '2rem',
-            'padding': '2rem 1rem',
-        },
     ),
 ])
 
