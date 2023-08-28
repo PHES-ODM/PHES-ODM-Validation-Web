@@ -65,22 +65,22 @@ Build Steps:
   ```
   @startuml
 
-  !procedure $home_screen()
+  !procedure $home_page()
     salt
     {
-        Home Screen
+        Home Page
     }
   !endprocedure
 
-  !procedure $user_flow($screen)
-    (*) -> [user opens the home screen]"
+  !procedure $user_flow($page)
+    (*) -> [user opens the home page]"
     {{
-        $home_screen()
+        $home_page()
     }}
-    " as home_screen
+    " as home_page
   !endprocedure
 
-  $user_flow($home_screen())
+  $user_flow($home_page())
 
   @enduml
   ```
@@ -91,5 +91,5 @@ Build Steps:
   and if the procedure takes an argument we create a wrapped procedure and pass
   it in to be invoked
 * In the **Validation Summary** and **View Dataset** screens, there is a large
-  space between the sidebar and the main content. This is not intended but 
+  space between the sidebar and the main content. This is not intended but
   we're unsure how to fix it.

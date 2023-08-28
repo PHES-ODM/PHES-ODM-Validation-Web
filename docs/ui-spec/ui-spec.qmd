@@ -1,78 +1,79 @@
 ---
 title: UI Specifications
-format: 
+format:
     html:
         embed-resources: true
 ---
 
-This document will go over the high level UI specifications for the web 
+This document will go over the high level UI specifications for the web
 validation tool. These specifications are not meant to specify the **visual**
 aspects of the tool (i.e. they are not meant to be pretty) but are more meant
 to specify functional aspects of the UI.
 
 The specifications will go through each feature outlined in the high level
-specifications and explain their functional aspects by using wireframe 
+specifications and explain their functional aspects by using wireframe
 diagrams as well as flow diagrams.
 
 # Screen Types
 
-The different screens that are part of the UI can be broadly classified into 
-two categories:
+The different screens that are part of the UI can be broadly classified into
+pages and dialogs.
 
-1. **Primary Screens**: These screens allow the user to perform a variety of
-   actions while also showing information based on the current context. For 
-   example, the [view dataset screen](#view-dataset-screen) shows the user 
-   information about a dataset, but also allows them to perform actions like 
-   uploading a new dataset, starting a new validation etc. These screens consist
-   of three main components:
-   1. [Top Bar](#top-bar): Has actions that can be done from any screen.
-   2. [Sidebar](#sidebar): Has actions relevant to the current screen. Currently, the 
-      sidebar is populated with common actions that the user can perform on a 
-      selected dataset.
-   3. Content: Has information for the current screen along with any additional
-      context specific actions.
-2. **Dialog Screens**: These screens are used when a process cannot be completed 
-   in a single step (for e.g., [uploading a dataset](#dataset-upload), or for 
-   actions that require confirmation from a user. They are overlaid on top of a 
-   primary screen, and a user is not allowed to interact with the primary screen 
-   until the dialog is closed.
+Pages allow the user to perform a variety of actions while also showing
+information based on the current context. For example, the
+[view dataset page](#view-dataset-page) shows the user information about a
+dataset, but also allows them to perform actions like uploading a new dataset,
+starting a new
+validation etc. Pages consist of three main components:
+1. [Top Bar](#top-bar): Has actions that can be done from any page.
+2. [Sidebar](#sidebar): Has actions relevant to the current page. Currently, the
+   sidebar is populated with common actions that the user can perform on a
+   selected dataset.
+3. Content: Has information for the current page along with any additional
+   context specific actions.
 
-# Features 
+Dialogs are used when a process cannot be completed in a single step (for e.g.,
+[uploading a dataset](#dataset-upload), or for actions that require
+confirmation from a user. They are overlaid on top of a page, and a user is not
+allowed to interact with the page until the dialog is closed.
 
-Each of the next sub-sections will go over the features for the tool and the 
+# Features
+
+Each of the next sub-sections will go over the features for the tool and the
 user flows and/or wireframes for them. The sections that show flow diagrams
-will not go through each screen in the flow, those can be seen in the 
+will not go through each page in the flow, those can be seen in the
 [screens](#screens) section.
 
 ## [Dataset Upload](../spec.qmd#dataset-upload)
 
-There are multiple screens from which a user can start the process of uploading 
-a dataset, this section will focus on the home screen as the starting point.
+There are multiple pages from which a user can start the process of uploading
+a dataset, this section will focus on the home page as the starting point.
 The image below contains the flow diagram for uploading a dataset from the home
-screen.
+page.
 
-![upload dataset from the home screen](../../dist/upload-dataset-from-home-screen.png)
+![upload dataset from the home page](../../dist/upload-dataset-from-home-page.png)
 
-The user can initiate the upload dataset flow by clicking on the **Upload 
-Dataset** button from any screen where its available.
+The user can initiate the upload dataset flow by clicking on the **Upload
+Dataset** button from any page where its available.
 
-In addition, the user should not be allowed to proceed from the **Configure 
-Dataset** screens unless all the dataset metadata is valid.
+In addition, the user should not be allowed to proceed from the **Configure
+Dataset** dialog unless all the dataset metadata is valid.
 
-This flow can also be initiated from the [Validation Summary](#from-the-validation-summary-screen) 
-screen and [View Dataset](#from-the-view-dataset-screen) screen. The flows are 
-identical to the one above, with the only difference being the start screen.
+This flow can also be initiated from the
+[Validation Summary](#from-the-validation-summary-page) page and
+[View Dataset](#from-the-view-dataset-page) page. The flows are identical to the
+one above, with the only difference being the start page.
 
-### Uploading a Duplicate Dataset 
+### Uploading a Duplicate Dataset
 
 The red arrows in the above image represents the flow when the user uploads the
-same dataset as an existing one. Two datasets are considered the same when they 
+same dataset as an existing one. Two datasets are considered the same when they
 have the same file names.
 
-Since users cannot edit their dataset within the tool, after validation, they 
-will need to reupload it in order to validate it again. By allowing users to 
-replace an existing dataset during the upload process, they can have a history 
-of all the previous validations done on the different versions of the same 
+Since users cannot edit their dataset within the tool, after validation, they
+will need to reupload it in order to validate it again. By allowing users to
+replace an existing dataset during the upload process, they can have a history
+of all the previous validations done on the different versions of the same
 dataset.
 
 ## [Dataset Metadata](../spec.qmd#dataset-metadata)
@@ -80,19 +81,19 @@ dataset.
 The user can set the metadata for their dataset either:
 
 * During the [dataset upload process](#dataset-upload)
-* From the [view dataset screen](#view-dataset-screen) whose flow is shown below
+* From the [view dataset page](#view-dataset-page) whose flow is shown below
 
-![configure dataset from view dataset screen](../../dist/configure-dataset.png)
+![configure dataset from view dataset page](../../dist/configure-dataset.png)
 
 ## [Upload Report](../spec.qmd#upload-report)
 
-The user can view the upload report from the [View Dataset](#view-dataset-screen)
-screen. The two ways the user can access this screen is by:
+The user can view the upload report from the [View Dataset](#view-dataset-page)
+page. The two ways the user can access this page is by:
 
-1. Successfully uploading a new dataset which takes them to the screen; and
-2. Clicking on an already uploaded dataset which can be done from the 
-   [Validation Summary Screen](#validation-summary-screen) or the 
-   [View Dataset Screen](#view-dataset-screen)
+1. Successfully uploading a new dataset which takes them to the page; and
+2. Clicking on an already uploaded dataset which can be done from the
+   [Validation Summary](#validation-summary-page) page or the
+   [View Dataset](#view-dataset-page) page.
 
 ## [Dataset Validation](../spec.qmd#dataset-validation)
 
@@ -100,8 +101,8 @@ The flow diagram for this feature is shown below.
 
 ![validate dataset flow](../../dist/validate-dataset.png)
 
-From the **Customize Validation** screen the user can customize pieces of the
-validation by creating a new validation profile. This flow is shown in the 
+From the **Customize Validation** dialog the user can customize pieces of the
+validation by creating a new validation profile. This flow is shown in the
 [validation profiles](#validation-customization-and-validation-profiles) section.
 
 ## [Validation Customization](../spec.qmd$validation-customization) and [Validation Profiles](../spec.qmd#validation-profiles)
@@ -116,19 +117,19 @@ The user flow is shown below.
 
 ![view validation profiles](../../dist/view-validation-profiles.png)
 
-A user can view their validation profiles from multiple screens, the [home 
-screen](#home-screen), the [view dataset](#view-dataset-screen), or the 
-[validation summary](#validation-summary-screen) screen.
+A user can view their validation profiles from multiple pages, the
+[home page](#home-page), the [view dataset](#view-dataset-page), or the
+[validation summary](#validation-summary-page) page.
 
 ### Creating a Validation Profile
 
-The flow for creating a new validation profile can be started from the [View 
-Validation Profiles](#view-validation-profiles-dialog), or the [New
-Validation](#new-validation-dialog) dialogs.
+The flow for creating a new validation profile can be started from the
+[View Validation Profiles](#view-validation-profiles-dialog) dialog, or the
+[New Validation](#new-validation-dialog) dialog.
 
-![create validation profile from view validations profile screen](../../dist/create-validation-profile-from-view-validation-profiles-screen.png)
+![create validation profile from view validations profile dialog](../../dist/create-validation-profile-from-view-validation-profiles-dialog.png)
 
-![create validation profile from new validation screen](../../dist/create-validation-profile-from-new-validation-screen.png)
+![create validation profile from new validation dialog](../../dist/create-validation-profile-from-new-validation-dialog.png)
 
 ### Editing a Validation Profile
 
@@ -159,12 +160,12 @@ The flow is diagram is shown below,
 There are two ways the user can view the validation summary report:
 
 1. After a [successful validation has completed](#dataset-validation)
-2. By clicking on a previous validation from the [View Dataset](#view-dataset-screen)
-   screen
+2. By clicking on a previous validation from the [View Dataset](#view-dataset-page)
+   page
 
 ## [Validation Report](../spec.qmd#validation-report)
 
-Users can view the full validation report from the validation summary screen
+Users can view the full validation report from the validation summary page
 for a validation.
 
 The flow diagram is shown below:
@@ -178,118 +179,118 @@ dialog.
 
 # Screens
 
-The next sub-sections will go over the different screens presented in the flow
-diagrams above.
+The next sub-sections will go over the different pages and dialogs presented in
+the flow diagrams above.
 
-## Home Screen
+## Home Page
 
-![home screen](../../dist/home-screen.png)
+![home page](../../dist/home-page.png)
 
-The home screen is shown to the user when they open the tool. From the home 
-screen they can:
+The home page is shown to the user when they open the tool. From the home
+page they can:
 
 * Perform an action from the [top bar](#top-bar)
 
-## Choose Dataset Dialog 
+## Choose Dataset Dialog
 
 ![choose dataset dialog](../../dist/choose-dataset-dialog.png)
 
-This screen is part of the [upload dataset flow](#dataset-upload)
+This dialog is part of the [upload dataset flow](#dataset-upload)
 where the user can choose a CSV or Excel file they want uploaded to the tool.
 
 The tool should use the [file chooser dialog](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file)
-that ships with every browser. The tool should also prevent the user from 
+that ships with every browser. The tool should also prevent the user from
 choosing files that aren't CSV or Excel files.
 
 The **Ok** button allows the user to select a file as their dataset and proceed
 to the next step.
 
-The **Cancel** button allows the user to cancel the dataset upload process, 
-taking them back to the screen from where they started the flow.
+The **Cancel** button allows the user to cancel the dataset upload process,
+taking them back to the page from where they started the flow.
 
-## Configure Dataset Dialog 
+## Configure Dataset Dialog
 
-Depending on the dataset that the user wants to configure, a different 
-screen is shown.
+Depending on the dataset that the user wants to configure, a different
+dialog is shown.
 
-### Configure CSV Dataset Dialog 
+### Configure CSV Dataset Dialog
 
 ![Configure CSV dataset dialog](../../dist/configure-csv-dataset-dialog.png)
 
-On this screen the user can:
+In this dialog the user can:
 
 * Select the ODM version that this dataset is for. This is the **ODM version**
   dropdown. Refer to the high level specifications for what versions the tool
   supports.
-* Select the ODM table that this dataset represents. This is done using the 
+* Select the ODM table that this dataset represents. This is done using the
   **Table** dropdown.
-* Save the configuration by clicking the **Save** button. 
+* Save the configuration by clicking the **Save** button.
 * Cancel the configuration by clicking the **Close** button.
 
 In addition,
 
-* The **\<CSV file name\>** text should be replaced with the file name of the 
+* The ** \<CSV file name\> ** text should be replaced with the file name of the
   dataset.
-* The user should be allowed to save the configuration only if the ODM version 
+* The user should be allowed to save the configuration only if the ODM version
   and table dropdown have been correctly filled in.
 
-### Configure Excel Dataset Dialog 
+### Configure Excel Dataset Dialog
 
 ![configure excel dataset dialog](../../dist/configure-excel-dataset-dialog.png)
 
-From this screen the user can:
+From this dialog the user can:
 
-* Choose the ODM version the dataset is for. This is done using the **ODM 
-  version** dropdown. For the list of supported ODM versions, look at the high 
+* Choose the ODM version the dataset is for. This is done using the **ODM
+  version** dropdown. For the list of supported ODM versions, look at the high
   level specifications.
 * Choose the ODM table that each sheet maps to. This is done using the dropdowns
   at the bottom of the **Tables** text.
-* Save the configuration by clicking the **Save** button. 
+* Save the configuration by clicking the **Save** button.
 * Cancel the configuration by clicking the **Close** button.
 
 In addition,
 
-* The **\<Excel file name\>** text should be replaced with the file name of the 
+* The ** \<Excel file name\> ** text should be replaced with the file name of the
   dataset
-* The user should be allowed to save the configuration only if the ODM version 
+* The user should be allowed to save the configuration only if the ODM version
   and table dropdowns have been correctly filled in.
 
-## View Dataset Screen
+## View Dataset Page
 
-![view dataset screen](../../dist/view-dataset-screen.png)
+![view dataset page](../../dist/view-dataset-page.png)
 
-This screen is shown when the user uploads a new dataset or selects a dataset
-on another screen. It allows the user to view summary details about the 
+This page is shown when the user uploads a new dataset or selects a dataset
+on another page. It allows the user to view summary details about the
 uploaded dataset.
 
-From this screen the user can:
+From this page the user can:
 
 * Perform an action from the [top bar](#top-bar)
 * View the **Upload Report** which summarizes the uploaded dataset.
 * Perform an action from the [sidebar](#sidebar)
 
-## Validation Summary Screen
+## Validation Summary Page
 
-![validation summary screen](../../dist/validation-summary-screen.png)
+![validation summary page](../../dist/validation-summary-page.png)
 
-This screen provides summary for a particular dataset validation. From this
-screen the user can:
+This page provides summary for a particular dataset validation. From this
+page the user can:
 
 * Perform an action from the [top bar](#top-bar)
 * View the upload report for the selected validation
 * View the entire validation report by clicking the **Validation Report** button
 * Perform an action from the [sidebar](#sidebar)
 
-## New Validation Dialog 
+## New Validation Dialog
 
 ![new validation dialog](../../dist/new-validation-dialog.png)
 
-This screen is used by the user to start a new validation and is part of the
+This dialog is used by the user to start a new validation and is part of the
 [validate dataset](#dataset-validation) flow.
 
-From this screen the user can:
+From this dialog the user can:
 
-* Choose the validation profile they want to use using the **validation 
+* Choose the validation profile they want to use using the **validation
   profile** dropdown
 * View the properties of their selected profile using the **Validation
   Properties** panel
@@ -303,25 +304,25 @@ In addition,
 * By default the selected validation profile should be one created by the
   ODM staff
 
-## Validating Dialog 
+## Validating Dialog
 
 ![validating dialog](../../dist/validating-dialog.png)
 
-This screen is part of the [validate dataset](#dataset-validation) flow.
+This dialog is part of the [validate dataset](#dataset-validation) flow.
 
-From this screen the user can:
+From this dialog the user can:
 
 * View their validation progress
 * Cancel the validation by pressing the **Cancel** button
 
-## Cancel Validation Dialog 
+## Cancel Validation Dialog
 
 ![cancel validation dialog](../../dist/cancel-validation-dialog.png)
 
-This screen is part of the [validate dataset](#dataset-validation) flow. Its 
+This dialog is part of the [validate dataset](#dataset-validation) flow. Its
 used to confirm with the user if they want to cancel their validation.
 
-From this screen the user can:
+From this dialog the user can:
 
 * Cancel the validation process by clicking the **Yes** button
 * Continue the validation process by clicking the **Not** button
@@ -330,20 +331,20 @@ From this screen the user can:
 
 ![view validation profiles dialog](../../dist/view-validation-profiles-dialog.png)
 
-From this screen the user can:
+From this dialog the user can:
 
 * View the different validation profiles they have
 * Edit any one by clicking the **Edit** button
 * Download any one by clicking the **Download** button
 * Delete any one by clocking the **Delete** button
 * Create a new profile by clicking the **Create New Profile** button
-* Return to the previous screen by clicking the **Close** button
+* Return to the previous page by clicking the **Close** button
 
-## Create Validation Profile Dialog 
+## Create Validation Profile Dialog
 
 ![create validation profile dialog](../../dist/create-validation-profile-dialog.png)
 
-From this screen the user can:
+From this dialog the user can:
 
 * Edit the name of their new validation profile. This field is mandatory.
 * Edit the description of their new validation profile. This field is optional.
@@ -356,38 +357,38 @@ From this screen the user can:
   the file. This is done using the **Upload Profile** button.
 * Cancel the creation with the **Cancel** button.
 
-## Edit Validation Profile Dialog 
+## Edit Validation Profile Dialog
 
 ![edit validation profile dialog](../../dist/edit-validation-profile-dialog.png)
 
-This screen has the same functionality as the [Create Validation Profile](#create-validation-profile-dialog)
-dialog.
+This dialog has the same functionality as the
+[Create Validation Profile](#create-validation-profile-dialog) dialog.
 
-## Delete Validation Profile Dialog 
+## Delete Validation Profile Dialog
 
 ![delete validation profile dialog](../../dist/delete-validation-profile-dialog.png)
 
-Used to confirm if the user wants to delete a validation profile. From this 
-screen the user can:
+Used to confirm if the user wants to delete a validation profile. From this
+dialog the user can:
 
-* Confirm they want to delete a validation profile by clicking the **Yes** 
+* Confirm they want to delete a validation profile by clicking the **Yes**
   button
 * Stop the deletion by clicking the **No** button
 
-## Choose Validation Profile Dialog 
+## Choose Validation Profile Dialog
 
-![choose validation profile screen](../../dist/choose-validation-profile-dialog.png)
+![choose validation profile dialog](../../dist/choose-validation-profile-dialog.png)
 
-When uploading a validation profile, this screen allows the user to choose a 
-validation profile file from their computer. It should use the [File 
-Dialog](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file)
+When uploading a validation profile, this dialog allows the user to choose a
+validation profile file from their computer. It should use the
+[File Dialog](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file)
 provided by the browser.
 
-## Validation Report Dialog 
+## Validation Report Dialog
 
 ![view validation report dialog](../../dist/validation-report-dialog.png)
 
-From this screen the user can:
+From this dialog the user can:
 
 * View the full results of a validation
 * Download the validation report by clicking on one of the options in the
@@ -413,7 +414,7 @@ From this dialog the user can:
 
 ![replace dataset confirm dialog](../../dist/replace-dataset-confirm-dialog.png)
 
-This dialog is shown during the [dataset upload](#dataset-upload) flow to 
+This dialog is shown during the [dataset upload](#dataset-upload) flow to
 confirm that user wants to replace an existing dataset.
 
 From this dialog the user can:
@@ -421,37 +422,38 @@ From this dialog the user can:
 * Choose to not replace the existing dataset by clicking the **No** button
 * Choose to replace the existing dataset by clicking the **Yes** button
 
-# UI Components 
+# UI Components
 
-This section contains UI components that are used in multiple screens and/or 
+This section contains UI components that are used in multiple pages and/or
 dialogs.
 
 ## Top Bar
 
-The top bar is used in the [Home Screen](#home-screen), 
-[View Dataset](#view-dataset-screen), and [Validation Summary](#validation-summary-screen)
-screens. Its affixed to the top and contains actions that can be done from all 
-these screens.
+The top bar is used in the [Home Page](#home-page),
+[View Dataset](#view-dataset-page), and [Validation Summary](#validation-summary-page)
+pages. Its affixed to the top and contains actions that can be done from all
+these pages.
 
 ![top bar](../../dist/top-bar.png)
 
 From the top bar the user can:
 
 * Upload a new dataset by clicking on the **Upload Dataset** button
-* Navigate to the [View Dataset](#view-dataset-screen) screen by clicking on one
+* Navigate to the [View Dataset](#view-dataset-page) page by clicking on one
   of the items in the **Datasets** dropdown.
 * View their validation profiles by clicking on the **View Validation Profiles**
   button
 * View the tutorials by clicking the **Tutorials** button
 
-## Sidebar 
+## Sidebar
 
-The sidebar is used in the [View Dataset](#view-dataset-screen) and [Validation 
-Summary](#validation-summary-screen) screens. It shows user actions for a 
-particular dataset.
+The sidebar is used in the [View Dataset](#view-dataset-page) and
+[Validation Summary](#validation-summary-page) pages. It shows user actions
+for a particular dataset.
 
-There are two versions of the sidebar depending on whether there are [multiple 
-versions](#uploading-a-duplicate-dataset) of the current dataset as shown below:
+There are two versions of the sidebar depending on whether there are
+[multiple versions](#uploading-a-duplicate-dataset) of the current dataset as
+shown below:
 
 ![sidebar with a single dataset version](../../dist/sidebar-no-multiple-versions.png)
 
@@ -459,33 +461,33 @@ versions](#uploading-a-duplicate-dataset) of the current dataset as shown below:
 
 From the sidebar the user can:
 
-* Configure the currently selected dataset by clicking the **Configure 
+* Configure the currently selected dataset by clicking the **Configure
   Dataset** button
-* View their previous validations by clicking on one of them in the 
+* View their previous validations by clicking on one of them in the
   **Previous Validations** section.
   * If there are multiple versions of a dataset then:
-    * The previous validations should be presented grouped by the dataset 
-      version they belong to. 
-    * The groupings should be in reverse chronological order, i.e. the 
+    * The previous validations should be presented grouped by the dataset
+      version they belong to.
+    * The groupings should be in reverse chronological order, i.e. the
       latest uploaded dataset version should be presented first.
-    * If a dataset version has only one previous validation, it should not be 
-      grouped under the dataset version number. Instead, a button should be 
-      shown to the user whose text includes the version number and the 
+    * If a dataset version has only one previous validation, it should not be
+      grouped under the dataset version number. Instead, a button should be
+      shown to the user whose text includes the version number and the
       validation title. For example, the v2 button shown in the above image.
-    * If a dataset version has multiple previous validations, they should be 
-      grouped within the dataset version name. A button for each previous 
-      validation should be shown, with the name of the validation in the button 
+    * If a dataset version has multiple previous validations, they should be
+      grouped within the dataset version name. A button for each previous
+      validation should be shown, with the name of the validation in the button
       text. For example, the v1 grouping shown in the above image.
-* Start a new validation by clicking the **Validate Dataset** button 
-  
+* Start a new validation by clicking the **Validate Dataset** button
+
 # Appendix
 
 ## Other Upload Dataset Flows
 
-### From the Validation Summary Screen
+### From the Validation Summary Page
 
-![upload dataset flow from the validation summary screen](../../dist/upload-dataset-from-validaton-summary-screen.png)
+![upload dataset flow from the validation summary page](../../dist/upload-dataset-from-validaton-summary-page.png)
 
-### From the View Dataset Screen
+### From the View Dataset Page
 
-![upload dataset flow from the view dataset screen](../../dist/upload-dataset-from-view-dataset-screen.png)
+![upload dataset flow from the view dataset page](../../dist/upload-dataset-from-view-dataset-page.png)
