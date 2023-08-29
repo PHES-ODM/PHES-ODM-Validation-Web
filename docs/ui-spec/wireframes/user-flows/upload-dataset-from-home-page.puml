@@ -1,9 +1,8 @@
 @startuml
 
+!include ../screens.puml
 !include ./user-flows.puml
-!include ../screens/screens.puml
 
 $upload_dataset_flow("$home_screen", "User opens the tool")
 
 @enduml
-

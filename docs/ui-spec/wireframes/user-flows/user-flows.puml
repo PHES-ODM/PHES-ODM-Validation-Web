@@ -1,11 +1,11 @@
 @startuml
 
-!include ../screens/screens.puml
+!include ../screens.puml
 
 !procedure $upload_dataset_flow($start_screen, $start_message)
     (*) --> [$start_message]"
     {{
-        %invoke_procedure($start_screen) 
+        %invoke_procedure($start_screen)
     }}
     " as start_screen
 

@@ -1,6 +1,6 @@
 @startuml
 
-!include ../screens/screens.puml
+!include ../screens.puml
 
 (*) --> [User is on the **Validation Summary** screen]"
 {{

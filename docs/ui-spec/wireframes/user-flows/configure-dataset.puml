@@ -1,6 +1,6 @@
 @startuml
 
-!include ../screens/screens.puml
+!include ../screens.puml
 
 (*) --> [User is on the **View Dataset** screen]"
 {{
@@ -13,7 +13,7 @@ the dataset is a CSV file]"
 {{
     $configure_dataset_dialog("<CSV file name>", 1)
 }}
-" as configure_csv_dataset_dialog 
+" as configure_csv_dataset_dialog
 
 configure_csv_dataset_dialog --> [User clicks on the **Save** button] \
 view_dataset_screen

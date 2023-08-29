@@ -1,6 +1,6 @@
 @startuml
 
-!include ./screens.puml
+!include ../screens.puml
 
 $view_dataset_screen("<File Name>", 1)
 

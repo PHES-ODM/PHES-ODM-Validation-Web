@@ -1,6 +1,6 @@
 @startuml
 
-!include ../screens/screens.puml
+!include ../screens.puml
 
 (*) --> [User is on the **Create Validation Profile** dialog]"
 {{
@@ -23,4 +23,3 @@ choose_validation_profile_dialog --> [User clicks on the **Close** button] \
 create_validation_profile_dialog
 
 @enduml
-

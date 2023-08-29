@@ -1,6 +1,6 @@
 @startuml
 
-!include ./screens.puml
+!include ../screens.puml
 
 $validating_dialog()
 

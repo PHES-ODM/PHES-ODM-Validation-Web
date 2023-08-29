@@ -1,6 +1,6 @@
 @startuml
 
-!include ../screens/screens.puml
+!include ../screens.puml
 
 (*) --> [User opens the tool]"
 {{
@@ -12,7 +12,7 @@ home_screen --> [User clicks on **View Validation Profiles** button]"
 {{
     $view_validation_profiles_dialog()
 }}
-" as view_validation_profiles_dialog        
+" as view_validation_profiles_dialog
 
 view_validation_profiles_dialog --> [User clicks on the **Close** button and \
 \n was on the **Home** screen] home_screen

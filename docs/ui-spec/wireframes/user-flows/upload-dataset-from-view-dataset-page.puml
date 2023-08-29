@@ -1,6 +1,6 @@
 @startuml
 
-!include ../screens/screens.puml
+!include ../screens.puml
 !include ./user-flows.puml
 
 !procedure $wrapped_view_dataset_screen()

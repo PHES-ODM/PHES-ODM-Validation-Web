@@ -1,6 +1,6 @@
 @startuml
 
-!include ./screens.puml
+!include ../screens.puml
 
 $configure_dataset_dialog("<CSV file name>", 1)
 

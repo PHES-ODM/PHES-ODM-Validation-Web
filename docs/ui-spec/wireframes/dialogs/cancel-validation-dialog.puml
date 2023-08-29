@@ -1,6 +1,6 @@
 @startuml
 
-!include ./screens.puml
+!include ../screens.puml
 
 $cancel_validation_dialog()
 
