@@ -32,7 +32,12 @@ Build Steps:
 
 1. Build the wireframe documents by running the command below,
 
-   `java -jar E:/plantuml.jar -o ../../../../dist "./docs/ui-spec/wireframe*/**.puml"`
+   ```
+   java \
+       -jar <plantuml-dir>/plantuml.jar \
+       -o ../../../../dist \
+       "./docs/ui-spec/wireframes/**/*.puml"
+   ```
 
    This will convert all the wireframe documents into images and put them in the
    dist folder in the root of the project.
@@ -40,7 +45,7 @@ Build Steps:
    PlantUML will report the errors below:
 
    ```
-   Error line 2 in file: .\docs\ui-spec\wireframes\screens\screens.puml
+   Error line 2 in file: .\docs\ui-spec\wireframes\screens.puml
    Error line 2 in file: .\docs\ui-spec\wireframes\user-flows\user-flows.puml
    Some diagram description contains errors
    ```
