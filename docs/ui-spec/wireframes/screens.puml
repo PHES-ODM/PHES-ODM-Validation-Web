@@ -1,6 +1,6 @@
 @startuml
 
-!include ../components/components.puml
+!include ./components/components.puml
 
 !procedure $top_bar($has_datasets = 0)
     {* 
