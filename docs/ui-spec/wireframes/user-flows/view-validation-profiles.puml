@@ -4,18 +4,18 @@
 
 (*) --> [User opens the tool]"
 {{
-    $home_screen()
+    $home_page()
 }}
-" as home_screen
+" as home_page
 
-home_screen --> [User clicks on **View Validation Profiles** button]"
+home_page --> [User clicks on **View Validation Profiles** button]"
 {{
     $view_validation_profiles_dialog()
 }}
 " as view_validation_profiles_dialog
 
 view_validation_profiles_dialog --> [User clicks on the **Close** button and \
-\n was on the **Home** screen] home_screen
+\n was on the **Home** screen] home_page
 
 (*) --> [User is on the **View Dataset** screen]"
 {{

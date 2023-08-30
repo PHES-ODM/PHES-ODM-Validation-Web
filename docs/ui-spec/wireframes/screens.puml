@@ -19,7 +19,7 @@
         ...
 !endprocedure
 
-!procedure $home_screen()
+!procedure $home_page()
 salt
 {
     title Home Screen
