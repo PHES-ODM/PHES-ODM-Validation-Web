@@ -16,8 +16,10 @@ The wireframes are all written using [PlantUML](https://plantuml.com/) and are
 contained in the [wireframe](./ui-spec/wireframes) folder. The folder
 structure is described below:
 
-* [screens](./ui-spec/wireframes/screens): Contains the wireframes for
-  the screens
+* [pages](./ui-spec/wireframes/pages): Contains the wireframes for
+  the pages
+* [dialogs](./ui-spec/wireframes/dialogs): Contains the wireframes for
+  the dialogs
 * [user-flows](./ui-spec/wireframes/user-flows): Contains the flow
   diagrams.
 
