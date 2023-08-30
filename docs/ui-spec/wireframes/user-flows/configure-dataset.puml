@@ -4,11 +4,11 @@
 
 (*) --> [User is on the **View Dataset** screen]"
 {{
-    $view_dataset_screen("<file name>", true)
+    $view_dataset_page("<file name>", true)
 }}
-" as view_dataset_screen
+" as view_dataset_page
 
-view_dataset_screen --> [User clicks on the **Configure Dataset** button and \
+view_dataset_page --> [User clicks on the **Configure Dataset** button and \
 the dataset is a CSV file]"
 {{
     $configure_dataset_dialog("<CSV file name>", 1)
@@ -16,12 +16,12 @@ the dataset is a CSV file]"
 " as configure_csv_dataset_dialog
 
 configure_csv_dataset_dialog --> [User clicks on the **Save** button] \
-view_dataset_screen
+view_dataset_page
 
 configure_csv_dataset_dialog --> [User clicks on the **Close** button] \
-view_dataset_screen
+view_dataset_page
 
-view_dataset_screen --> [User clicks on the **Configure Dataset** button and \
+view_dataset_page --> [User clicks on the **Configure Dataset** button and \
 the dataset is an Excel file]"
 {{
     $configure_dataset_dialog("<Excel file name>", 0)
@@ -29,9 +29,9 @@ the dataset is an Excel file]"
 " as configure_excel_dataset_dialog
 
 configure_excel_dataset_dialog --> [User clicks on the **Save** button] \
-view_dataset_screen
+view_dataset_page
 
 configure_excel_dataset_dialog --> [User clicks on the **Close** button] \
-view_dataset_screen
+view_dataset_page
 
 @enduml

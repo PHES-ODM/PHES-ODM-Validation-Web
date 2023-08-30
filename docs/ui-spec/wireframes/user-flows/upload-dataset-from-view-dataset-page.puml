@@ -3,10 +3,10 @@
 !include ../screens.puml
 !include ./user-flows.puml
 
-!procedure $wrapped_view_dataset_screen()
-    $view_dataset_screen("Ontario Lab.csv", 0)
+!procedure $wrapped_view_dataset_page()
+    $view_dataset_page("Ontario Lab.csv", 0)
 !endprocedure
 
-$upload_dataset_flow("$wrapped_view_dataset_screen", "User is on the **View Dataset** screen")
+$upload_dataset_flow("$wrapped_view_dataset_page", "User is on the **View Dataset** screen")
 
 @enduml

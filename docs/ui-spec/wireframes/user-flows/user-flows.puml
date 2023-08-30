@@ -28,9 +28,9 @@ file that hasn't been uploaded before and \n clicking the **Ok** button]"
 
     finish_csv_upload_dialog --> [User clicks on the **Save** button]"
     {{
-        $view_dataset_screen("Ontario Lab.csv", 0)
+        $view_dataset_page("Ontario Lab.csv", 0)
     }}
-    " as view_dataset_screen
+    " as view_dataset_page
 
     choose_dataset_dialog --> [User chooses an Excel dataset by selecting an \
 Excel file that hasn't been uploaded before and \n clicking the **Ok** button]"
@@ -41,7 +41,7 @@ Excel file that hasn't been uploaded before and \n clicking the **Ok** button]"
 
    finish_excel_upload_dialog --> [User clicks on the **Close** button] start_screen
 
-   finish_excel_upload_dialog --> [User clicks on the **Save** button] view_dataset_screen
+   finish_excel_upload_dialog --> [User clicks on the **Save** button] view_dataset_page
 
    choose_dataset_dialog -[#red]-> [User chooses a file that has the same name as an \
 existing dataset]"
@@ -51,7 +51,7 @@ existing dataset]"
    " as duplicate_dataset_dialog
 
    duplicate_dataset_dialog -[#red]-> [User clicks on the **Update the Dataset** \
-button] view_dataset_screen
+button] view_dataset_page
 
     duplicate_dataset_dialog -[#red]-> [User clicks on the **Replace the Dataset** \
 button]"

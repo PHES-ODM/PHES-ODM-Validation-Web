@@ -73,7 +73,7 @@ salt
 }
 !endprocedure
 
-!procedure $view_dataset_screen($file_name, $show_validations)
+!procedure $view_dataset_page($file_name, $show_validations)
 salt
 {
     title View Dataset Screen

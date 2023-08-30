@@ -19,15 +19,15 @@ view_validation_profiles_dialog --> [User clicks on the **Close** button and \
 
 (*) --> [User is on the **View Dataset** screen]"
 {{
-    $view_dataset_screen("Ontario Lab.csv", 0)
+    $view_dataset_page("Ontario Lab.csv", 0)
 }}
-" as view_dataset_screen
+" as view_dataset_page
 
-view_dataset_screen --> [User clicks on the **View Validation Profiles** \
+view_dataset_page --> [User clicks on the **View Validation Profiles** \
 button] view_validation_profiles_dialog
 
 view_validation_profiles_dialog --> [User clicks on the **Close** button and \
-\n was on the **View Dataset** screen] view_dataset_screen
+\n was on the **View Dataset** screen] view_dataset_page
 
 (*) --> [User is on the **Validation Summary** screen]"
 {{
