@@ -24,9 +24,9 @@ new_validation_dialog --> [User clicks on the **Cancel** button] view_dataset_sc
 
 validating_dialog --> [Validation has completed]"
 {{
-    $validation_summary_screen()
+    $validation_summary_page()
 }}
-" as validation_summary_screen
+" as validation_summary_page
 
 validating_dialog --> [User clicks on the **Cancel** button]"
 {{

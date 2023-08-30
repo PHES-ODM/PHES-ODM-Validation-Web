@@ -3,6 +3,6 @@
 !include ../screens.puml
 !include ./user-flows.puml
 
-$upload_dataset_flow("$validation_summary_screen", "User is on the **Validation Summary** screen")
+$upload_dataset_flow("$validation_summary_page", "User is on the **Validation Summary** screen")
 
 @enduml

@@ -130,7 +130,7 @@ salt
 }
 !endprocedure
 
-!procedure $validation_summary_screen()
+!procedure $validation_summary_page()
 salt
 {
     title Validation Summary Screen
