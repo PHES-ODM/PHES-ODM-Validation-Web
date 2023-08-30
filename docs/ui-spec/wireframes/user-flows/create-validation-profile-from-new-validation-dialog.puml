@@ -2,7 +2,7 @@
 
 !include ../screens.puml
 
-(*) --> [User is on the **New Validation** screen]"
+(*) --> [User is in the **New Validation** dialog]"
 {{
     $new_validation_dialog()
 }}

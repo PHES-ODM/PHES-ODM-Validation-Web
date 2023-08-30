@@ -15,9 +15,9 @@ home_page --> [User clicks on **View Validation Profiles** button]"
 " as view_validation_profiles_dialog
 
 view_validation_profiles_dialog --> [User clicks on the **Close** button and \
-\n was on the **Home** screen] home_page
+\n was on the **Home** page] home_page
 
-(*) --> [User is on the **View Dataset** screen]"
+(*) --> [User is on the **View Dataset** page]"
 {{
     $view_dataset_page("Ontario Lab.csv", 0)
 }}
@@ -27,9 +27,9 @@ view_dataset_page --> [User clicks on the **View Validation Profiles** \
 button] view_validation_profiles_dialog
 
 view_validation_profiles_dialog --> [User clicks on the **Close** button and \
-\n was on the **View Dataset** screen] view_dataset_page
+\n was on the **View Dataset** page] view_dataset_page
 
-(*) --> [User is on the **Validation Summary** screen]"
+(*) --> [User is on the **Validation Summary** page]"
 {{
     $validation_summary_page()
 }}
@@ -39,6 +39,6 @@ validation_summary_page --> [User clicks on the **View Validation Profiles** \
 button] view_validation_profiles_dialog
 
 view_validation_profiles_dialog --> [User clicks on the **Close** button and \
-\n user was on the **Validation Summary Screen**] validation_summary_page
+\n user was on the **Validation Summary Page**] validation_summary_page
 
 @enduml

@@ -3,11 +3,11 @@
 !include ./components/components.puml
 
 !procedure $top_bar($has_datasets = 0)
-    {* 
-        **Upload Dataset** | **Datasets** | **View Validation Profiles** | **Tutorials** 
-        **Datasets** | 
-        !if $has_datasets 
-            Ontario Lab.csv | Hamilton Lab.xlsx 
+    {*
+        **Upload Dataset** | **Datasets** | **View Validation Profiles** | **Tutorials**
+        **Datasets** |
+        !if $has_datasets
+            Ontario Lab.csv | Hamilton Lab.xlsx
         !else
             No Dataset Uploaded
         !endif
@@ -22,21 +22,21 @@
 !procedure $home_page()
 salt
 {
-    title Home Screen
+    title Home Page
 
     $top_bar(0)
-    
-    Welcome Text 
+
+    Welcome Text
 }
 !endprocedure
 
 !procedure $choose_dataset_dialog()
 salt
 {
-    title Choose Dataset Dialog 
+    title Choose Dataset Dialog
 
     {T
-        + Lab Data 
+        + Lab Data
             ++ Ontario Lab.csv
             ++ Hamilton Lab.xlsx
     }
@@ -49,16 +49,16 @@ salt
 !procedure $configure_dataset_dialog($file_name, $is_csv_file)
 salt
 {
-    title Configure Dataset Dialog 
+    title Configure Dataset Dialog
 
     $file_name
 
     ODM Version: | ^ODM version^
 
     !if ($is_csv_file)
-        {! 
+        {!
             ODM Table | ^Table^
-        }    
+        }
     !else
         Tables
         {#
@@ -76,12 +76,12 @@ salt
 !procedure $view_dataset_page($file_name, $show_validations)
 salt
 {
-    title View Dataset Screen
-    
+    title View Dataset Page
+
     $top_bar(1)
 
     $sidebar($file_name, $show_validations, 0) | {
-        <File Name> 
+        <File Name>
         {SI
             Validation Summary Text
             .
@@ -96,13 +96,13 @@ salt
 !procedure $new_validation_dialog()
 salt
 {
-    title New Validation Dialog 
+    title New Validation Dialog
     { Choose validation profile | ^validation profile^^ ODM profile^ }
     ..
     ..
 
     {^"Validation Properties"
-        Rules Selected: greater_than_max_length... 
+        Rules Selected: greater_than_max_length...
     }
 
     [Customize Validation]
@@ -133,13 +133,13 @@ salt
 !procedure $validation_summary_page()
 salt
 {
-    title Validation Summary Screen
+    title Validation Summary Page
 
     $top_bar(1)
 
-    $sidebar("<File Name>", 1, 0) | 
+    $sidebar("<File Name>", 1, 0) |
     {^"Main Content"
-        <File Name> 
+        <File Name>
         {SI
             Validation Summary Text
             .
@@ -174,18 +174,18 @@ salt
 !endprocedure
 
 !procedure $construct_validation_profile_form_dialog(\
-    $screen_title, $confirm_button_text, $add_upload_button\
+    $dialog_title, $confirm_button_text, $add_upload_button\
 )
 salt
 {
-    title $screen_title 
+    title $dialog_title
     "Name "
     "Description "
     **Rules**: greater_than_max_length, less_than_min_value, ...
     [$confirm_button_text]
 
-    !if ($add_upload_button) 
-    [Upload Profile] 
+    !if ($add_upload_button)
+    [Upload Profile]
     !endif
 
     [Cancel]
@@ -203,10 +203,10 @@ salt
 !procedure $choose_validation_profile_dialog()
 salt
 {
-    title Choose Validation Profile Dialog 
+    title Choose Validation Profile Dialog
 
     {T
-        + Validation Profiles 
+        + Validation Profiles
             ++ MECP profile.yml
             ++ PHAC profile.yml
     }
@@ -218,21 +218,21 @@ salt
 !procedure $validation_report_dialog()
 salt
 {
-    title Validation Report Dialog 
+    title Validation Report Dialog
 
     Validation Report Text
 
     ^ Download Report ^^ Download as CSV ^^ Download as YAML ^^ Download as \
 JSON ^
-    .. 
-    .. 
+    ..
+    ..
     ..
     ..
     ..
     ..
     ^ Download Options ^^ Full ^^ Errors ^^ Warnings ^^
-    .. 
-    .. 
+    ..
+    ..
     ..
     ..
     ..
@@ -248,12 +248,12 @@ salt
     title Duplicate Dataset Dialog
 
     We detected another dataset with the name <File Name> already uploaded to the tool.
-    The tool currently does not allow two datasets with the same name to be 
+    The tool currently does not allow two datasets with the same name to be
     uploaded. You can either:
     1. **Update the existing dataset**: This updates the current dataset in the
-    tool with the new one. You won't lose any validations attached to the 
+    tool with the new one. You won't lose any validations attached to the
     existing dataset, they will be moved over.
-    2. **Replace the existing dataset**: This will delete the old dataset and 
+    2. **Replace the existing dataset**: This will delete the old dataset and
     any validations associated with it, replacing it with the new one.
 
     What do you want to do?
@@ -268,7 +268,7 @@ salt
 {
     title Replace Dataset Confirm Dialog
 
-    Are you sure you want to replace the existing dataset? You will lose all 
+    Are you sure you want to replace the existing dataset? You will lose all
     data associated with it, including any validations.
 
     [No - Do not replace]

@@ -2,7 +2,7 @@
 
 !include ../screens.puml
 
-(*) --> [User is on the **View Dataset** screen]"
+(*) --> [User is on the **View Dataset** page]"
 {{
     $view_dataset_page("<file name>", true)
 }}

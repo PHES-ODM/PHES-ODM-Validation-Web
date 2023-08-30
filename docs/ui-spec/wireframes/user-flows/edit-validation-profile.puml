@@ -2,7 +2,7 @@
 
 !include ../screens.puml
 
-(*) --> [User is on the "View Validation Profiles" screen]"
+(*) --> [User is in the "View Validation Profiles" dialog]"
 {{
     $view_validation_profiles_dialog()
 }}

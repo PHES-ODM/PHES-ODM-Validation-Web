@@ -2,7 +2,7 @@
 
 !include ../screens.puml
 
-(*) --> [User is on the **Validation Summary** screen]"
+(*) --> [User is on the **Validation Summary** page]"
 {{
     $validation_summary_page()
 }}
