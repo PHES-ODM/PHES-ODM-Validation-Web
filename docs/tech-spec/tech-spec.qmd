@@ -1,43 +1,112 @@
 ---
-title: Technical Specifications
+title: Technical Specification
 format:
   html:
     toc: true
 ---
 
+# Features
+
+## Dataset upload
+
+Pages required:
+
+- [Home page](#home-page)
+
+Stores required:
+
+- [Datasets](#datasets)
+
+## Dataset configuration
+
+TODO
+
+# App
+
+This is the root level of the application, holding application-wide components.
+
+Components:
+
+- [Top bar menu](#top-bar-menu)
+- [Page content](#pages)
+- [Upload dataset dialog](#upload-dataset-dialog)
+
 # Pages
 
 ## Home page
 
-The home screen is shown to the user when they open the tool. It features a
+The home page is shown to the user when they open the tool. It features a
 piece of welcome text, introducing the user to the site and guiding them to the
 various functionalities.
 
 Components:
 
-- [Top bar menu](#top-bar-menu)
 - Welcome text
 
-Welcome text example:
-```txt
-Welcome to the ODM Validation web tool.
+## View dataset page
 
-Here you can upload and validate your ODM compliant datasets.
-
-See [tutorials] for more info.
-```
+TODO
 
 # Dialogs
 
-## Choose dataset dialog
+Dialogs are implemented using
+[dbc.Modal](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/modal/).
 
-stub
+## Upload dataset dialog
+
+This dialog lets the user upload a dataset from a spreadsheet file.
+
+Components:
+
+- modal:
+    - [file uploader](#file-uploader)
+    - ok button
+    - cancel button
+
+Behavior:
+
+- This dialog is opened/closed through the [upload-dialog-flag](#dialog-flags).
+- A file can be uploaded by either clicking the file-uploader or dragging a
+  file onto it. Only one file can be uploaded at a time, and the allowed
+  formats are CSV and XLSX. When the upload completes, the ok-button is
+  enabled.
+- The ok-button confirms the upload and proceeds to
+  [dataset configuration](#dataset-configuration).
+- The cancel-button should discard the uploaded file and close the dialog.
+- Clicking outside the dialog closes the dialog.
+
+Callbacks:
+
+- on upload-dialog-flag changed:
+    - set modal.is_open
+- on data uploaded:
+    - store dataset
+    - enable ok button
+- on ok button clicked:
+    - reset upload-dialog-flag
+    - set conf-dialog-flag
+- on cancel button clicked:
+    - delete last dataset
+    - reset upload-dialog-flag
+
+## Configure dataset dialog
+
+TODO
 
 ## View validation profiles dialog
 
-stub
+TODO
 
 # UI Components
+
+This section will go through all the UI components used by the different
+screens in the tool. Each sub-section contains the details for a UI component
+which includes the following:
+
+- A brief description.
+- Its behavior which mainly goes over how the user is allowed to interact with
+  it.
+- Its API which describes how another component can use it.
 
 ## Top bar menu
 
@@ -55,19 +124,120 @@ Behavior:
 1.  The bar should be fixed to the top of the screen. Even if the user
     scrolls, the position of the bar should not change.
 2.  When the user clicks on the **Upload Dataset** button, the
-    [Choose dataset dialog](#choose-dataset-dialog) dialog should be opened.
-4.  When the user clicks on the **Datasets** button, a dropdown should
+    [Upload dataset dialog](#upload-dataset-dialog) should be opened.
+3.  When the user clicks on the **Datasets** button, a dropdown should
     be opened that lists all the datasets that the user has uploaded.
     The dropdown should be closed when the user clicks on any part of
     the app again.
     1.  Each dataset should be presented to the user using its file
         name.
     2.  When the user clicks on a dataset, it should be selected, and
-        the user taken to the **View Dataset** screen. The dropdown
+        the user taken to the [View Dataset page](#view-dataset-page). The dropdown
         should be closed.
     3.  When the user has not uploaded any datasets, the dropdown should
         only have one item that says **No Datasets Uploaded**.
-5.  When the user clicks on the **View Validation Profiles** button, the
+4.  When the user clicks on the **View Validation Profiles** button, the
     [View validation profiles dialog](#view-validation-profiles-dialog) should
     be opened.
-6.  The **Tutorials** button can be disabled for now.
+5.  The **Tutorials** button can be disabled for now.
+
+Callbacks:
+
+- on upload button clicked:
+    - set upload-dialog-flag
+
+## File uploader
+
+This is simply
+[dcc.Upload](https://dash.plotly.com/dash-core-components/upload), since we can
+get away with uploading to
+[dcc.Store](https://dash.plotly.com/dash-core-components/store) only.
+
+# Stores
+
+This section includes the different stores where the app will persist data.
+Each sub-section goes over the details of each store and the data stored within
+it.
+
+## Memory store
+
+All the data in this store type is stored in browser memory. The data is
+transient, meaning that the data is lost when the user reloads/closes the tool.
+
+### Dialog flags
+
+All flags are currently used as signals for showing and hiding dialogs.
+There is one flag per dialog, and they are all of type bool.
+
+The reason for having signals/flags is to uncouple components from each other,
+so that they don't directly reference each other. This prevents complicated
+dependencies and cycles.
+
+The flags are:
+
+- conf-dialog-flag, for the
+  [configure dataset dialog](#configure-dataset-dialog)
+- upload-dialog-flag, for the
+  [upload dataset dialog](#upload-dataset-dialog)
+
+### Datasets
+
+Type: array of [Dataset](#dataset)
+
+This contains all the datasets that the user has uploaded to the tool.
+
+The fact that users cannot edit a dataset in the tool forces them to update it
+in their local file system after validation. After making the required changes
+to the dataset, they will need to re-upload it to the tool if they wish to
+validate it again. This upload, validate, fix, re-upload cycle means that there
+is no need to permanently store a dataset in the OPFS store, since it will
+always be out of sync with the version on the user’s local file system.
+
+# Types
+
+This section goes over the structure of the different data that the tool will
+store.
+
+Common aliases:
+```python
+OdmTableName = str
+TableData = List[dict]  # or pandas.DataFrame
+SheetName = str
+```
+
+## OdmVersion
+
+Type: enum
+
+Fields:
+
+- v1_0_0
+- v1_1_0
+- v2_0_0
+
+Underscores are used in place of dots, due to Python naming requirements.
+
+## Dataset
+
+Type: class
+
+Fields:
+
+- `filename: str`
+
+  Used as the datasets unique id. It is shown in the datasets-dropdown in the
+  [Top bar menu](#top-bar-menu), and in any screen that is interacting with it.
+
+- `odm_version:` [OdmVersion](#odmversion)
+
+  Detected from the dataset or specified by the user. Required for knowing
+  which ODM version to validate against.
+
+- `table_names: Dict[SheetName, OdmTableName]`
+
+  Maps table/sheet names to valid ODM table names. This is the same for CSV and
+  Excel files. CSV files have one sheet with the same name as the file.
+
+- `tables: Dict[OdmTableName, TableData]`
+
+  Holds the actual data for each table/sheet.
