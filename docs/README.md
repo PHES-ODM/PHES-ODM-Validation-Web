@@ -47,8 +47,9 @@ Build Steps:
    PlantUML will report the errors below:
 
    ```
-   Error line 2 in file: .\docs\ui-spec\wireframes\screens.puml
-   Error line 2 in file: .\docs\ui-spec\wireframes\user-flows\user-flows.puml
+   Error line 2 in file: ./docs/ui-spec/wireframes/components/components.puml
+   Error line 2 in file: ./docs/ui-spec/wireframes/screens.puml
+   Error line 2 in file: ./docs/ui-spec/wireframes/user-flows/user-flows.puml
    Some diagram description contains errors
    ```
 
