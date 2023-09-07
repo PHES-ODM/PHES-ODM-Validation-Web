@@ -5,7 +5,12 @@ from dash import (
     html,
 )
 
-import components as comp
+import stores
+from components import (
+    topbars,
+    upload_dialogs,
+)
+# from utils import echo
 
 stylesheets = [
     dbc.themes.BOOTSTRAP,
@@ -17,14 +22,25 @@ app = Dash(__name__, use_pages=True, external_stylesheets=stylesheets,
 
 
 app.layout = html.Div([
-    comp.topbar,
-    comp.sidebar,
+    # stores
+    stores.conf_dialog_flag,
+    stores.datasets,
+    stores.upload_dialog_flag,
+    stores.uploaded_file,
+
+    # dialogs
+    upload_dialogs.upload_dialog,
+
+    # page
+    topbars.topbar,
     html.Div(
         dash.page_container,
         id="page-content",
     ),
 ])
 
+topbars.register(app)
+upload_dialogs.register(app)
 
 if __name__ == '__main__':
     app.run_server(debug=True)
