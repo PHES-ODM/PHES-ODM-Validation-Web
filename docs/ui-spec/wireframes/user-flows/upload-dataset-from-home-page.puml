@@ -1,0 +1,8 @@
+@startuml
+
+!include ../screens.puml
+!include ./user-flows.puml
+
+$upload_dataset_flow("$home_page", "User opens the tool")
+
+@enduml

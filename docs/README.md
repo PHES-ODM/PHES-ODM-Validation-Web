@@ -16,8 +16,10 @@ The wireframes are all written using [PlantUML](https://plantuml.com/) and are
 contained in the [wireframe](./ui-spec/wireframes) folder. The folder
 structure is described below:
 
-* [screens](./ui-spec/wireframes/screens): Contains the wireframes for
-  the screens
+* [pages](./ui-spec/wireframes/pages): Contains the wireframes for
+  the pages
+* [dialogs](./ui-spec/wireframes/dialogs): Contains the wireframes for
+  the dialogs
 * [user-flows](./ui-spec/wireframes/user-flows): Contains the flow
   diagrams.
 
@@ -32,7 +34,12 @@ Build Steps:
 
 1. Build the wireframe documents by running the command below,
 
-   `java -jar E:/plantuml.jar -o ../../../../dist "./docs/ui-spec/wireframe*/**.puml"`
+   ```
+   java \
+       -jar <plantuml-dir>/plantuml.jar \
+       -o ../../../../dist \
+       "./docs/ui-spec/wireframes/**/*.puml"
+   ```
 
    This will convert all the wireframe documents into images and put them in the
    dist folder in the root of the project.
@@ -40,8 +47,9 @@ Build Steps:
    PlantUML will report the errors below:
 
    ```
-   Error line 2 in file: .\docs\ui-spec\wireframes\screens\screens.puml
-   Error line 2 in file: .\docs\ui-spec\wireframes\user-flows\user-flows.puml
+   Error line 2 in file: ./docs/ui-spec/wireframes/components/components.puml
+   Error line 2 in file: ./docs/ui-spec/wireframes/screens.puml
+   Error line 2 in file: ./docs/ui-spec/wireframes/user-flows/user-flows.puml
    Some diagram description contains errors
    ```
 
@@ -65,22 +73,22 @@ Build Steps:
   ```
   @startuml
 
-  !procedure $home_screen()
+  !procedure $home_page()
     salt
     {
-        Home Screen
+        Home Page
     }
   !endprocedure
 
-  !procedure $user_flow($screen)
-    (*) -> [user opens the home screen]"
+  !procedure $user_flow($page)
+    (*) -> [user opens the home page]"
     {{
-        $home_screen()
+        $home_page()
     }}
-    " as home_screen
+    " as home_page
   !endprocedure
 
-  $user_flow($home_screen())
+  $user_flow($home_page())
 
   @enduml
   ```
@@ -90,6 +98,6 @@ Build Steps:
   To go around this limitation we use [`%invoke_procedure`](https://plantuml.com/preprocessing#5a1670d800446678)
   and if the procedure takes an argument we create a wrapped procedure and pass
   it in to be invoked
-* In the **Validation Summary** and **View Dataset** screens, there is a large
-  space between the sidebar and the main content. This is not intended but 
+* In the **Validation Summary** and **View Dataset** pages, there is a large
+  space between the sidebar and the main content. This is not intended but
   we're unsure how to fix it.

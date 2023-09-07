@@ -1,6 +1,6 @@
 @startuml
 
-!include ../screens/screens.puml
+!include ../screens.puml
 
 (*) --> [User is on the **Create Validation Profile** dialog]"
 {{
@@ -16,11 +16,10 @@ button]"
 " as choose_validation_profile_dialog
 
 choose_validation_profile_dialog --> [User chooses a validation profile \
-\n Update the create validation profile screen with the chosen profile] \
+\n Update the create validation profile dialog with the chosen profile] \
 create_validation_profile_dialog
 
 choose_validation_profile_dialog --> [User clicks on the **Close** button] \
 create_validation_profile_dialog
 
 @enduml
-
