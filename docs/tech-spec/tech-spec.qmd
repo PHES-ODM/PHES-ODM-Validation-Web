@@ -15,6 +15,7 @@ Pages required:
 
 Stores required:
 
+- [Uploaded file](#uploaded-file)
 - [Datasets](#datasets)
 
 ## Dataset configuration
@@ -49,8 +50,7 @@ TODO
 
 # Dialogs
 
-Dialogs are implemented using
-[dbc.Modal](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/modal/).
+Dialogs are implemented using the [Modal](#modal) component.
 
 ## Upload dataset dialog
 
@@ -59,35 +59,40 @@ This dialog lets the user upload a dataset from a spreadsheet file.
 Components:
 
 - modal:
-    - [file uploader](#file-uploader)
+    - file uploader ([dcc.Upload](https://dash.plotly.com/dash-core-components/upload))
+    - status text
     - ok button
     - cancel button
 
-Behavior:
+Behaviors:
 
-- This dialog is opened/closed through the [upload-dialog-flag](#dialog-flags).
-- A file can be uploaded by either clicking the file-uploader or dragging a
-  file onto it. Only one file can be uploaded at a time, and the allowed
-  formats are CSV and XLSX. When the upload completes, the ok-button is
-  enabled.
-- The ok-button confirms the upload and proceeds to
-  [dataset configuration](#dataset-configuration).
-- The cancel-button should discard the uploaded file and close the dialog.
-- Clicking outside the dialog closes the dialog.
-
-Callbacks:
-
-- on upload-dialog-flag changed:
-    - set modal.is_open
-- on data uploaded:
-    - store dataset
-    - enable ok button
-- on ok button clicked:
-    - reset upload-dialog-flag
-    - set conf-dialog-flag
-- on cancel button clicked:
-    - delete last dataset
-    - reset upload-dialog-flag
+1. When the [upload-dialog-flag](#dialog-flags) changes:
+    - The dialog should open/close
+    - The ok button should be disabled, and status and uploader content cleared
+2. A file can be uploaded by either clicking the file-uploader or dragging a
+   file onto it. Only one file can be uploaded at a time, and the allowed
+   formats are CSV and XLSX.
+3. When the upload completes:
+    - The file should be stored in the [uploaded-file](#uploaded-file) store
+    - The dialog status text should change to show the uploaded filename
+    - The ok button should be enabled
+4. When the ok button is pressed, it should do the following:
+    1. Construct a Dataset as follows:
+        - **filename**: Set from the uploaded file name.
+        - **odm_version**: Set from the ODM version inferred while matching table
+          names.
+        - **table_names**: Set to the inferred mapping between sheet names and ODM
+          table names. In the case of CSV files, the filename is used as the sheet
+          name. Inference is done by seeing if the sheet name matches the a
+          hardcoded list of valid ODM table names for any version of the ODM, which
+          in turn implies the ODM version. If no match is found it will default to
+          the latest version.
+        - **tables**: Set to the extracted data of each sheet with a corresponding
+          valid ODM table.
+    2. Add the dataset to the [datasets](#datasets) store
+    3. Close this dialog
+    4. Open the [configure dataset dialog](#configure-dataset-dialog)
+5. The cancel button should simply close the dialog, ignoring any uploaded file.
 
 ## Configure dataset dialog
 
@@ -108,6 +113,28 @@ which includes the following:
   it.
 - Its API which describes how another component can use it.
 
+## Modal
+
+This is the basis for all dialog windows. It prevents the user from interacting
+with the rest of the application while a dialog is open. It's using
+[dbc.Modal](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/modal/).
+
+Behaviors:
+
+1. It should be initialized to a closed state, and only be opened/closed using
+   [dialog flags](#dialog-flags).
+2. Clicking outside the modal should close it.
+3. Pressing the escape key should close it, unless overridden.
+
+A modal can be created by calling `init_modal` from the components module. It
+has the following parameters:
+
+- id: the html-id string of the modal
+- title: the title string shown in the header of the modal
+- body: a list of child components
+- buttons: a list of buttons shown in the footer of the modal
+- escape: a bool deciding if the escape key can be used to close the modal
+
 ## Top bar menu
 
 This is the main-menu bar at the top of every page.
@@ -119,39 +146,28 @@ Menu items:
 - View validation profiles
 - Tutorials
 
-Behavior:
+Behaviors:
 
-1.  The bar should be fixed to the top of the screen. Even if the user
-    scrolls, the position of the bar should not change.
-2.  When the user clicks on the **Upload Dataset** button, the
-    [Upload dataset dialog](#upload-dataset-dialog) should be opened.
-3.  When the user clicks on the **Datasets** button, a dropdown should
-    be opened that lists all the datasets that the user has uploaded.
-    The dropdown should be closed when the user clicks on any part of
-    the app again.
-    1.  Each dataset should be presented to the user using its file
-        name.
-    2.  When the user clicks on a dataset, it should be selected, and
-        the user taken to the [View Dataset page](#view-dataset-page). The dropdown
-        should be closed.
-    3.  When the user has not uploaded any datasets, the dropdown should
-        only have one item that says **No Datasets Uploaded**.
-4.  When the user clicks on the **View Validation Profiles** button, the
-    [View validation profiles dialog](#view-validation-profiles-dialog) should
-    be opened.
-5.  The **Tutorials** button can be disabled for now.
-
-Callbacks:
-
-- on upload button clicked:
-    - set upload-dialog-flag
-
-## File uploader
-
-This is simply
-[dcc.Upload](https://dash.plotly.com/dash-core-components/upload), since we can
-get away with uploading to
-[dcc.Store](https://dash.plotly.com/dash-core-components/store) only.
+1. The bar should be fixed to the top of the screen. Even if the user
+   scrolls, the position of the bar should not change.
+2. When the user clicks on the **Upload Dataset** button, the
+   [Upload dataset dialog](#upload-dataset-dialog) should be opened.
+3. When the user clicks on the **Datasets** button, a dropdown should
+   be opened that lists all the datasets that the user has uploaded.
+   The dropdown should be closed when the user clicks on any part of
+   the app again:
+    - Each dataset should be presented to the user using its file
+      name.
+    - When the user uploads a new dataset, the datasets dropdown list should be updated.
+    - When the user clicks on a dataset, it should be selected, and
+      the user taken to the [View Dataset page](#view-dataset-page). The dropdown
+      should be closed.
+    - When the user has not uploaded any datasets, the dropdown should
+      only have one item that says **No Datasets Uploaded**.
+4. When the user clicks on the **View Validation Profiles** button, the
+   [View validation profiles dialog](#view-validation-profiles-dialog) should
+   be opened.
+5. The **Tutorials** button can be disabled for now.
 
 # Stores
 
@@ -167,7 +183,8 @@ transient, meaning that the data is lost when the user reloads/closes the tool.
 ### Dialog flags
 
 All flags are currently used as signals for showing and hiding dialogs.
-There is one flag per dialog, and they are all of type bool.
+There is one flag per dialog, and they are all of type bool. True means open,
+while False means closed.
 
 The reason for having signals/flags is to uncouple components from each other,
 so that they don't directly reference each other. This prevents complicated
@@ -180,11 +197,31 @@ The flags are:
 - upload-dialog-flag, for the
   [upload dataset dialog](#upload-dataset-dialog)
 
+### Uploaded file
+
+Type: {'filename': str, 'contents': str}
+
+`contents` is base64 encoded.
+
+This store is used by the [upload dataset dialog](#upload-dataset-dialog) to
+cache the uploaded file before it's accepted and used in the construction of a
+Dataset. To select a dataset in the [upload dataset dialog](#upload-dataset-dialog) the user has to 1. Choose a dataset by using the browser's file chooser or dragging and dropping a file into the dialog; and 2. Confirm their choice by clicking the ok button. To avoid wasting computing time, we want to parse the chosen file into a [`Dataset`](#dataset) only when they have confirmed their selection, since they can always change their chosen file. Instead, we store the contents of the chosen file as its given to us by [Plotly](https://dash.plotly.com/dash-core-components/upload#displaying-uploaded-spreadsheet-contents) in this store, and parse it into a [`Dataset`](#dataset) only when the user has confirmed their selection. It also helps in decoupling the upload from the rest of the
+application.
+
 ### Datasets
 
-Type: array of [Dataset](#dataset)
+Type: `Dict[Filename, Dataset]`
 
-This contains all the datasets that the user has uploaded to the tool.
+This contains all the datasets that the user has uploaded to the tool. Using a 
+dictionary over an array of datasets has the following advantages:
+
+1. Datasets are accessed by their filename for quick and easy lookup; and
+2. It allows more granular access to individual datasets using the 
+[Dash Patch Class](https://dash.plotly.com/partial-properties). This should make 
+the callbacks run faster and with less memory since they would only access the 
+dataset they need. With an array, each callback would need to 
+first find the dataset they have to operate over, which requires passing in the 
+entire datasets array into it.
 
 The fact that users cannot edit a dataset in the tool forces them to update it
 in their local file system after validation. After making the required changes
@@ -201,7 +238,10 @@ store.
 Common aliases:
 ```python
 OdmTableName = str
-TableData = List[dict]  # or pandas.DataFrame
+FieldName = str
+FieldValue = str
+TableRow = Dict[FieldName, FieldValue]
+TableData = List[TableRow]
 SheetName = str
 ```
 
@@ -211,11 +251,14 @@ Type: enum
 
 Fields:
 
-- v1_0_0
-- v1_1_0
-- v2_0_0
+- v1_0_0 = 'v1.0.0'
+- v1_1_0 = 'v1.1.0'
+- v2_0_0 = 'v2.0.0'
 
-Underscores are used in place of dots, due to Python naming requirements.
+The enum keys use underscores in place of dots, due to Python naming requirements. The values represent the correctly formatted version.
+
+Instances of this type can't be used directly in a dcc.Store due to it being a
+class/enum, so it's string values should be used instead.
 
 ## Dataset
 
@@ -228,10 +271,11 @@ Fields:
   Used as the datasets unique id. It is shown in the datasets-dropdown in the
   [Top bar menu](#top-bar-menu), and in any screen that is interacting with it.
 
-- `odm_version:` [OdmVersion](#odmversion)
+- `odm_version: str`
 
   Detected from the dataset or specified by the user. Required for knowing
-  which ODM version to validate against.
+  which ODM version to validate against. It must have one of the values from
+  [OdmVersion](#odmversion).
 
 - `table_names: Dict[SheetName, OdmTableName]`
 

@@ -13,3 +13,14 @@
     margin-right: 2rem;
     padding: 2rem 1rem;
 }
+
+#upload-data {
+    borderRadius: 5px;
+    borderStyle: dashed;
+    borderWidth: 1px;
+    height: 60px;
+    lineHeight: 60px;
+    margin: 10px;
+    textAlign: center;
+    width: 100%;
+}
