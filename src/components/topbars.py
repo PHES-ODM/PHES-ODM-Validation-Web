@@ -9,6 +9,9 @@ import stores
 
 menu_upload_btn = dbc.NavLink('Upload dataset', id='menu-upload-btn')
 
+# The children for the dropdown are initializes in the on_datasets callback 
+# below. This way every time the user modified the Datasets store, the dropdown 
+# items are kept synchronized.
 menu_dataset_dropdown = dbc.DropdownMenu(
     label='Datasets',
     nav=True,
