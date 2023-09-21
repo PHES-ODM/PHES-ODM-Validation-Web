@@ -30,16 +30,12 @@ salt
 }
 !endprocedure
 
-!procedure $choose_dataset_dialog()
+!procedure $upload_dataset_dialog()
 salt
 {
-    title Choose Dataset Dialog
+    title Upload Dataset Dialog
 
-    {T
-        + Lab Data
-            ++ Ontario Lab.csv
-            ++ Hamilton Lab.xlsx
-    }
+    Drag and drop or click to upload a file
 
     [Ok]
     [Cancel]

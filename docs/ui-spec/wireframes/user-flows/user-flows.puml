@@ -11,13 +11,13 @@
 
     start_screen --> [User clicks on the **Upload Dataset** button]"
     {{
-        $choose_dataset_dialog()
+        $upload_dataset_dialog()
     }}
-    " as choose_dataset_dialog
+    " as upload_dataset_dialog
 
-    choose_dataset_dialog --> [User clicks on the **Cancel** button] start_screen
+    upload_dataset_dialog --> [User clicks on the **Cancel** button] start_screen
 
-    choose_dataset_dialog --> [User chooses a CSV dataset by selecting a CSV \
+    upload_dataset_dialog --> [User Uplods a CSV dataset by selecting a CSV \
 file that hasn't been uploaded before and \n clicking the **Ok** button]"
     {{
         $configure_dataset_dialog("Ontario Lab.csv", 1)
@@ -32,7 +32,7 @@ file that hasn't been uploaded before and \n clicking the **Ok** button]"
     }}
     " as view_dataset_page
 
-    choose_dataset_dialog --> [User chooses an Excel dataset by selecting an \
+    uplaod_dataset_dialog --> [User Uploads an Excel dataset by selecting an \
 Excel file that hasn't been uploaded before and \n clicking the **Ok** button]"
     {{
         $configure_dataset_dialog("Hamilton Lab.xlsx", 0)
@@ -43,7 +43,7 @@ Excel file that hasn't been uploaded before and \n clicking the **Ok** button]"
 
    finish_excel_upload_dialog --> [User clicks on the **Save** button] view_dataset_page
 
-   choose_dataset_dialog -[#red]-> [User chooses a file that has the same name as an \
+   upload_dataset_dialog -[#red]-> [User uploads a file that has the same name as an \
 existing dataset]"
    {{
         $duplicate_dataset_dialog()
@@ -61,7 +61,7 @@ button]"
     " as replace_dataset_dialog_confirm
 
     replace_dataset_dialog_confirm -[#red]-> [User clicks on the **No** button]\
-choose_dataset_dialog
+upload_dataset_dialog
 
     replace_dataset_dialog_confirm -[#red]-> [User clicks on the **Yes** \
 button and \n they selected a CSV dataset] finish_csv_upload_dialog

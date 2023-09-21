@@ -191,22 +191,24 @@ page they can:
 
 * Perform an action from the [top bar](#top-bar)
 
-## Choose Dataset Dialog
+## Upload Dataset Dialog
 
-![choose dataset dialog](../../dist/choose-dataset-dialog.png)
+![upload dataset dialog](../../dist/upload-dataset-dialog.png)
 
 This dialog is part of the [upload dataset flow](#dataset-upload)
-where the user can choose a CSV or Excel file they want uploaded to the tool.
+where the user can upload a CSV or Excel file to the tool. 
 
-The tool should use the [file chooser dialog](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file)
-that ships with every browser. The tool should also prevent the user from
-choosing files that aren't CSV or Excel files.
+From this dialog the user can:
 
-The **Ok** button allows the user to select a file as their dataset and proceed
-to the next step.
-
-The **Cancel** button allows the user to cancel the dataset upload process,
-taking them back to the page from where they started the flow.
+* Upload a CSV or Excel file to the tool by clicking on the text or dragging and 
+  dropping a file. When the text is clicked, it should bring up the browser's 
+  [native file chooser](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file).
+  * Once the user has uploaded the file the text should be replaced with the 
+    name of the uploaded file. This gives feedback to the user that their file 
+    has been uploaded.
+* Confirm their uploaded file by pressing the Ok button. The button should be 
+  disabled until the user uploads a file.
+* Close the dialog by clicking the Cancel button.
 
 ## Configure Dataset Dialog
 
