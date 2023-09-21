@@ -212,9 +212,16 @@ application.
 
 Type: `Dict[Filename, Dataset]`
 
-This contains all the datasets that the user has uploaded to the tool. Datasets
-are accessed by their filename for quick and easy lookup, and also to enable
-Dash-patches to update individual datasets.
+This contains all the datasets that the user has uploaded to the tool. Using a 
+dictionary over an array of datasets has the following advantages:
+
+1. Datasets are accessed by their filename for quick and easy lookup; and
+2. It allows more granular access to individual datasets using the 
+[Dash Patch Class](https://dash.plotly.com/partial-properties). This should make 
+the callbacks run faster and with less memory since they would only access the 
+dataset they need. With an array, each callback would need to 
+first find the dataset they have to operate over, which requires passing in the 
+entire datasets array into it.
 
 The fact that users cannot edit a dataset in the tool forces them to update it
 in their local file system after validation. After making the required changes
