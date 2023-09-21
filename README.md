@@ -7,6 +7,7 @@ tool.
 
 * [docs/](./docs): The docs folder contains all the documentation for the
   project
+* [src/](./src): The src folder contains all the source code for the project.
 
 ## Running
 
