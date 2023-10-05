@@ -11,8 +11,34 @@ tool.
 
 ## Running
 
-The web tool can be run locally with the following command:
+First install the dependencies by running the commands in the 
+[development](#development) section.
+
+For Unix type systems use the command below,
 
 ```
-python src/app.py
+.env/bin/python src/app.py
+```
+
+For Windows systems use the command below,
+
+```
+".env/Scripts/python" src/app.py
+```
+
+## Development
+
+For Unix type systems use the commands below,
+
+```
+git clone <repo-url> webtool
+cd webtool
+python -m venv .env
+.env/bin/pip install -r requirements.txt
+```
+
+For Windows systems replace the last command with,
+
+```
+".env/Scripts/pip" install -r requirements.txt
 ```

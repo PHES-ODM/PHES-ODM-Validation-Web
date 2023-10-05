@@ -1,16 +1,22 @@
+import logging
+
 import dash
 import dash_bootstrap_components as dbc
 from dash import (
     Dash,
+    dcc,
     html,
 )
 
 import stores
 from components import (
+    dataset_infos,
     topbars,
     upload_dialogs,
 )
-# from utils import echo
+
+
+logging.basicConfig(level=logging.INFO)
 
 stylesheets = [
     dbc.themes.BOOTSTRAP,
@@ -32,6 +38,7 @@ app.layout = html.Div([
     upload_dialogs.upload_dialog,
 
     # page
+    dcc.Location(id='url', refresh='callback-nav'),
     topbars.topbar,
     html.Div(
         dash.page_container,
@@ -41,6 +48,8 @@ app.layout = html.Div([
 
 topbars.register(app)
 upload_dialogs.register(app)
+dataset_infos.register(app)
+
 
 if __name__ == '__main__':
     app.run_server(debug=True)
