@@ -10,7 +10,6 @@ from dash import (
 
 import stores
 from components import (
-    dataset_infos,
     topbars,
     upload_dialogs,
 )
@@ -48,7 +47,6 @@ app.layout = html.Div([
 
 topbars.register(app)
 upload_dialogs.register(app)
-dataset_infos.register(app)
 
 
 if __name__ == '__main__':

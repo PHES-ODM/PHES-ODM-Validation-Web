@@ -55,11 +55,9 @@ def register(app):
         # on already uploaded datasets.
         if not datasets:
             return [dbc.DropdownMenuItem('No datasets uploaded')]
-        page = '/datasets'
         result = []
         for name in datasets:
-            params = f'dataset-id={quote(name)}'
-            url = f'{page}?{params}'
+            url = f'/datasets/{quote(name)}'
             item = dbc.DropdownMenuItem(name, href=url)
             result.append(item)
         return result
