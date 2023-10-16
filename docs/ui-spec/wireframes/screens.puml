@@ -58,9 +58,9 @@ salt
     !else
         Tables
         {#
-            Sheet Name | Table
+            Sheet Name | Table 
             Sample | ^Table^
-            lab | ^Table^
+            lab | ^Table^ Ignore sheet^ Addresses^
         }
     !endif
 

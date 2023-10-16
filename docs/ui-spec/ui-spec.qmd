@@ -247,6 +247,12 @@ From this dialog the user can:
   level specifications.
 * Choose the ODM table that each sheet maps to. This is done using the dropdowns
   at the bottom of the **Tables** text.
+* Choose to ignore a sheet by clicking the **Ignore Sheet** button in the 
+  dropdown    
+    * Ignoring a sheet means that the user does not want the tool to process 
+    the sheet in any way. 
+    * The ignore sheet dropdown button should be pinned to the top of 
+    the dropdown items so that its easily accessible to the user.
 * Save the configuration by clicking the **Save** button.
 * Cancel the configuration by clicking the **Close** button.
 
@@ -269,6 +275,8 @@ From this page the user can:
 
 * Perform an action from the [top bar](#top-bar)
 * View the **Upload Report** which summarizes the uploaded dataset.
+    * The upload report should include the list of ignored sheets for an excel 
+      file
 * Perform an action from the [sidebar](#sidebar)
 
 ## Validation Summary Page
