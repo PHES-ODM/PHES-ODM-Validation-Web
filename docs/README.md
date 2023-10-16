@@ -55,12 +55,25 @@ Build Steps:
 
    which is expected. Those files don't contain diagrams, only procedures, which
    makes the tool complain.
-2. Build the quarto document by running the command below,
+2. Once the images have been generated, Quarto is used to build the
+   documentation website. To build and view the entire website use the command
+   below,
+
+   ```
+   quarto preview ./docs
+   ```
+
+   Once the build is done it will open a browser tab with the website loaded.
+   Subsequent changes to the documentation will rebuild and reload the website.
+
+   To build a specific documentation page the following command can be used,
 
    `quarto render ./docs/ui-spec/ui-spec.qmd`
 
    This will convert the quarto file into an HTML file which will be available
    at `dist/ui-spec/ui-spec.html` at the project root.
+
+   This has the advantage of being faster.
 
 ### Idiosyncrasies
 

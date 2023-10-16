@@ -1,2 +1,22 @@
 project:
+  type: website
   output-dir: ../dist
+
+website:
+  title: PHES-ODM Validation Tool 
+  sidebar:
+    style: docked
+    search: true
+    contents:
+      - section: Specifications
+        contents:
+          - ./tool-spec/tool-spec.qmd
+          - ./ui-spec/ui-spec.qmd
+          - ./tech-spec/tech-spec.qmd
+format:
+  html:
+    theme: 
+      light: cosmo
+      dark: darkly
+    toc: true
+
