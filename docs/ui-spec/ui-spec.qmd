@@ -44,7 +44,7 @@ user flows and/or wireframes for them. The sections that show flow diagrams
 will not go through each page in the flow, those can be seen in the
 [screens](#screens) section.
 
-## [Dataset Upload](../spec.qmd#dataset-upload)
+## [Dataset Upload](../tool-spec/tool-spec.qmd#dataset-upload)
 
 There are multiple pages from which a user can start the process of uploading
 a dataset, this section will focus on the home page as the starting point.
@@ -76,7 +76,7 @@ replace an existing dataset during the upload process, they can have a history
 of all the previous validations done on the different versions of the same
 dataset.
 
-## [Dataset Metadata](../spec.qmd#dataset-metadata)
+## [Dataset Metadata](../tool-spec/tool-spec.qmd#dataset-metadata)
 
 The user can set the metadata for their dataset either:
 
@@ -85,7 +85,7 @@ The user can set the metadata for their dataset either:
 
 ![configure dataset from view dataset page](../../dist/configure-dataset.png)
 
-## [Upload Report](../spec.qmd#upload-report)
+## [Upload Report](../tool-spec/tool-spec.qmd#upload-report)
 
 The user can view the upload report from the [View Dataset](#view-dataset-page)
 page. The two ways the user can access this page is by:
@@ -95,7 +95,7 @@ page. The two ways the user can access this page is by:
    [Validation Summary](#validation-summary-page) page or the
    [View Dataset](#view-dataset-page) page.
 
-## [Dataset Validation](../spec.qmd#dataset-validation)
+## [Dataset Validation](../tool-spec/tool-spec.qmd#dataset-validation)
 
 The flow diagram for this feature is shown below.
 
@@ -105,7 +105,7 @@ From the **Customize Validation** dialog the user can customize pieces of the
 validation by creating a new validation profile. This flow is shown in the
 [validation profiles](#validation-customization-and-validation-profiles) section.
 
-## [Validation Customization](../spec.qmd$validation-customization) and [Validation Profiles](../spec.qmd#validation-profiles)
+## [Validation Customization](../tool-spec/tool-spec.qmd$validation-customization) and [Validation Profiles](../tool-spec/tool-spec.qmd#validation-profiles)
 
 A user can customize a validation by creating a validation profile and using it
 when validating a dataset. The next sub-sections go over all the operations
@@ -155,7 +155,7 @@ The flow is diagram is shown below,
 
 ![uploading a validation profile](../../dist/upload-validation-profile.png)
 
-## [Validation Summary Report](../spec.qmd#validation-summary-report)
+## [Validation Summary Report](../tool-spec/tool-spec.qmd#validation-summary-report)
 
 There are two ways the user can view the validation summary report:
 
@@ -163,7 +163,7 @@ There are two ways the user can view the validation summary report:
 2. By clicking on a previous validation from the [View Dataset](#view-dataset-page)
    page
 
-## [Validation Report](../spec.qmd#validation-report)
+## [Validation Report](../tool-spec/tool-spec.qmd#validation-report)
 
 Users can view the full validation report from the validation summary page
 for a validation.
@@ -172,7 +172,7 @@ The flow diagram is shown below:
 
 ![view validation report](../../dist/view-validation-report.png)
 
-## [Validation Report Download](../spec.qmd#validation-report-download)
+## [Validation Report Download](../tool-spec/tool-spec.qmd#validation-report-download)
 
 Users can download the validation report from the [Validation Report](#validation-report-dialog)
 dialog.
@@ -247,6 +247,12 @@ From this dialog the user can:
   level specifications.
 * Choose the ODM table that each sheet maps to. This is done using the dropdowns
   at the bottom of the **Tables** text.
+* Choose to ignore a sheet by clicking the **Ignore Sheet** button in the 
+  dropdown    
+    * Ignoring a sheet means that the user does not want the tool to process 
+    the sheet in any way. 
+    * The ignore sheet dropdown button should be pinned to the top of 
+    the dropdown items so that its easily accessible to the user.
 * Save the configuration by clicking the **Save** button.
 * Cancel the configuration by clicking the **Close** button.
 
@@ -269,6 +275,8 @@ From this page the user can:
 
 * Perform an action from the [top bar](#top-bar)
 * View the **Upload Report** which summarizes the uploaded dataset.
+    * The upload report should include the list of ignored sheets for an excel 
+      file
 * Perform an action from the [sidebar](#sidebar)
 
 ## Validation Summary Page
