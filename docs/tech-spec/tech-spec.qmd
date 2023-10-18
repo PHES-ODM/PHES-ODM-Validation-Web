@@ -18,6 +18,77 @@ Stores required:
 - [Uploaded file](#uploaded-file)
 - [Datasets](#datasets)
 
+### Importing a dataset
+
+**1. Extract sheet names and data from file**
+
+Sheets/data should be loaded into a dict with sheet-names as keys and table
+data as values. A CSV file should be seen as a workbook with a single sheet,
+where the sheet name is the filename.
+
+The pandas library can be used to read CSV and Excel files, however, the
+resulting DataFrame must be converted to a list of dicts/records before storing
+it in the [Dataset](#dataset), since Dash doesn't support serialization of classes.
+
+**2. Infer ODM version from sheet names**
+
+For each ODM version (from latest version to earliest), and for each ODM table,
+see if there's a [match](#matching-algorithm). If a sheet matches, the current
+version is returned and we're done. If no match is found, default to the latest
+ODM version.
+
+New versions have different table names from older versions. if both old
+and new table names are found, then we want to pick the latest version.
+One reason to prefer the latest is that a user may have old data from
+a previous version in the same spreadsheet, and they would want to
+use/validate the new data.
+
+One potential issue is that ODM v1 and v1.1 have the same table names, which
+means that v1.1 always will be picked over v1, however, that's acceptable and
+preferred in any case.
+
+**3. Map tables**
+
+The mapping from sheet names to ODM table names should be inferred from the
+sheet names and ODM version.
+
+Start with the set of ODM table names for the inferred version in step 2. For
+each sheet name, first assign an empty string to each sheet, then see if
+it [matches](#matching-algorithm) with one of the ODM tables names for the
+inferred ODM  version, and if so, assign the mapping from sheet to table and
+remove table from the set of tables.
+
+Each sheet mapping is initialized to an empty string to keep a record of all
+sheets even if some don't match, so that they can be presented to the user as
+sheets with unknown tables. This is currently the only place we're storing the
+dataset sheet names, so we don't want to lose any information.
+
+The same matching algorithm is used here to be consistent with
+inference of the data version.
+
+Each table is only matched at most once so that no more than one sheet maps to
+each table. We do not support validating multiple sheets representing the same
+table, and it's more likely to be a user error, so it's better to ignore any
+extra matches.
+
+This feature is handled by the [dataset_import](#dataset_import) module.
+
+### Matching algorithm
+
+The following algorithm is used to see if a sheet name matches an ODM table
+name.
+
+1. Find an ODM table which is exactly the same as the sheet name. If found then
+map the sheet to the matched table.
+2. If no exact match is found, find an ODM table where the sheet name ends with
+a space plus the table name. For eg., if a sheet name is `1 - Measures` then
+an ODM table name called `Measures` would result in a match. This was done
+due to the way MECP encodes their sheet names which is
+`<number> - <table_name>`.
+
+A separator/space has to be included in the match to avoid the edge case where
+two different table names have the same ending. Ex: SiteMeasure and WWMeasure.
+
 ## Dataset configuration
 
 TODO
@@ -212,15 +283,15 @@ application.
 
 Type: `Dict[Filename, Dataset]`
 
-This contains all the datasets that the user has uploaded to the tool. Using a 
+This contains all the datasets that the user has uploaded to the tool. Using a
 dictionary over an array of datasets has the following advantages:
 
 1. Datasets are accessed by their filename for quick and easy lookup; and
-2. It allows more granular access to individual datasets using the 
-[Dash Patch Class](https://dash.plotly.com/partial-properties). This should make 
-the callbacks run faster and with less memory since they would only access the 
-dataset they need. With an array, each callback would need to 
-first find the dataset they have to operate over, which requires passing in the 
+2. It allows more granular access to individual datasets using the
+[Dash Patch Class](https://dash.plotly.com/partial-properties). This should make
+the callbacks run faster and with less memory since they would only access the
+dataset they need. With an array, each callback would need to
+first find the dataset they have to operate over, which requires passing in the
 entire datasets array into it.
 
 The fact that users cannot edit a dataset in the tool forces them to update it
@@ -229,6 +300,78 @@ to the dataset, they will need to re-upload it to the tool if they wish to
 validate it again. This upload, validate, fix, re-upload cycle means that there
 is no need to permanently store a dataset in the OPFS store, since it will
 always be out of sync with the version on the user’s local file system.
+
+# Modules
+
+This section provides documentation on the different non-UI modules that are
+part of the project.
+
+## odm
+
+This module has ODM definitions and functions.
+
+We may consider moving some or all of this to the odm-validation package in the
+future, to avoid duplicate definitions.
+
+### API
+
+- TableName: str
+- Version: enum
+- get_table_names(Version) -> List[TableName]
+
+### ODM version
+
+The ODM versions can be hardcoded as an enum. Old versions won't be removed and
+new ones may be appended to the enum with no issues.
+
+See [Version (ODM)](#version-odm) for current version values.
+
+### ODM table names
+
+A set of valid ODM table names for each ODM version is needed when mapping
+sheet names to table names during dataset configuration. They should be
+extracted from the odm-validation library's validation-schemas, and cached as a
+static asset to improve performance. The cache has to live in the file system
+since Dash is stateless.
+
+A simple text file is used for caching, with the version being the file name,
+and with one table name per line.
+
+Example file `/tmp/v2.0.0.txt`:
+
+```
+addresses
+measures
+samples
+```
+
+**When not cached**:
+
+1. load schemas from odm validation lib:
+    1. import odm_validation module
+    2. scan the module's asset dir for schema files
+2. extract version and table names from each schema
+3. construct a dictionary that maps each version to its table names
+4. set private module constant `_TABLE_NAMES` to the resulting dict
+5. save/cache to tmp dir, one file per schema
+
+**When cached**:
+
+1. scan cache dir for odm table files
+2. load each file, using its filename as the version, and reading each line as
+   a table name
+3. construct a dictionary that maps each version to its table names
+4. set `_TABLE_NAMES` to the resulting dict
+
+
+## dataset_import
+
+This module is responsible for the creation of a [Dataset](#dataset) once the
+user has uploaded their dataset file and completed its configuration. It has
+the following public API:
+
+* **import_dataset**: The function used for the [dataset](#dataset) creation.
+* **Dataset**: The [dataset](#dataset) class.
 
 # Types
 
@@ -245,7 +388,7 @@ TableData = List[TableRow]
 SheetName = str
 ```
 
-## OdmVersion
+## Version (ODM)
 
 Type: enum
 
@@ -281,6 +424,9 @@ Fields:
 
   Maps table/sheet names to valid ODM table names. This is the same for CSV and
   Excel files. CSV files have one sheet with the same name as the file.
+
+  Empty strings are used as default table names, meaning that a sheet mapped to
+  an empty string is a sheet without a table mapping.
 
 - `tables: Dict[OdmTableName, TableData]`
 

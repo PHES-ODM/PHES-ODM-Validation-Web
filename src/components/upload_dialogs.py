@@ -1,3 +1,6 @@
+import base64
+from urllib.parse import quote
+
 import dash_bootstrap_components as dbc
 from dash import (
     Input,
@@ -9,7 +12,6 @@ from dash import (
 )
 from dash.dash import no_update
 
-# sys.path.append('..')
 import stores
 from components import modals
 from dataset_import import import_dataset
@@ -42,6 +44,13 @@ upload_dialog = modals.init_modal(
 )
 
 
+def _decode_contents(contents):
+    """returns a tuple of content-type and the decoded data"""
+    content_type, content_string = contents.split(',')
+    decoded = base64.b64decode(content_string)
+    return content_type, decoded
+
+
 def register(app):
 
     @app.callback(
@@ -55,8 +64,8 @@ def register(app):
     )
     def on_upload_dialog_flag(flag):
         """Open/close upload dialog"""
-        # XXX: uploader contents must be cleared so that its callback will trigger
-        # (due to change) if the same file is reuploaded
+        # XXX: uploader contents must be cleared so that its callback will
+        # trigger (due to change) if the same file is reuploaded
         return flag, None, True, None
 
     @app.callback(
@@ -93,7 +102,8 @@ def register(app):
         [
             Output(stores.datasets, 'data'),
             Output(stores.upload_dialog_flag, 'data', allow_duplicate=True),
-            Output(stores.conf_dialog_flag, 'data'),
+            Output('url', 'pathname'),
+            Output('url', 'search'),
         ],
         [
             Input(upload_ok_btn, 'n_clicks'),
@@ -102,13 +112,16 @@ def register(app):
     )
     def on_upload_ok_btn(n, uploaded_file):
         """Append uploaded dataset, close upload dialog, open conf dialog"""
+        # TODO: error handling around import_dataset
         filename = uploaded_file['filename']
         contents = uploaded_file['contents']
-        ds = import_dataset(filename, contents)
+        (_, data) = _decode_contents(contents)
+        ds = import_dataset(filename, data)
         dataset_patch = Patch()
         dataset_patch[filename] = ds
         return (
             dataset_patch,
             False,
-            True,
+            '/datasets',
+            f'?dataset-id={quote(filename)}',
         )
