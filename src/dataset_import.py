@@ -1,57 +1,28 @@
+# TODO: move Dataset class to a separate module
+
 import io
 import os
 import pandas as pd
 import warnings
+from datetime import datetime
 from typing import Dict, List
 # from pprint import pprint
 
 from typing_extensions import TypedDict
 
-import odm
+from odm import odm
 
+SheetName = str
 TableRow = dict  # key-value pairs
 TableData = List[TableRow]
-SheetName = str
 
 
 class Dataset(TypedDict):
     filename: str
     odm_version: str
+    upload_time: datetime
     table_mapping: Dict[SheetName, odm.TableName]
     tables: Dict[odm.TableName, TableData]
-
-
-def _match(sheet_name, table_name) -> bool:
-    """Returns true if `sheet_name` matches `table_name`."""
-    return (sheet_name == table_name or
-            sheet_name.endswith(' ' + table_name))
-
-
-def _infer_odm_version(sheet_names) -> odm.Version:
-    """Returns the latest version that matches any of the `sheet_names`.
-    Defaults to the latest version."""
-    for version in reversed(odm.Version):
-        tables = odm.get_table_names(version)
-        for table in tables:
-            for sheet in sheet_names:
-                if _match(sheet, table):
-                    return version
-    return list(odm.Version)[-1]
-
-
-def _infer_table_mapping(sheet_names: List[SheetName], odm_version: odm.Version
-                         ) -> Dict[SheetName, odm.TableName]:
-    """Attempts to map sheet names to ODM table names."""
-    result = {}
-    tables = set(odm.get_table_names(odm_version))
-    for sheet in sheet_names:
-        result[sheet] = None
-        for table in tables:
-            if _match(sheet, table):
-                result[sheet] = table
-                tables.remove(table)
-                break
-    return result
 
 
 def _to_dict_list(df: pd.DataFrame) -> List[dict]:
@@ -82,11 +53,12 @@ def import_dataset(filename, data) -> Dataset:
     an exceptionjif the file can't be imported."""
     sheets = _load_sheets(filename, data)
     sheet_names = list(sheets.keys())
-    odm_version = _infer_odm_version(sheet_names)
-    table_mapping = _infer_table_mapping(sheet_names, odm_version)
+    odm_version = odm.infer_version(sheet_names)
+    table_mapping = odm.infer_table_mapping(sheet_names, odm_version)
     return Dataset(
         filename=filename,
         odm_version=odm_version.value,
+        upload_time=datetime.now(),
         table_mapping=table_mapping,
         tables=sheets,
     )

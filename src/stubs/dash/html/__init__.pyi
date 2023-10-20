@@ -1,26 +1,43 @@
-"""This module provides the type stubs for the 
+"""This module provides the type stubs for the
 [html](https://dash.plotly.com/dash-html-components] from Plotly.
 """
 
-from typing import List, Union, Optional
+from typing import List, Union
 from dash import DashComponent
+# from dash.development.base_component import DashComponent
 
-ChildrenParam = Union[str, int, float, DashComponent, List[DashComponent]]
- 
-def Div(
-    children: Optional[ChildrenParam] = None, 
-    id: Optional[str] = None
-) -> DashComponent: ...
+# Default = DashComponent.Undefined
 
-def Li(children: ChildrenParam) -> DashComponent: ...
+ChildrenParamImpl = Union[str, int, float, DashComponent]
+ChildrenParam = Union[None, ChildrenParamImpl, List[ChildrenParamImpl],
+                      List[DashComponent]]
 
-def Ul(children: ChildrenParam) -> DashComponent: ...
 
-def H1(children: ChildrenParam) -> DashComponent: ...
+class Div(DashComponent):
+    def __init__(self, children: ChildrenParam = None,
+                 id: str = '') -> None: ...
 
-def H2(children: ChildrenParam) -> DashComponent: ...
 
-def P(children: ChildrenParam) -> DashComponent: ...
+class Li(DashComponent):
+    def __init__(self, children: ChildrenParam = None) -> None: ...
 
-def Strong(children: ChildrenParam) -> DashComponent: ...
 
+class Ul(DashComponent):
+    def __init__(self, children: ChildrenParam = None,
+                 className: str = '') -> None: ...
+
+
+class H1(DashComponent):
+    def __init__(self, children: ChildrenParam = None) -> None: ...
+
+
+class H2(DashComponent):
+    def __init__(self, children: ChildrenParam = None) -> None: ...
+
+
+class P(DashComponent):
+    def __init__(self, children: ChildrenParam = None) -> None: ...
+
+
+class Strong(DashComponent):
+    def __init__(self, children: ChildrenParam = None) -> None: ...

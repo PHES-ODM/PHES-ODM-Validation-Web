@@ -10,12 +10,16 @@ from dash import (
 
 import stores
 from components import (
-    topbars,
-    upload_dialogs,
+    conf_dialog,
+    sidebar,
+    topbar,
+    upload_dialog,
 )
-
+from odm import odm_schemas
 
 logging.basicConfig(level=logging.INFO)
+
+odm_schemas.init()
 
 stylesheets = [
     dbc.themes.BOOTSTRAP,
@@ -25,28 +29,33 @@ stylesheets = [
 app = Dash(__name__, use_pages=True, external_stylesheets=stylesheets,
            prevent_initial_callbacks=True)
 
-
 app.layout = html.Div([
     # stores
     stores.conf_dialog_flag,
+    stores.dataset_conf_form,
+    stores.dataset_id,
     stores.datasets,
     stores.upload_dialog_flag,
     stores.uploaded_file,
 
     # dialogs
-    upload_dialogs.upload_dialog,
+    upload_dialog.layout,
+    conf_dialog.layout,
 
     # page
     dcc.Location(id='url', refresh='callback-nav'),
-    topbars.topbar,
+    topbar.layout,
     html.Div(
         dash.page_container,
         id="page-content",
     ),
 ])
 
-topbars.register(app)
-upload_dialogs.register(app)
+# components
+conf_dialog.register(app)
+sidebar.register(app)
+topbar.register(app)
+upload_dialog.register(app)
 
 
 if __name__ == '__main__':
