@@ -1,3 +1,4 @@
+from __future__ import annotations
 import logging
 
 import dash
@@ -12,12 +13,20 @@ from dash import (
 
 import stores
 
+from dataset_import import Dataset
+
+from typing import Dict, TYPE_CHECKING, Optional
+if TYPE_CHECKING:
+    from dash import DashComponent
+
 dash.register_page(__name__, path_template='/datasets/<dataset_id>')
 
 layout = html.Div()
 
 
-def _gen_odm_table_list(table_names):
+def _gen_odm_table_list(
+    table_names: Dict[str, Optional[str]]
+) -> DashComponent:
     entries = []
     for a, b, in table_names.items():
         if b:
@@ -25,7 +34,9 @@ def _gen_odm_table_list(table_names):
     return html.Ul(entries)
 
 
-def _gen_unknown_table_list(table_names):
+def _gen_unknown_table_list(
+    table_names: Dict[str, Optional[str]]
+) -> DashComponent:
     entries = []
     for a, b, in table_names.items():
         if not b:
@@ -38,7 +49,10 @@ def _gen_unknown_table_list(table_names):
     Input('url', 'pathname'),
     State(stores.datasets, 'data'),
 )
-def init_dataset_page(pathname, datasets):
+def init_dataset_page(
+    pathname: str,
+    datasets: Dict[str, Dataset]
+) -> DashComponent:
     if not (pathname.startswith('/datasets') and datasets):
         return no_update
     dataset_id = pathname[(pathname.rfind('/')+1):]
