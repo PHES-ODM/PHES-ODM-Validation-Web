@@ -115,7 +115,7 @@ Components:
 
 - Welcome text
 
-## View dataset page
+## Dataset page
 
 TODO
 
@@ -231,7 +231,7 @@ Behaviors:
       name.
     - When the user uploads a new dataset, the datasets dropdown list should be updated.
     - When the user clicks on a dataset, it should be selected, and
-      the user taken to the [View Dataset page](#view-dataset-page). The dropdown
+      the user taken to the [Dataset page](#dataset-page). The dropdown
       should be closed.
     - When the user has not uploaded any datasets, the dropdown should
       only have one item that says **No Datasets Uploaded**.
