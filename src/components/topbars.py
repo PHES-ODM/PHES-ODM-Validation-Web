@@ -31,6 +31,7 @@ topbar = dbc.NavbarSimple(
     brand_href="/",
     color="primary",
     dark=True,
+    fixed="top"
 )
 
 
