@@ -103,7 +103,6 @@ def register(app):
             Output(stores.datasets, 'data'),
             Output(stores.upload_dialog_flag, 'data', allow_duplicate=True),
             Output('url', 'pathname'),
-            Output('url', 'search'),
         ],
         [
             Input(upload_ok_btn, 'n_clicks'),
@@ -122,6 +121,5 @@ def register(app):
         return (
             dataset_patch,
             False,
-            '/datasets',
-            f'?dataset-id={quote(filename)}',
+            f'/datasets/{quote(filename)}',
         )
