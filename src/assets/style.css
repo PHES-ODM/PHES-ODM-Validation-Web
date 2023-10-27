@@ -11,7 +11,10 @@
 #page-content {
     margin-left: 18rem;
     margin-right: 2rem;
-    padding: 2rem 1rem;
+    /* The top padding should be tall enough so that it clears the fixed 
+     * navbar at the top. If it isn't then the page content will appear behind 
+     * the navbar */
+    padding: 5rem 1rem;
 }
 
 #upload-data {
