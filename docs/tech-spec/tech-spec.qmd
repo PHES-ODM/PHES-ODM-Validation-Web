@@ -15,8 +15,8 @@ Pages required:
 
 Stores required:
 
-- [Uploaded file](#uploaded-file)
-- [Datasets](#datasets)
+- [Uploaded file](#uploaded-file-store)
+- [Datasets](#dataset-store)
 
 ### Importing a dataset
 
@@ -137,14 +137,14 @@ Components:
 
 Behaviors:
 
-1. When the [upload-dialog-flag](#dialog-flags) changes:
+1. When the [upload-dialog-flag](#dialog-flag-stores) changes:
     - The dialog should open/close
     - The ok button should be disabled, and status and uploader content cleared
 2. A file can be uploaded by either clicking the file-uploader or dragging a
    file onto it. Only one file can be uploaded at a time, and the allowed
    formats are CSV and XLSX.
 3. When the upload completes:
-    - The file should be stored in the [uploaded-file](#uploaded-file) store
+    - The file should be stored in the [uploaded-file](#uploaded-file-store) store
     - The dialog status text should change to show the uploaded filename
     - The ok button should be enabled
 4. When the ok button is pressed, it should do the following:
@@ -160,7 +160,7 @@ Behaviors:
           the latest version.
         - **tables**: Set to the extracted data of each sheet with a corresponding
           valid ODM table.
-    2. Add the dataset to the [datasets](#datasets) store
+    2. Add the dataset to the [datasets](#dataset-store) store
     3. Close this dialog
     4. Open the [configure dataset dialog](#configure-dataset-dialog)
 5. The cancel button should simply close the dialog, ignoring any uploaded file.
@@ -193,7 +193,7 @@ with the rest of the application while a dialog is open. It's using
 Behaviors:
 
 1. It should be initialized to a closed state, and only be opened/closed using
-   [dialog flags](#dialog-flags).
+   [dialog flags](#dialog-flag-stores).
 2. Clicking outside the modal should close it.
 3. Pressing the escape key should close it, unless overridden.
 
@@ -246,12 +246,12 @@ This section includes the different stores where the app will persist data.
 Each sub-section goes over the details of each store and the data stored within
 it.
 
-## Memory store
+## Memory stores
 
 All the data in this store type is stored in browser memory. The data is
 transient, meaning that the data is lost when the user reloads/closes the tool.
 
-### Dialog flags
+### Dialog flag stores
 
 All flags are currently used as signals for showing and hiding dialogs.
 There is one flag per dialog, and they are all of type bool. True means open,
@@ -268,7 +268,7 @@ The flags are:
 - upload-dialog-flag, for the
   [upload dataset dialog](#upload-dataset-dialog)
 
-### Uploaded file
+### Uploaded file store
 
 Type: {'filename': str, 'contents': str}
 
@@ -279,7 +279,7 @@ cache the uploaded file before it's accepted and used in the construction of a
 Dataset. To select a dataset in the [upload dataset dialog](#upload-dataset-dialog) the user has to 1. Choose a dataset by using the browser's file chooser or dragging and dropping a file into the dialog; and 2. Confirm their choice by clicking the ok button. To avoid wasting computing time, we want to parse the chosen file into a [`Dataset`](#dataset) only when they have confirmed their selection, since they can always change their chosen file. Instead, we store the contents of the chosen file as its given to us by [Plotly](https://dash.plotly.com/dash-core-components/upload#displaying-uploaded-spreadsheet-contents) in this store, and parse it into a [`Dataset`](#dataset) only when the user has confirmed their selection. It also helps in decoupling the upload from the rest of the
 application.
 
-### Datasets
+### Dataset id store
 
 Type: `Dict[Filename, Dataset]`
 
