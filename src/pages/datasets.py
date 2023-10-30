@@ -35,10 +35,10 @@ def _gen_odm_table_list(
 
 
 def _gen_unknown_table_list(
-    table_names: Dict[str, Optional[str]]
+    table_mapping: Dict[str, Optional[str]]
 ) -> DashComponent:
     entries = []
-    for a, b, in table_names.items():
+    for a, b, in table_mapping.items():
         if not b:
             entries.append(html.Li(f'"{a}"'))
     return html.Ul(entries)
@@ -66,7 +66,7 @@ def init_dataset_page(
         html.H2(dataset_id),
         html.P([html.Strong('ODM version: '), ds['odm_version']]),
         html.P(html.Strong('ODM tables')),
-        _gen_odm_table_list(ds['table_names']),
+        _gen_odm_table_list(ds['table_mapping']),
         html.P(html.Strong('Unknown tables')),
-        _gen_unknown_table_list(ds['table_names']),
+        _gen_unknown_table_list(ds['table_mapping']),
     ])

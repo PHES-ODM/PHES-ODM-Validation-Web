@@ -17,7 +17,7 @@ SheetName = str
 class Dataset(TypedDict):
     filename: str
     odm_version: str
-    table_names: Dict[SheetName, odm.TableName]
+    table_mapping: Dict[SheetName, odm.TableName]
     tables: Dict[odm.TableName, TableData]
 
 
@@ -87,6 +87,6 @@ def import_dataset(filename, data) -> Dataset:
     return Dataset(
         filename=filename,
         odm_version=odm_version.value,
-        table_names=table_mapping,
+        table_mapping=table_mapping,
         tables=sheets,
     )
