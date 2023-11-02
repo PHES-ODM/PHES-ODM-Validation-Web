@@ -6,6 +6,18 @@ from dash.development.base_component import Component
 ComponentParam = Union[str, Component]
 
 
+class _Wildcard:
+    pass
+
+
+class Patch:
+    pass
+
+
+class CallbackCtx:
+    triggered_id: str
+
+
 class DashInput:
     pass
 
@@ -50,6 +62,10 @@ def callback(
     prevent_initial_call: Union[bool, str] = False,
 ) -> Callable: ...
 
+
+ALL: _Wildcard
+
+callback_context: CallbackCtx
 
 # A no_update can be returned in place of any Output in a callback. This makes
 # it hard to type since it should be equal to the type of any Output of a

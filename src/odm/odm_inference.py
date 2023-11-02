@@ -7,13 +7,13 @@ from .odm_defs import (
 from .odm_schemas import get_table_names
 
 
-def _match(sheet_name, table_name) -> bool:
+def _match(sheet_name: str, table_name: TableName) -> bool:
     """Returns true if `sheet_name` matches `table_name`."""
     return (sheet_name == table_name or
             sheet_name.endswith(' ' + table_name))
 
 
-def infer_version(sheet_names) -> Version:
+def infer_version(sheet_names: List[str]) -> Version:
     """Returns the latest version that matches any of the `sheet_names`.
     Defaults to the latest version."""
     for version in reversed(Version):

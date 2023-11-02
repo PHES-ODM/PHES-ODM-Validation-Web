@@ -31,6 +31,10 @@ class P(Component):
     def __init__(self, children: ChildrenParam = None) -> None: ...
 
 
+class Span(Component):
+    def __init__(self, children: ChildrenParam = None) -> None: ...
+
+
 class Strong(Component):
     def __init__(self, children: ChildrenParam = None) -> None: ...
 

@@ -12,6 +12,7 @@ from typing_extensions import TypedDict
 
 from odm import odm
 
+Filename = str
 SheetName = str
 TableRow = dict  # key-value pairs
 TableData = List[TableRow]
@@ -25,13 +26,17 @@ class Dataset(TypedDict):
     tables: Dict[odm.TableName, TableData]
 
 
+DatasetDict = Dict[Filename, Dataset]
+
+
 def _to_dict_list(df: pd.DataFrame) -> List[dict]:
     """converts a pandas DataFrame to a list of dicts with column names as
     keys and field values as values"""
     return df.to_dict('records')
 
 
-def _load_sheets(filename, data) -> Dict[SheetName, TableData]:
+def _load_sheets(filename: Filename, data: bytes
+                 ) -> Dict[SheetName, TableData]:
     """returns a dictionary of sheet-names mapped to dataframes"""
     # XXX: excel warnings are ignored to hide warning about excel
     # data-validation not being supported in pandas/openpyxl
@@ -48,7 +53,7 @@ def _load_sheets(filename, data) -> Dict[SheetName, TableData]:
         assert False, 'invalid ext'
 
 
-def import_dataset(filename, data) -> Dataset:
+def import_dataset(filename: Filename, data: bytes) -> Dataset:
     """Constructs a Dataset with data parsed from an Excel/CSV file. May throw
     an exceptionjif the file can't be imported."""
     sheets = _load_sheets(filename, data)

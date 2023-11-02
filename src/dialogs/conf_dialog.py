@@ -1,4 +1,7 @@
+from typing import List, Tuple
+
 import dash_bootstrap_components as dbc
+import dash.dcc as dcc
 from dash import (
     ALL,
     Input,
@@ -6,15 +9,16 @@ from dash import (
     Patch,
     State,
     callback_context,
-    dcc,
     html,
     no_update,
 )
+from dash.development.base_component import Component
 
 import stores
 import utils
 from odm import odm
 from components import modals
+from dataset_import import DatasetDict
 
 IGNORE_LABEL = 'Ignore'
 
@@ -51,7 +55,7 @@ _conf_dialog = modals.init_modal(
 layout = _conf_dialog
 
 
-def register(app):
+def register(app):  # type: ignore
 
     @app.callback(
         [
@@ -63,7 +67,8 @@ def register(app):
         State(stores.conf_dialog_flag, 'data'),
         State(stores.dataset_id, 'data'),
     )
-    def on_cancel_btn_click(n, flag, dataset_id):
+    def on_cancel_btn_click(n: int, flag: bool, dataset_id: str
+                            ) -> Tuple[bool, Patch, str]:
         '''close dialog. If opened from upload, then delete dataset.'''
         if flag == stores.OPEN_FROM_UPLOAD:
             p = Patch()
@@ -83,7 +88,11 @@ def register(app):
             State(stores.dataset_id, 'data'),
         ]
     )
-    def on_conf_dialog_flag(flag, datasets, dataset_id):
+    def on_conf_dialog_flag(
+        flag: bool,
+        datasets: DatasetDict,
+        dataset_id: str,
+    ) -> Tuple[bool, str, str]:
         '''open/close conf dialog when flag changes'''
         if not flag:
             return flag, no_update, no_update
@@ -101,7 +110,11 @@ def register(app):
         State(stores.datasets, 'data'),
         State(stores.dataset_id, 'data'),
     )
-    def on_version_dropdown_value(selected_version_str, datasets, dataset_id):
+    def on_version_dropdown_value(
+        selected_version_str: str,
+        datasets: DatasetDict,
+        dataset_id: str,
+    ) -> Tuple[Component, dict]:
         '''initializes the mapping table with ODM table names whenever the
         selected version changes'''
         assert selected_version_str
@@ -120,7 +133,7 @@ def register(app):
         odm_table_names = odm.get_table_names(selected_version)
         table_options = [IGNORE_LABEL] + odm_table_names
 
-        def init_dropdown(sheet: str, table: str):
+        def init_dropdown(sheet: str, table: str) -> Component:
             # uses https://dash.plotly.com/pattern-matching-callbacks to
             # enable callbacks with dynamically generated components
             values = table_options
@@ -153,8 +166,12 @@ def register(app):
         State(stores.datasets, 'data'),
         State(stores.dataset_id, 'data'),
     )
-    def on_sheet_table_dropdown_value(dropdown_values, dropdown_ids, datasets,
-                                      dataset_id):
+    def on_sheet_table_dropdown_value(
+        dropdown_values: List[str],
+        dropdown_ids: List[str],
+        datasets: DatasetDict,
+        dataset_id: str,
+    ) -> Patch:
         '''Update the sheet-table mapping, when a table is selected. Any
         previous mappings to the same table will be set to ignored.
 
@@ -185,7 +202,13 @@ def register(app):
             State(stores.dataset_id, 'data'),
         ],
     )
-    def on_ok_btn_click(n, version_str, new_mapping, datasets, dataset_id):
+    def on_ok_btn_click(
+        n: int,
+        version_str: str,
+        new_mapping: dict,
+        datasets: DatasetDict,
+        dataset_id: str,
+    ) -> Tuple[bool, str, bool, Patch, str]:
         '''update dataset config with table mapping, and close conf dialog'''
         ds = datasets[dataset_id]
         ds['odm_version'] = version_str
@@ -199,7 +222,7 @@ def register(app):
         dup_tables = utils.duplicates(selected_tables)
         if len(dup_tables) > 0:
             msg = _duplicate_err_msg + ', '.join(dup_tables)
-            return [True, msg] + [no_update]*3
+            return (True, msg) + (no_update)*3
 
         patch = Patch()
         patch[filename] = ds

@@ -43,11 +43,11 @@ def _get_schema_paths() -> List[str]:
     return _get_file_paths(asset_dir)
 
 
-def _get_tables(schema):
+def _get_tables(schema: dict) -> List[TableName]:
     return list(schema['schema'].keys())
 
 
-def _get_table_columns(schema, table):
+def _get_table_columns(schema: dict, table: TableName) -> List[ColumnName]:
     return list(schema['schema'][table]['schema']['schema'].keys())
 
 
@@ -66,7 +66,7 @@ def _gen_table_metadata() -> TableMetadata:
     return result
 
 
-def init():
+def init() -> None:
     # TODO: add caching and remove benchmark
     global _version_table_columns
     logging.info('generating ODM table metadata...')

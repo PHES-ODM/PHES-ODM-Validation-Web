@@ -18,7 +18,7 @@ upload_dialog_flag = dcc.Store(id='upload-dialog-flag', data=False)
 
 # collections
 datasets = dcc.Store(id='datasets', data={})
-'''type: Dict[Filename, Dataset]'''
+'''type: DatasetDict'''
 
 # intermediaries
 #

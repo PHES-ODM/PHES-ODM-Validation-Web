@@ -54,10 +54,10 @@ app.layout = html.Div([
 ])
 
 # components
-conf_dialog.register(app)
-sidebar.register(app)
-topbar.register(app)
-upload_dialog.register(app)
+conf_dialog.register(app)  # type: ignore
+sidebar.register(app)  # type: ignore
+topbar.register(app)  # type: ignore
+upload_dialog.register(app)  # type: ignore
 
 
 if __name__ == '__main__':
