@@ -16,20 +16,15 @@ class Div(DashComponent):
                  id: str = '') -> None: ...
 
 
-class Li(DashComponent):
-    def __init__(self, children: ChildrenParam = None) -> None: ...
-
-
-class Ul(DashComponent):
-    def __init__(self, children: ChildrenParam = None,
-                 className: str = '') -> None: ...
-
-
 class H1(DashComponent):
     def __init__(self, children: ChildrenParam = None) -> None: ...
 
 
 class H2(DashComponent):
+    def __init__(self, children: ChildrenParam = None) -> None: ...
+
+
+class Li(DashComponent):
     def __init__(self, children: ChildrenParam = None) -> None: ...
 
 
@@ -39,3 +34,8 @@ class P(DashComponent):
 
 class Strong(DashComponent):
     def __init__(self, children: ChildrenParam = None) -> None: ...
+
+
+class Ul(DashComponent):
+    def __init__(self, children: ChildrenParam = None,
+                 className: str = '') -> None: ...
