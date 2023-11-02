@@ -1,14 +1,6 @@
 from typing import Any, Callable, List, Union
 from dash.development.base_component import Component
 
-# A dash component is what is returned when calling one of the functions
-# to create an [HTML Component](https://dash.plotly.com/dash-html-components),
-# a [core component](https://dash.plotly.com/dash-core-components), or even
-# a custom component.
-# class DashComponent:
-#     pass
-DashComponent = Component
-
 # The type alias for the component_id parameter for any of the entities used
 # when creating a callback for example an Output.
 ComponentParam = Union[str, Component]

@@ -76,26 +76,3 @@ which does not have any typing or type stubs. The project should aim to add
 type stubs for the library pragmatically, since it may not be possible or
 too convoluted to add types for some of the Plotly constructs. The type stubs
 for Plotly are in the [stubs](./src/stubs/dash/) directory.
-
-Another item with type stubs are types that exist at compile time but not at
-run time. For example, the `DashComponent` class which does not exist in Plotly
-but is used in the type stubs to type out functions that return an HTML element
-like `H1` and `Li`.
-
-Importing these types requires two pieces of code added to ensure that the app
-does not fail to run but can also be type checked using mypy,
-
-1. A `from __future__ import annotations` line.
-2. An if statement to conditionally import these types if the app is being
-   type checked but not run. This is done using the `TYPE_CHECKING` flag from the
-   `typing` module in Python.
-
-Putting this together, the code to import such types using `DashComponent` as
-an example is shown below,
-
-```{python}
-from __future__ import annotations
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from dash import DashComponent
-```

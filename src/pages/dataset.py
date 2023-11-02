@@ -1,9 +1,7 @@
-from __future__ import annotations
 import logging
 from typing import (
     Dict,
     List,
-    TYPE_CHECKING,
 )
 
 import dash
@@ -16,8 +14,7 @@ from dash import (
     html,
     no_update,
 )
-if TYPE_CHECKING:
-    from dash import DashComponent
+from dash.development.base_component import Component
 
 import stores
 import utils
@@ -54,8 +51,8 @@ def _gen_odm_table_list(
     version: odm.Version,
     sheet_tables: Dict[str, str],
     table_data: Dict[odm.TableName, TableData],
-) -> DashComponent:
-    entries: List[DashComponent] = []
+) -> Component:
+    entries: List[Component] = []
     for sheet, table, in sheet_tables.items():
         if not table:
             continue
@@ -88,7 +85,7 @@ def _gen_odm_table_list(
 
 def _gen_unknown_table_list(
     table_mapping: Dict[str, str]
-) -> DashComponent:
+) -> Component:
     entries: List[html.Li] = []
     for a, b, in table_mapping.items():
         if not b:
@@ -96,8 +93,8 @@ def _gen_unknown_table_list(
     return html.Ul(entries)
 
 
-def _init_upload_report(ds: Dataset) -> List[DashComponent]:
-    def entry(key: str, val: DashComponent = '') -> DashComponent:
+def _init_upload_report(ds: Dataset) -> List[Component]:
+    def entry(key: str, val: Component = '') -> Component:
         return html.P([html.Strong(key + ': '), val])
 
     timestr = ds['upload_time']
@@ -126,7 +123,7 @@ def _init_upload_report(ds: Dataset) -> List[DashComponent]:
 def on_dataset_page(
     datasets: Dict[str, Dataset],
     pathname: str,
-) -> DashComponent:
+) -> Component:
     '''(re)initializes the dataset page on load and when changed'''
     dataset_id = _get_dataset_id(pathname)
     logging.info(f'dataset id: {dataset_id}')
