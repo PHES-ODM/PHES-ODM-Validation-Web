@@ -6,8 +6,6 @@ from typing import List, Union
 from dash import DashComponent
 # from dash.development.base_component import DashComponent
 
-# Default = DashComponent.Undefined
-
 ChildrenParamImpl = Union[str, int, float, DashComponent]
 ChildrenParam = Union[None, ChildrenParamImpl, List[ChildrenParamImpl],
                       List[DashComponent]]
