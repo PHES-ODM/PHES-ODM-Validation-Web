@@ -10,9 +10,11 @@ from dash import (
 
 import stores
 from components import (
-    conf_dialog,
     sidebar,
     topbar,
+)
+from dialogs import (
+    conf_dialog,
     upload_dialog,
 )
 from odm import odm_schemas
