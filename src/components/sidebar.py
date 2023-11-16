@@ -8,21 +8,16 @@ from dash import (
 
 import stores
 
-conf_btn = dbc.NavLink('Configure Dataset', href='#')
+conf_btn = dbc.Button('Configure Dataset')
 
 layout = html.Div(
     [
-        dbc.Nav(
-            [
-                conf_btn,
-                dbc.NavLink('Validate Dataset', href='#', disabled=True),
-            ],
-            vertical=True,
-            pills=True,
-        ),
+       conf_btn,
+       dbc.Button('Validate Dataset', disabled=True),
     ],
     id='sidebar',
 )
+
 
 def register(app):
 
