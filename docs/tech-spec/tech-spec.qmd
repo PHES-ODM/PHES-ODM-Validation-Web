@@ -15,8 +15,8 @@ Pages required:
 
 Stores required:
 
-- [Uploaded file](#uploaded-file)
-- [Datasets](#datasets)
+- [Uploaded file](#uploaded-file-store)
+- [Datasets](#dataset-store)
 
 ### Importing a dataset
 
@@ -91,7 +91,53 @@ two different table names have the same ending. Ex: SiteMeasure and WWMeasure.
 
 ## Dataset configuration
 
-TODO
+Screens required:
+
+- [Dataset page](#dataset-page): The user is able to configure the dataset
+from this page by clicking the **Configure Dataset** button.
+- [Configure dataset dialog](#configure-dataset-dialog)
+- Any page with the [Top bar menu](#top-bar-menu): The user is able to
+configure a newly uploaded dataset whose flow is initiated by clicking the
+**Upload Dataset** button in the top menu bar.
+
+Stores required:
+
+- [conf-dialog-flag](#dialog-flag-stores)
+- [dataset-conf-form](#dataset-conf-form-store)
+- [dataset-id](#dataset-id-store)
+- [datasets](#dataset-store)
+
+Dataset configuration consists of four steps:
+
+**1. Selecting a dataset**
+
+A dataset can be selected by either uploading a new dataset, which selects it
+implicitly, or explicitly selecting a dataset from the datasets dropdown in the
+top bar menu.
+
+**2. Opening the configuration dialog**
+
+The dataset configuration dialog should be automatically opened after uploading
+a dataset, to make sure that the user is informed of the inferred default
+values and given the chance to correct them.
+
+The dialog should also be available from the dataset-menu/sidebar on the
+page for the selected dataset.
+
+**3. Selecting new values, if any**
+
+The configuration dialog shows the current ODM version and its mapped tables.
+Initial values should be inferred from the data, and the user should be able to
+re-configure it at any time.
+
+**4. Confirming the change, or canceling**
+
+Changes should only be saved when the user confirms them, and discarded
+otherwise, however, initial values may be kept even when canceling the initial
+configuration.
+
+After configuration, the user should be taken to the dataset page, where the
+updated configuration is reflected in the upload report.
 
 # App
 
@@ -102,6 +148,7 @@ Components:
 - [Top bar menu](#top-bar-menu)
 - [Page content](#pages)
 - [Upload dataset dialog](#upload-dataset-dialog)
+- [Configure dataset dialog](#configure-dataset-dialog)
 
 # Pages
 
@@ -115,9 +162,32 @@ Components:
 
 - Welcome text
 
-## View dataset page
+## Dataset page
 
-TODO
+The dataset page shows the upload report for the selected dataset, as well as
+buttons for configuration and validation in the sidebar.
+
+The upload report doubles as the page content, and is dynamically generated
+from the dataset.
+
+Components:
+
+- Dataset URL (dcc.Location)
+- [Sidebar](#sidebar)
+- Dataset page header
+- Dataset name
+- Upload time
+- ODM version
+- ODM table count
+- ODM tables:
+    - Sheet name
+    - ODM table name
+    - Column count
+    - Row count
+    - ODM column names
+    - Ignored column names
+- Ignored sheet count
+- Ignored sheet names
 
 # Dialogs
 
@@ -137,14 +207,14 @@ Components:
 
 Behaviors:
 
-1. When the [upload-dialog-flag](#dialog-flags) changes:
+1. When the [upload-dialog-flag](#dialog-flag-stores) changes:
     - The dialog should open/close
     - The ok button should be disabled, and status and uploader content cleared
 2. A file can be uploaded by either clicking the file-uploader or dragging a
    file onto it. Only one file can be uploaded at a time, and the allowed
    formats are CSV and XLSX.
 3. When the upload completes:
-    - The file should be stored in the [uploaded-file](#uploaded-file) store
+    - The file should be stored in the [uploaded-file](#uploaded-file-store) store
     - The dialog status text should change to show the uploaded filename
     - The ok button should be enabled
 4. When the ok button is pressed, it should do the following:
@@ -152,7 +222,7 @@ Behaviors:
         - **filename**: Set from the uploaded file name.
         - **odm_version**: Set from the ODM version inferred while matching table
           names.
-        - **table_names**: Set to the inferred mapping between sheet names and ODM
+        - **table_mapping**: Set to the inferred mapping between sheet names and ODM
           table names. In the case of CSV files, the filename is used as the sheet
           name. Inference is done by seeing if the sheet name matches the a
           hardcoded list of valid ODM table names for any version of the ODM, which
@@ -160,14 +230,52 @@ Behaviors:
           the latest version.
         - **tables**: Set to the extracted data of each sheet with a corresponding
           valid ODM table.
-    2. Add the dataset to the [datasets](#datasets) store
+    2. Add the dataset to the [datasets](#dataset-store) store
     3. Close this dialog
     4. Open the [configure dataset dialog](#configure-dataset-dialog)
 5. The cancel button should simply close the dialog, ignoring any uploaded file.
 
 ## Configure dataset dialog
 
-TODO
+This is the dataset configuration screen. It uses a modal to force the user
+through the configuration process after uploading a new dataset. It is used to
+configure the odm-version and table-mapping of the dataset, and consists of
+pre-populated dropdowns for all settings, together with ok & cancel buttons.
+
+Components:
+
+- modal:
+    - filename text
+    - odm version text
+    - list of dropdowns, mapping sheets to tables
+    - ok button
+    - cancel button
+
+Behaviors:
+
+1. When the cancel button is clicked:
+    - The [conf-dialog-flag](#dialog-flag-stores) should be unset
+2. When the [conf-dialog-flag](#dialog-flag-stores) changes:
+    - The dialog should open/close
+3. When the [conf-dialog-flag](#dialog-flag-stores) is true:
+    - The filename and version should be set from the selected dataset
+4. When the version changes:
+    - The table mapping should be re-inferred from the dataset with the new
+      version, and the [dataset-conf-form](#dataset-conf-form-store) store should be
+      updated to reflect it.
+    - The list items for the ODM table dropdowns should be re-generated to have
+      the tables for the selected version.
+5. When a sheet-table mapping changes:
+    - Update the [dataset-conf-form](#dataset-conf-form-store) store with the
+      new mapping.
+6. When the ok button is clicked:
+    - Read the mapping from the [dataset-conf-form](#dataset-conf-form-store)
+      store.
+    - An error message should be shown if the mapping has duplicate tables
+    - The following should happen if the config is valid:
+        - Close dialog
+        - Update the current dataset with the new config values
+        - Go to the page for the current dataset
 
 ## View validation profiles dialog
 
@@ -193,7 +301,7 @@ with the rest of the application while a dialog is open. It's using
 Behaviors:
 
 1. It should be initialized to a closed state, and only be opened/closed using
-   [dialog flags](#dialog-flags).
+   [dialog flags](#dialog-flag-stores).
 2. Clicking outside the modal should close it.
 3. Pressing the escape key should close it, unless overridden.
 
@@ -231,7 +339,7 @@ Behaviors:
       name.
     - When the user uploads a new dataset, the datasets dropdown list should be updated.
     - When the user clicks on a dataset, it should be selected, and
-      the user taken to the [View Dataset page](#view-dataset-page). The dropdown
+      the user taken to the [Dataset page](#dataset-page). The dropdown
       should be closed.
     - When the user has not uploaded any datasets, the dropdown should
       only have one item that says **No Datasets Uploaded**.
@@ -240,22 +348,49 @@ Behaviors:
    be opened.
 5. The **Tutorials** button can be disabled for now.
 
+## Sidebar
+
+The sidebar is shown on pages with a dataset-context, and provides buttons for
+configuring and validating the selected dataset, as well as listing previous
+validations.
+
+Components:
+
+- Configure dataset button
+- Validate dataset button
+- List of previous validation buttons
+
+Behaviors:
+
+1. The bar should be fixed to the left side of the screen. Even if the user
+   scrolls, the content of the bar should stay in place.
+2. When the user clicks on the **Configure dataset** button, the [Configure
+   dataset dialog](#configure-dataset-dialog) should be opened.
+3. TODO: When the user clicks on the **Validate dataset** button...
+4. TODO: List of previous validations...
+
 # Stores
 
 This section includes the different stores where the app will persist data.
 Each sub-section goes over the details of each store and the data stored within
 it.
 
-## Memory store
+## Memory stores
 
 All the data in this store type is stored in browser memory. The data is
 transient, meaning that the data is lost when the user reloads/closes the tool.
 
-### Dialog flags
+### Dialog flag stores
 
 All flags are currently used as signals for showing and hiding dialogs.
 There is one flag per dialog, and they are all of type bool. True means open,
 while False means closed.
+
+Some flags (currently only the conf-dialog flag) may hold additional values as
+well, making their type an integer rather than a boolean. The reason for this
+is to add additional state. In the case of the conf-dialog flag, the additional
+state needed is to know which origin the dialog was opened from, which makes it
+have multiple true/positive values.
 
 The reason for having signals/flags is to uncouple components from each other,
 so that they don't directly reference each other. This prevents complicated
@@ -268,7 +403,7 @@ The flags are:
 - upload-dialog-flag, for the
   [upload dataset dialog](#upload-dataset-dialog)
 
-### Uploaded file
+### Uploaded file store
 
 Type: {'filename': str, 'contents': str}
 
@@ -276,10 +411,29 @@ Type: {'filename': str, 'contents': str}
 
 This store is used by the [upload dataset dialog](#upload-dataset-dialog) to
 cache the uploaded file before it's accepted and used in the construction of a
-Dataset. To select a dataset in the [upload dataset dialog](#upload-dataset-dialog) the user has to 1. Choose a dataset by using the browser's file chooser or dragging and dropping a file into the dialog; and 2. Confirm their choice by clicking the ok button. To avoid wasting computing time, we want to parse the chosen file into a [`Dataset`](#dataset) only when they have confirmed their selection, since they can always change their chosen file. Instead, we store the contents of the chosen file as its given to us by [Plotly](https://dash.plotly.com/dash-core-components/upload#displaying-uploaded-spreadsheet-contents) in this store, and parse it into a [`Dataset`](#dataset) only when the user has confirmed their selection. It also helps in decoupling the upload from the rest of the
-application.
+Dataset. To select a dataset in the
+[upload dataset dialog](#upload-dataset-dialog) the user has to 1. Choose a dataset by using
+the browser's file chooser or dragging and dropping a file into the dialog; and
+2. Confirm their choice by clicking the ok button. To avoid wasting computing
+time, we want to parse the chosen file into a [`Dataset`](#dataset) only when
+they have confirmed their selection, since they can always change their chosen
+file. Instead, we store the contents of the chosen file as its given to us by
+[Plotly](https://dash.plotly.com/dash-core-components/upload#displaying-uploaded-spreadsheet-contents)
+in this store, and parse it into a [`Dataset`](#dataset) only when the user has
+confirmed their selection. It also helps in decoupling the upload from the rest
+of the application.
 
-### Datasets
+### Dataset id store
+
+Type: `str`
+
+This store keeps track of the currently selected dataset. It should be set to
+the dataset selected in the dataset-dropdown, as well as a newly uploaded
+dataset which gets auto-selected once the upload is complete. The dataset id is
+simply its filename, which is unique as the user cannot upload files with the
+same name twice.
+
+### Dataset store
 
 Type: `Dict[Filename, Dataset]`
 
@@ -300,6 +454,21 @@ to the dataset, they will need to re-upload it to the tool if they wish to
 validate it again. This upload, validate, fix, re-upload cycle means that there
 is no need to permanently store a dataset in the OPFS store, since it will
 always be out of sync with the version on the user’s local file system.
+
+### Dataset conf form store
+
+Type: `Dict[SheetName, TableName]`
+
+This store is used to keep track of the changes made during dataset
+configuration using the [configuration dialog](#configure-dataset-dialog),
+specifically the dataset table mapping. Every table selection has to be
+recorded here before the user confirms the changes. After confirmation it's
+saved to the current dataset.
+
+The reasons for using this intermediate store is:
+
+- Difficulty of querying the final state of a set of dynamic dropdowns.
+- Being able to wait with commiting changes until confirmed by the user.
 
 # Modules
 
@@ -420,7 +589,7 @@ Fields:
   which ODM version to validate against. It must have one of the values from
   [OdmVersion](#odmversion).
 
-- `table_names: Dict[SheetName, OdmTableName]`
+- `table_mapping: Dict[SheetName, OdmTableName]`
 
   Maps table/sheet names to valid ODM table names. This is the same for CSV and
   Excel files. CSV files have one sheet with the same name as the file.

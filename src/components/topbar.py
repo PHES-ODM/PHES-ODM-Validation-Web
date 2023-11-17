@@ -1,5 +1,3 @@
-from urllib.parse import quote
-
 import dash_bootstrap_components as dbc
 from dash import (
     Input,
@@ -7,6 +5,7 @@ from dash import (
 )
 
 import stores
+import utils
 # from utils import echo
 
 menu_upload_btn = dbc.NavLink('Upload dataset', id='menu-upload-btn')
@@ -20,7 +19,7 @@ menu_dataset_dropdown = dbc.DropdownMenu(
     in_navbar=True,
 )
 
-topbar = dbc.NavbarSimple(
+_topbar = dbc.NavbarSimple(
     children=[
         dbc.NavItem(menu_upload_btn),
         menu_dataset_dropdown,
@@ -34,6 +33,8 @@ topbar = dbc.NavbarSimple(
     fixed="top"
 )
 
+layout = _topbar
+
 
 def register(app):
 
@@ -41,7 +42,7 @@ def register(app):
         Output(stores.upload_dialog_flag, 'data', allow_duplicate=True),
         Input(menu_upload_btn, 'n_clicks'),
     )
-    def on_upload_btn(n):
+    def on_upload_btn_click(n):
         """Set upload dialog flag"""
         return bool(n)
 
@@ -58,7 +59,7 @@ def register(app):
             return [dbc.DropdownMenuItem('No datasets uploaded')]
         result = []
         for name in datasets:
-            url = f'/datasets/{quote(name)}'
+            url = utils.get_dataset_path(name)
             item = dbc.DropdownMenuItem(name, href=url)
             result.append(item)
         return result

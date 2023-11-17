@@ -3,7 +3,7 @@
     top: 44px;
     left: 0;
     bottom: 0;
-    width: 16rem;
+    width: 18rem;
     padding: 2rem 1rem;
     background-color: #f8f9fa;
 }
@@ -26,4 +26,8 @@
     margin: 10px;
     textAlign: center;
     width: 100%;
+}
+
+.compact-list li {
+    margin-bottom: 0.5rem;
 }

@@ -49,6 +49,10 @@ salt
 
     $file_name
 
+    {^"Error Section"
+        Error Text
+    }
+
     ODM Version: | ^ODM version^
 
     !if ($is_csv_file)

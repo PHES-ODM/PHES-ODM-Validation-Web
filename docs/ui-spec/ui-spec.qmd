@@ -215,6 +215,9 @@ From this dialog the user can:
 Depending on the dataset that the user wants to configure, a different
 dialog is shown.
 
+At the top of each dialog is a section which shows any errors that can 
+occur during the configuration process.
+
 ### Configure CSV Dataset Dialog
 
 ![Configure CSV dataset dialog](../../dist/configure-csv-dataset-dialog.png)
@@ -262,6 +265,8 @@ In addition,
   dataset
 * The user should be allowed to save the configuration only if the ODM version
   and table dropdowns have been correctly filled in.
+* If the user tries to map the same ODM table to multiple sheets, an error 
+  should be shown to them in the error section.
 
 ## View Dataset Page
 
