@@ -16,9 +16,9 @@ from dash.development.base_component import Component
 
 import stores
 import utils
-from odm import odm
 from components import modals
-from dataset_import import DatasetDict
+from odm import odm
+from stores import DatasetDict
 
 IGNORE_LABEL = 'Ignore'
 

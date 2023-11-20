@@ -1,4 +1,11 @@
+from typing import Dict
+
 from dash import dcc
+
+from dataset_import import Filename, Dataset
+
+DatasetDict = Dict[Filename, Dataset]
+
 
 # This adds a third value to the set of dialog-flag values ({False, True}).
 # They can all be seen as a super-set of integers which evaluate to either

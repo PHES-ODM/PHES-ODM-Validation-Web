@@ -26,9 +26,6 @@ class Dataset(TypedDict):
     tables: Dict[odm.TableName, TableData]
 
 
-DatasetDict = Dict[Filename, Dataset]
-
-
 def _to_dict_list(df: pd.DataFrame) -> List[dict]:
     """converts a pandas DataFrame to a list of dicts with column names as
     keys and field values as values"""
