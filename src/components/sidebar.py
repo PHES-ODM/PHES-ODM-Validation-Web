@@ -19,12 +19,12 @@ layout = html.Div(
 )
 
 
-def register(app):
+def register(app):  # type: ignore
 
     @app.callback(
         Output(stores.conf_dialog_flag, 'data'),
         Input(conf_btn, 'n_clicks'),
     )
-    def on_conf_btn_click(n):
+    def on_conf_btn_click(n: int) -> bool:
         '''open conf dialog'''
         return True if n else no_update
