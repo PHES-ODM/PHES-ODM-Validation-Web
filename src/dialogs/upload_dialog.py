@@ -1,4 +1,5 @@
 import base64
+from typing import Tuple
 
 import dash_bootstrap_components as dbc
 from dash import (
@@ -45,14 +46,14 @@ _upload_dialog = modals.init_modal(
 layout = _upload_dialog
 
 
-def _decode_contents(contents):
+def _decode_contents(contents: str) -> Tuple[str, bytes]:
     """returns a tuple of content-type and the decoded data"""
     content_type, content_string = contents.split(',')
     decoded = base64.b64decode(content_string)
     return content_type, decoded
 
 
-def register(app):
+def register(app):  # type: ignore
 
     @app.callback(
         [
@@ -63,7 +64,7 @@ def register(app):
         ],
         Input(stores.upload_dialog_flag, 'data'),
     )
-    def on_upload_dialog_flag(flag):
+    def on_upload_dialog_flag(flag: bool) -> Tuple[bool, None, bool, None]:
         """Open/close upload dialog"""
         # XXX: uploader contents must be cleared so that its callback will
         # trigger (due to change) if the same file is reuploaded
@@ -73,7 +74,7 @@ def register(app):
         Output(stores.upload_dialog_flag, 'data', allow_duplicate=True),
         Input(cancel_btn, 'n_clicks'),
     )
-    def on_cancel_btn_click(n):
+    def on_cancel_btn_click(n: int) -> bool:
         """Close upload dialog"""
         return False
 
@@ -88,7 +89,10 @@ def register(app):
             State(dataset_uploader, 'filename'),
         ],
     )
-    def on_dataset_uploaded(contents, filename):
+    def on_dataset_uploaded(
+        contents: str,
+        filename: str
+    ) -> Tuple[dict, str, bool]:
         """Store uploaded dataset, and enable ok button"""
         if not contents:
             return no_update
@@ -111,7 +115,10 @@ def register(app):
             State(stores.uploaded_file, 'data'),
         ],
     )
-    def on_ok_btn_click(n, uploaded_file):
+    def on_ok_btn_click(
+        n: int,
+        uploaded_file: dict
+    ) -> Tuple[Patch, str, bool, int]:
         """Append uploaded dataset, close upload dialog, open conf dialog"""
         # TODO: error handling around import_dataset
         filename = uploaded_file['filename']

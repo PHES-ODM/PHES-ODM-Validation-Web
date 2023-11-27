@@ -1,11 +1,15 @@
+from typing import List
+
 import dash_bootstrap_components as dbc
 from dash import (
     Input,
     Output,
 )
+from dash.development.base_component import Component
 
 import stores
 import utils
+from stores import DatasetDict
 # from utils import echo
 
 menu_upload_btn = dbc.NavLink('Upload dataset', id='menu-upload-btn')
@@ -36,13 +40,13 @@ _topbar = dbc.NavbarSimple(
 layout = _topbar
 
 
-def register(app):
+def register(app):  # type: ignore
 
     @app.callback(
         Output(stores.upload_dialog_flag, 'data', allow_duplicate=True),
         Input(menu_upload_btn, 'n_clicks'),
     )
-    def on_upload_btn_click(n):
+    def on_upload_btn_click(n: int) -> bool:
         """Set upload dialog flag"""
         return bool(n)
 
@@ -51,7 +55,7 @@ def register(app):
         Input(stores.datasets, 'data'),
         prevent_initial_call=False,
     )
-    def on_datasets(datasets):
+    def on_datasets(datasets: DatasetDict) -> List[Component]:
         """Update dataset dropdown"""
         # This shouldn't equire any extra network traffic since it's triggering
         # on already uploaded datasets.

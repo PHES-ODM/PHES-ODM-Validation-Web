@@ -3,41 +3,42 @@
 """
 
 from typing import List, Union
-from dash import DashComponent
-# from dash.development.base_component import DashComponent
+from dash.development.base_component import Component
 
-# Default = DashComponent.Undefined
-
-ChildrenParamImpl = Union[str, int, float, DashComponent]
+ChildrenParamImpl = Union[str, int, float, Component]
 ChildrenParam = Union[None, ChildrenParamImpl, List[ChildrenParamImpl],
-                      List[DashComponent]]
+                      List[Component]]
 
 
-class Div(DashComponent):
+class Div(Component):
     def __init__(self, children: ChildrenParam = None,
                  id: str = '') -> None: ...
 
 
-class Li(DashComponent):
+class H1(Component):
     def __init__(self, children: ChildrenParam = None) -> None: ...
 
 
-class Ul(DashComponent):
+class H2(Component):
+    def __init__(self, children: ChildrenParam = None) -> None: ...
+
+
+class Li(Component):
+    def __init__(self, children: ChildrenParam = None) -> None: ...
+
+
+class P(Component):
+    def __init__(self, children: ChildrenParam = None) -> None: ...
+
+
+class Span(Component):
+    def __init__(self, children: ChildrenParam = None) -> None: ...
+
+
+class Strong(Component):
+    def __init__(self, children: ChildrenParam = None) -> None: ...
+
+
+class Ul(Component):
     def __init__(self, children: ChildrenParam = None,
                  className: str = '') -> None: ...
-
-
-class H1(DashComponent):
-    def __init__(self, children: ChildrenParam = None) -> None: ...
-
-
-class H2(DashComponent):
-    def __init__(self, children: ChildrenParam = None) -> None: ...
-
-
-class P(DashComponent):
-    def __init__(self, children: ChildrenParam = None) -> None: ...
-
-
-class Strong(DashComponent):
-    def __init__(self, children: ChildrenParam = None) -> None: ...

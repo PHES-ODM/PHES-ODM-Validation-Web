@@ -1,8 +1,9 @@
 import sys
 from urllib.parse import quote
+from typing import Any
 
 
-def echo(x):
+def echo(x: Any) -> None:  # type: ignore
     """Helper that prints to stderr, to help with echo-debugging while using
     Plotly Dash since stdout isn't printed to console."""
     print(x, file=sys.stderr)

@@ -1,4 +1,11 @@
+from typing import Dict
+
 from dash import dcc
+
+from dataset_import import Filename, Dataset
+
+DatasetDict = Dict[Filename, Dataset]
+
 
 # This adds a third value to the set of dialog-flag values ({False, True}).
 # They can all be seen as a super-set of integers which evaluate to either
@@ -18,7 +25,7 @@ upload_dialog_flag = dcc.Store(id='upload-dialog-flag', data=False)
 
 # collections
 datasets = dcc.Store(id='datasets', data={})
-'''type: Dict[Filename, Dataset]'''
+'''type: DatasetDict'''
 
 # intermediaries
 #
