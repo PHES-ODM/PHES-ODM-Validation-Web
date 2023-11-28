@@ -41,6 +41,7 @@ app.layout = html.Div([
     stores.dataset_id,
     stores.datasets,
     stores.progress_dialog_flag,
+    stores.replace_on_dup,
     stores.upload_dialog_flag,
     stores.uploaded_file,
     stores.validation_dialog_flag,
