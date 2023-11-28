@@ -43,7 +43,26 @@ _upload_dialog = modals.init_modal(
     ]
 )
 
-layout = _upload_dialog
+_import_status_text = html.Strong()
+
+_import_dialog = modals.init_modal(
+    id='import-dialog',
+    title='Importing dataset...',
+    body=[
+        html.Div(
+            _import_status_text,
+        ),
+        html.Div(
+            html.Progress()
+        ),
+    ],
+    buttons=[],
+)
+
+layout = html.Div([
+    _upload_dialog,
+    _import_dialog,
+])
 
 
 def _decode_contents(contents: str) -> Tuple[str, bytes]:
@@ -103,21 +122,33 @@ def register(app):  # type: ignore
 
     @app.callback(
         [
+            Output(stores.upload_dialog_flag, 'data', allow_duplicate=True),
+            Output(_import_dialog, 'is_open', allow_duplicate=True),
+            Output(_import_status_text, 'children', allow_duplicate=True),
+        ],
+        Input(ok_btn, 'n_clicks'),
+        State(stores.uploaded_file, 'data'),
+    )
+    def on_ok_btn_click(n: int, uploaded_file: dict) -> Tuple[bool, bool, str]:
+        """close upload dialog, open import dialog"""
+        dataset_id = uploaded_file['filename']
+        return False, True, dataset_id
+
+    @app.callback(
+        [
             Output(stores.datasets, 'data'),
             Output(stores.dataset_id, 'data'),
-            Output(stores.upload_dialog_flag, 'data', allow_duplicate=True),
+            Output(_import_dialog, 'is_open', allow_duplicate=True),
             Output(stores.conf_dialog_flag, 'data', allow_duplicate=True),
         ],
-        [
-            Input(ok_btn, 'n_clicks'),
-            State(stores.uploaded_file, 'data'),
-        ],
+        Input(_import_dialog, 'is_open'),
+        State(stores.uploaded_file, 'data'),
     )
-    def on_ok_btn_click(
-        n: int,
-        uploaded_file: dict
+    def on_import(
+        flag: bool,
+        uploaded_file: dict,
     ) -> Tuple[Patch, str, bool, int]:
-        """Append uploaded dataset, close upload dialog, open conf dialog"""
+        """import dataset, close import dialog, open conf dialog"""
         # TODO: error handling around import_dataset
         filename = uploaded_file['filename']
         contents = uploaded_file['contents']
