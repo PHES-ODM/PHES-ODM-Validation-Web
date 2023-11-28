@@ -84,14 +84,12 @@ def register(app):  # type: ignore
             Output(status_label, 'children', allow_duplicate=True),
             Output(ok_btn, 'disabled'),
         ],
-        [
-            Input(dataset_uploader, 'contents'),
-            State(dataset_uploader, 'filename'),
-        ],
+        Input(dataset_uploader, 'contents'),
+        State(dataset_uploader, 'filename'),
     )
     def on_dataset_uploaded(
         contents: str,
-        filename: str
+        filename: str,
     ) -> Tuple[dict, str, bool]:
         """Store uploaded dataset, and enable ok button"""
         if not contents:
