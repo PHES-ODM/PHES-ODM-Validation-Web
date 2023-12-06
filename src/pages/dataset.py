@@ -127,3 +127,19 @@ def on_dataset_page(
     if not ds:
         return no_update
     return _init_upload_report(ds)
+
+
+@callback(
+    Output(stores.dataset_id, 'data', allow_duplicate=True),
+    Input('url', 'pathname'),
+    prevent_initial_call='initial_duplicate',
+)
+def on_url_pathname(pathname: str) -> str:
+    '''sets dataset_id from pathname on page load'''
+    # XXX: This can't be combined with on_dataset_page because:
+    # - dataset_id output requires allow_duplicate
+    # - allow_duplicate requires prevent_initial_call='initial_duplicate'
+    # - prevent_initial_call not being False causes dash to complain about the
+    #   on_dataset_page output (_page_content) component not existing yet
+    ds_id = utils.get_dataset_id(pathname)
+    return ds_id if ds_id else no_update
