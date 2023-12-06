@@ -9,6 +9,7 @@ from dash import (
     Patch,
     State,
     callback_context,
+    clientside_callback,
     html,
     no_update,
 )
@@ -100,6 +101,20 @@ def register(app):  # type: ignore
         version_str = ds['odm_version']
         assert version_str in _versions
         return flag, ds['filename'], version_str
+
+    # focus ok button when opening dialog
+    clientside_callback(
+        '''
+        function (is_open, id) {
+            if (is_open)
+                document.getElementById(id).focus();
+            return id;
+        }
+        ''',
+        Output(ok_btn, 'id'),  # dummy
+        Input(_conf_dialog, 'is_open'),
+        State(ok_btn, 'id'),
+    )
 
     @app.callback(
         [

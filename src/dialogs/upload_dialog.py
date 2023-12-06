@@ -7,6 +7,7 @@ from dash import (
     Output,
     Patch,
     State,
+    clientside_callback,
     dcc,
     html,
 )
@@ -102,6 +103,20 @@ def register(app):  # type: ignore
         }
         status = f'{filename} uploaded'
         return uploaded_file, status, False
+
+    # focus ok button after upload
+    clientside_callback(
+        '''
+        function (disabled, id) {
+            if (!disabled)
+                document.getElementById(id).focus();
+            return id;
+        }
+        ''',
+        Output(ok_btn, 'id'),  # dummy
+        Input(ok_btn, 'disabled'),
+        State(ok_btn, 'id'),
+    )
 
     @app.callback(
         [
