@@ -69,6 +69,14 @@ def _gen_table_metadata() -> TableMetadata:
     return result
 
 
+def load_schema(version: Version) -> dict:
+    dir = _get_schema_dir()
+    filename = f'schema-{version.value}.yml'
+    path = os.path.join(dir, filename)
+    with open(path) as f:
+        return yaml.load(f, Loader=yaml.Loader)
+
+
 def init() -> None:
     # TODO: add caching and remove benchmark
     global _version_table_columns
