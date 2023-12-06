@@ -20,7 +20,7 @@ from dash.development.base_component import Component
 import stores
 import utils
 from components import sidebar
-from dataset_import import Dataset, TableData
+from dataset_import import Dataset, SheetName, TableData
 from odm import odm
 
 PAGE_URL = '/datasets/<dataset_id>'
@@ -46,13 +46,13 @@ def _fmt_list(values: List[str]) -> str:
 def _gen_odm_table_list(
     version: odm.Version,
     sheet_tables: Dict[str, str],
-    table_data: Dict[odm.TableName, TableData],
+    sheet_data: Dict[SheetName, TableData],
 ) -> Component:
     entries: List[Component] = []
     for sheet, table, in sheet_tables.items():
         if not table:
             continue
-        data = table_data[sheet]
+        data = sheet_data[sheet]
 
         num_rows = len(data)
         num_cols = len(data[0]) if num_rows > 0 else 0
@@ -105,7 +105,7 @@ def _init_upload_report(ds: Dataset) -> List[Component]:
         entry('Upload time', timestr),
         entry('ODM version', ver_str),
         entry(f'ODM tables ({num_odm_tables})'),
-        _gen_odm_table_list(ver, table_mapping, ds['tables']),
+        _gen_odm_table_list(ver, table_mapping, ds['sheets']),
         entry(f'Ignored tables ({num_ignored_tables})'),
         _gen_unknown_table_list(table_mapping),
     ]
