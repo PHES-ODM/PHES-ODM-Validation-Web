@@ -212,6 +212,15 @@ If the tool encounters an unexpected error during its execution, the user
 should be provided with enough information that somebody on the team can
 reproduce the error.
 
+## Exit Confirmation 
+
+When the user attempts to leave the app for example by closing the browser
+window they should be asked to confirm their choice. Since none of the user
+data is persisted, accidentally closing the app could result in a lot of wasted
+user time for example if they've uploaded a lot of datasets and done
+validations on them. By asking a user for confirmation the app will prevent
+this situation from happening.
+
 ## Tutorial
 
 Users should be able to view a tutorial that guides them through the different
