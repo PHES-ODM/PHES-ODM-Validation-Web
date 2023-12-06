@@ -139,6 +139,12 @@ configuration.
 After configuration, the user should be taken to the dataset page, where the
 updated configuration is reflected in the upload report.
 
+## [Exit Confirmation](../tool-spec/tool-spec.qmd#exit-confirmation)
+
+This is implemented using
+[Javascript](https://stackoverflow.com/questions/821011/prevent-a-webpage-from-navigating-away-using-javascript).
+The code for this is in `src/assets/scripts.js`.
+
 # App
 
 This is the root level of the application, holding application-wide components.
