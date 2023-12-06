@@ -44,7 +44,8 @@ def _load_sheets(filename: Filename, data: bytes
     elif ext == '.xlsx':
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=UserWarning)
-            dfs = pd.read_excel(io.BytesIO(data), sheet_name=None)
+            dfs = pd.read_excel(io.BytesIO(data), sheet_name=None,
+                                na_filter=False)
             return {name: _to_dict_list(df) for (name, df) in dfs.items()}
     else:
         assert False, 'invalid ext'
