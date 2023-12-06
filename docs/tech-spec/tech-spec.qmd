@@ -139,6 +139,73 @@ configuration.
 After configuration, the user should be taken to the dataset page, where the
 updated configuration is reflected in the upload report.
 
+## Dataset validation
+
+Pages required:
+
+- [Dataset](#dataset-page)
+- [Validation](#validation-page)
+
+Dialogs required:
+
+- [Validation](#validation-dialog)
+- [Validation progress](#validation-progress-dialog)
+
+Stores required:
+
+- [Cancel operation](#cancel-operation-store)
+- [Dataset id](#dataset-id-store)
+- [Datasets](#dataset-store)
+- [Progress dialog flag](#dialog-flag-stores)
+- [Validation dialog flag](#dialog-flag-stores)
+- [Validation setup](#validation-setup-store)
+- [Validation trigger](#validation-trigger-store)
+- [Validations](#validation-store)
+
+Dataset validation is performed by clicking the
+validate dataset button in the [sidebar](#sidebar) of a
+[dataset page](#dataset-page), which opens up the
+[validation dialog](#validation-dialog) where the new validation can be setup
+and run.
+
+The validation dialog is initialized with a
+[generated validation name](#validation-name-generation), which can be changed
+by the user. It must be unique per dataset.
+
+The validation profile used for the validation can be chosen from a list. The
+list includes any profile added by the user, as well as the default ODM
+profile.
+
+Starting the validation switches over to the
+[validation-progress dialog](#validation-progress-dialog), which calls
+`validate_data` (or its extended version) from the odm validation library. This
+is a blocking call that may take a long time to complete, but we can get the
+current progress by passing in a python-callback argument. In order to update
+the [validation progress dialog](#validation-progress-dialog) with the progress
+returned from the `validate_data` call, we need to use a
+[Dash background callback](https://dash.plotly.com/background-callbacks), which
+in turn requires a "background callback manager" for storing the intermediate
+state. An in-memory manager (using Redis) is the recommended choice for
+production use, but we'll stick with disk storage temporarily, for simplicity.
+
+The resulting validation report is serialized as json and stored in the
+[validation store](#validation-store). Serialization is required due to the
+validation report being a class and containing class types, which cannot be
+stored in a Plotly store.
+
+Finally, after completing the validation, a new
+[validation page](#validation-page) with the validation summary & report will
+be created.
+
+### Validation name generation
+
+The algorithm for generating new validation names is as follows:
+
+1. Set the next validation name to be "Validation `n`", where `n` is the
+   previous validation count plus one.
+2. If the dataset already has a validation with this (case insensitive) name,
+   then add one to `n` and check again until it's unique.
+
 ## [Exit Confirmation](../tool-spec/tool-spec.qmd#exit-confirmation)
 
 This is implemented using
@@ -151,14 +218,17 @@ This is the root level of the application, holding application-wide components.
 
 Components:
 
+- Url (dcc.Location)
 - [Top bar menu](#top-bar-menu)
 - [Page content](#pages)
-- [Upload dataset dialog](#upload-dataset-dialog)
-- [Configure dataset dialog](#configure-dataset-dialog)
+- [Dialogs](#dialogs)
+- [Stores](#stores)
 
 # Pages
 
 ## Home page
+
+Path: `/`
 
 The home page is shown to the user when they open the tool. It features a
 piece of welcome text, introducing the user to the site and guiding them to the
@@ -170,6 +240,8 @@ Components:
 
 ## Dataset page
 
+Path: `/datasets/<dataset_id>`
+
 The dataset page shows the upload report for the selected dataset, as well as
 buttons for configuration and validation in the sidebar.
 
@@ -178,7 +250,6 @@ from the dataset.
 
 Components:
 
-- Dataset URL (dcc.Location)
 - [Sidebar](#sidebar)
 - Dataset page header
 - Dataset name
@@ -194,6 +265,27 @@ Components:
     - Ignored column names
 - Ignored sheet count
 - Ignored sheet names
+
+## Validation page
+
+Path: `/validations/<dataset_id>/<validation_name>`
+
+This page shows the currently selected dataset validation. It holds the summary
+report, as well as access to the full report.
+
+Ideally the URL for the validation page would be nested within the URL for the
+dataset page like `/datasets/<dataset_id>/validations/<validation_name>`,
+however Dash does not support nested pages, i.e., where a page can be nested
+within another page.
+
+Components:
+
+- [Sidebar](#sidebar)
+- Validation page header
+- Dataset name
+- Validation name
+- Validation summary
+- Validation report download button
 
 # Dialogs
 
@@ -283,6 +375,96 @@ Behaviors:
         - Update the current dataset with the new config values
         - Go to the page for the current dataset
 
+## Validation dialog
+
+This dialog sets up a new validation to run. The user can specify the
+validation name and profile before starting the validation.
+
+**Components**
+
+- modal:
+    - validation name textbox
+    - validation profile dropdown
+    - profile rule list
+    - customize profile button
+    - start button
+    - cancel button
+
+**Behaviors**
+
+1. When the cancel button is clicked:
+    - the [validation-dialog-flag](#dialog-flag-stores) should be unset
+2. When validation-dialog-flag changes:
+    - if false: the dialog should close
+    - if true: the dialog should be initialized:
+        - a new validation name (unqiue to the dataset) should be generated
+        - the rule list should be populated from the selected profile
+3. When the start button is clicked:
+    - if the validation name isn't unique:
+        - show an error
+    - else:
+        - the validation-dialog-flag should be unset
+        - the [progress-dialog-flag](#dialog-flag-stores) should be set
+        - the [validation setup store](#validation-setup-store) should be
+          initialized with the chosen name and profile
+4. TODO: When the customize button is clicked
+
+## Validation progress dialog
+
+This dialog shows the validation progress as well as a minimal result summary.
+It also has a button to cancel the validation.
+
+**Components**
+
+- modal:
+    - confirm cancel dialog (dcc.ConfirmDialog)
+    - dataset name
+    - table name
+    - progress bar
+    - result text
+
+**Behaviors**
+
+1. when [progress-dialog-flag](#dialog-flag-stores) changes:
+    - if false, the dialog should close
+    - if true, the dialog should open, as well as:
+        - reset dialog components
+        - set database name from dataset_id store
+        - set validation-trigger store
+2. when [validation-trigger](#validation-trigger-store) is true:
+    - validation of the current dataset should be performed
+    1. when validation progress changes:
+        - the table name and progress bar should be updated
+    2. when the [cancel-operation store](#cancel-operation-store) changes:
+        - the validation should be canceled
+        - the progress bar should be hidden
+        - the cancel button should be disabled
+        - the close button should be enabled
+    3. when validation completes:
+        - the result text should say the validation completed, as well as the
+          number of errors and warnings
+        - the cancel button should be disabled
+        - the close button should be enabled
+3. when the cancel button is clicked:
+    - the [confirm-cancel-dialog](#dialog-flag-stores) should be shown
+4. when the confirm-cancel-dialog's submit button is clicked:
+    - the cancel-operation store should be set
+    - the current table name should be reset
+    - the validation result text should say the validation was canceled
+5. when the close button is clicked:
+    - the progress-dialog-flag should be reset
+    - if the validation wasn't canceled:
+        - the url pathname should be set to the validation page for this
+          validation
+
+**Issues**
+
+- Showing a confirmation dialog when cancelling the validation doesn't
+  necessarily pause the validation while the user is making their final
+  decision. The validation may therefore complete after the cancel button is
+  clicked, before the cancellation is confirmed. It looks like we have limited
+  control over this, and that we just have to make the best out of it.
+
 ## View validation profiles dialog
 
 TODO
@@ -364,16 +546,19 @@ Components:
 
 - Configure dataset button
 - Validate dataset button
-- List of previous validation buttons
+- List of links to previous validations
 
 Behaviors:
 
 1. The bar should be fixed to the left side of the screen. Even if the user
    scrolls, the content of the bar should stay in place.
-2. When the user clicks on the **Configure dataset** button, the [Configure
-   dataset dialog](#configure-dataset-dialog) should be opened.
-3. TODO: When the user clicks on the **Validate dataset** button...
-4. TODO: List of previous validations...
+2. When the user clicks on the **Configure dataset** button, the
+   [Configure dataset dialog](#configure-dataset-dialog) should be opened.
+3. When the user clicks the **Validate dataset** button, the
+   [Validate dataset dialog](#validate-dataset-dialog) should be opened, using
+   the respective [dialog flag store](#dialog-flag-stores).
+4. When the [validation store](#validation-store) changes, the list of
+   validation links should be (re)generated.
 
 # Stores
 
@@ -406,8 +591,12 @@ The flags are:
 
 - conf-dialog-flag, for the
   [configure dataset dialog](#configure-dataset-dialog)
+- progress-dialog-flag, for the
+  [validation progress dialog](#validation-progress-dialog)
 - upload-dialog-flag, for the
   [upload dataset dialog](#upload-dataset-dialog)
+- validation-dialog-flag, for the
+  [validation dialog](#validation-dialog)
 
 ### Uploaded file store
 
@@ -475,6 +664,41 @@ The reasons for using this intermediate store is:
 
 - Difficulty of querying the final state of a set of dynamic dropdowns.
 - Being able to wait with commiting changes until confirmed by the user.
+
+### Cancel operation store
+
+Type: `bool`
+
+Needed as an intermediate signal for performing additional actions when
+canceling the validation, since the dash background callback doesn't have its
+own callback for it.
+
+It's also used to know if a redirect to a new validation summary page should
+occur or not, after validation.
+
+### Validation setup store
+
+Type: [`ValidationSetup`](#validation-setup)
+
+Used to store config between validation setup and progress.
+'id' since it's not unique across the app, only per dataset.
+
+### Validation trigger store
+
+Type: `Any | bool`
+
+Used to trigger a new validation to start from the validation dialog. This
+intermediate signal is required because we need to initialize parts of the
+validation-progress dialog before starting the (blocking) validation process.
+
+The type is not significant, but `True` is used, as with the
+[cancel operation store](#cancel-operation-store).
+
+### Validation store
+
+Type: `Dict[DatasetId, Dict[ValidationName, Validation]]`
+
+This is the collection of [Validations](#validation).
 
 # Modules
 
@@ -606,3 +830,35 @@ Fields:
 - `tables: Dict[OdmTableName, TableData]`
 
   Holds the actual data for each table/sheet.
+
+## Validation
+
+Type: `class of TypedDict`
+
+Fields:
+
+- `name: str`
+
+  Validation name.
+
+- `summary: str`
+
+  Validation summary, encoded as json.
+
+- `report: str`
+
+  Validation report, encoded as json.
+
+## ValidationSetup
+
+This class holds all values needed to perform a validation. Validation names
+are not unique by themselves, so their parent dataset_id is also needed to
+indentify it.
+
+Type: `class of TypedDict`
+
+Fields:
+
+- `dataset_id: str`
+- `validation_name: str`
+- `profile_id: str`
