@@ -20,18 +20,19 @@ DatasetDict = Dict[Filename, Dataset]
 OPEN_FROM_UPLOAD: int = 2
 
 # dialog flags
+#
+
 conf_dialog_flag = dcc.Store(id='conf-dialog-flag', data=False)
 upload_dialog_flag = dcc.Store(id='upload-dialog-flag', data=False)
 
 # collections
+#
+
 datasets = dcc.Store(id='datasets', data={})
-'''type: DatasetDict'''
 
 # intermediaries
 #
 
 dataset_conf_form = dcc.Store(id='dataset-conf-form', data={})
-'''type: Dict[SheetName, TableName]'''
-
 dataset_id = dcc.Store(id='dataset-id')
 uploaded_file = dcc.Store(id='uploaded-file')

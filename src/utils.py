@@ -1,6 +1,6 @@
 import sys
-from urllib.parse import quote
-from typing import Any
+from urllib.parse import quote, unquote
+from typing import Any, List
 
 
 def echo(x: Any) -> None:  # type: ignore
@@ -25,4 +25,16 @@ def quoted(s: str) -> str:
 
 
 def get_dataset_path(filename: str) -> str:
-    return f'/datasets/{quote(filename)}'
+    return quote(f'/datasets/{filename}')
+
+
+def get_pathname_parts(pathname: str) -> List[str]:
+    return unquote(pathname).split('/')[1:]
+
+
+def get_dataset_id(pathname: str) -> str:
+    '''returns dataset id from url path, or empty string when not found'''
+    parts = get_pathname_parts(pathname)
+    if parts[0] != 'datasets':
+        return ''
+    return parts[1]

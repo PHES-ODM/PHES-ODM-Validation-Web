@@ -41,8 +41,8 @@ app.layout = html.Div([
     stores.uploaded_file,
 
     # dialogs
-    upload_dialog.layout,
     conf_dialog.layout,
+    upload_dialog.layout,
 
     # page
     dcc.Location(id='url', refresh='callback-nav'),
@@ -53,7 +53,7 @@ app.layout = html.Div([
     ),
 ])
 
-# components
+# register component/dialog callbacks
 conf_dialog.register(app)  # type: ignore
 sidebar.register(app)  # type: ignore
 topbar.register(app)  # type: ignore

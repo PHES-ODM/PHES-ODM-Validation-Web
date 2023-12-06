@@ -2,6 +2,7 @@ import logging
 from typing import (
     Dict,
     List,
+    Optional,
 )
 
 import dash
@@ -28,23 +29,18 @@ dash.register_page(__name__, path_template=PAGE_URL)
 
 _page_content = html.Div(id='dataset-page-content')
 
-layout = html.Div([
-    dcc.Location(id='dataset-url'),
-    sidebar.layout,
-    _page_content,
-])
+
+def layout(dataset_id: Optional[str] = None) -> Component:
+    return html.Div([
+        sidebar.layout,
+        html.H1('Dataset'),
+        html.H2(dataset_id),
+        _page_content,
+    ])
 
 
 def _fmt_list(values: List[str]) -> str:
     return ', '.join(values)
-
-
-def _get_dataset_id(pathname: str) -> str:
-    """Returns dataset id from url path, or empty string when not found"""
-    ix = pathname.rfind('/')
-    if ix < 0:
-        return ''
-    return pathname[(ix+1):]
 
 
 def _gen_odm_table_list(
@@ -125,13 +121,9 @@ def on_dataset_page(
     pathname: str,
 ) -> Component:
     '''(re)initializes the dataset page on load and when changed'''
-    dataset_id = _get_dataset_id(pathname)
+    dataset_id = utils.get_dataset_id(pathname)
     logging.info(f'dataset id: {dataset_id}')
     ds = datasets.get(dataset_id)
     if not ds:
         return no_update
-    content = [
-        html.H1('Dataset'),
-        html.H2(utils.quoted(ds['filename'])),
-    ] + _init_upload_report(ds)
-    return content
+    return _init_upload_report(ds)
