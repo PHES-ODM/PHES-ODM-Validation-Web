@@ -6,7 +6,6 @@ from typing import (
 )
 
 import dash
-import dash.dcc as dcc
 from dash import (
     Input,
     Output,
