@@ -305,6 +305,7 @@ This dialog is used by the user to start a new validation and is part of the
 
 From this dialog the user can:
 
+* Choose a **name** for the validation
 * Choose the validation profile they want to use using the **validation
   profile** dropdown
 * View the properties of their selected profile using the **Validation

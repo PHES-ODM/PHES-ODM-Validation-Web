@@ -97,6 +97,7 @@ salt
 salt
 {
     title Validation Setup Dialog
+    "Name"
     { Choose validation profile | ^validation profile^^ ODM profile^ }
     ..
     ..
