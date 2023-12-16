@@ -125,11 +125,11 @@ A user can view their validation profiles from multiple pages, the
 
 The flow for creating a new validation profile can be started from the
 [View Validation Profiles](#view-validation-profiles-dialog) dialog, or the
-[New Validation](#new-validation-dialog) dialog.
+[Validation Setup](#validation-setup-dialog) dialog.
 
 ![create validation profile from view validations profile dialog](../../dist/create-validation-profile-from-view-validation-profiles-dialog.png)
 
-![create validation profile from new validation dialog](../../dist/create-validation-profile-from-new-validation-dialog.png)
+![create validation profile from validation setup dialog](../../dist/create-validation-profile-from-validation-setup-dialog.png)
 
 ### Editing a Validation Profile
 
@@ -196,17 +196,17 @@ page they can:
 ![upload dataset dialog](../../dist/upload-dataset-dialog.png)
 
 This dialog is part of the [upload dataset flow](#dataset-upload)
-where the user can upload a CSV or Excel file to the tool. 
+where the user can upload a CSV or Excel file to the tool.
 
 From this dialog the user can:
 
-* Upload a CSV or Excel file to the tool by clicking on the text or dragging and 
-  dropping a file. When the text is clicked, it should bring up the browser's 
+* Upload a CSV or Excel file to the tool by clicking on the text or dragging and
+  dropping a file. When the text is clicked, it should bring up the browser's
   [native file chooser](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file).
-  * Once the user has uploaded the file the text should be replaced with the 
-    name of the uploaded file. This gives feedback to the user that their file 
+  * Once the user has uploaded the file the text should be replaced with the
+    name of the uploaded file. This gives feedback to the user that their file
     has been uploaded.
-* Confirm their uploaded file by pressing the Ok button. The button should be 
+* Confirm their uploaded file by pressing the Ok button. The button should be
   disabled until the user uploads a file.
 * Close the dialog by clicking the Cancel button.
 
@@ -215,7 +215,7 @@ From this dialog the user can:
 Depending on the dataset that the user wants to configure, a different
 dialog is shown.
 
-At the top of each dialog is a section which shows any errors that can 
+At the top of each dialog is a section which shows any errors that can
 occur during the configuration process.
 
 ### Configure CSV Dataset Dialog
@@ -250,11 +250,11 @@ From this dialog the user can:
   level specifications.
 * Choose the ODM table that each sheet maps to. This is done using the dropdowns
   at the bottom of the **Tables** text.
-* Choose to ignore a sheet by clicking the **Ignore Sheet** button in the 
-  dropdown    
-    * Ignoring a sheet means that the user does not want the tool to process 
-    the sheet in any way. 
-    * The ignore sheet dropdown button should be pinned to the top of 
+* Choose to ignore a sheet by clicking the **Ignore Sheet** button in the
+  dropdown
+    * Ignoring a sheet means that the user does not want the tool to process
+    the sheet in any way.
+    * The ignore sheet dropdown button should be pinned to the top of
     the dropdown items so that its easily accessible to the user.
 * Save the configuration by clicking the **Save** button.
 * Cancel the configuration by clicking the **Close** button.
@@ -265,7 +265,7 @@ In addition,
   dataset
 * The user should be allowed to save the configuration only if the ODM version
   and table dropdowns have been correctly filled in.
-* If the user tries to map the same ODM table to multiple sheets, an error 
+* If the user tries to map the same ODM table to multiple sheets, an error
   should be shown to them in the error section.
 
 ## View Dataset Page
@@ -280,7 +280,7 @@ From this page the user can:
 
 * Perform an action from the [top bar](#top-bar)
 * View the **Upload Report** which summarizes the uploaded dataset.
-    * The upload report should include the list of ignored sheets for an excel 
+    * The upload report should include the list of ignored sheets for an excel
       file
 * Perform an action from the [sidebar](#sidebar)
 
@@ -296,9 +296,9 @@ page the user can:
 * View the entire validation report by clicking the **Validation Report** button
 * Perform an action from the [sidebar](#sidebar)
 
-## New Validation Dialog
+## Validation Setup Dialog
 
-![new validation dialog](../../dist/new-validation-dialog.png)
+![validation setup dialog](../../dist/validation-setup-dialog.png)
 
 This dialog is used by the user to start a new validation and is part of the
 [validate dataset](#dataset-validation) flow.
@@ -319,9 +319,9 @@ In addition,
 * By default the selected validation profile should be one created by the
   ODM staff
 
-## Validating Dialog
+## Validation Progress Dialog
 
-![validating dialog](../../dist/validating-dialog.png)
+![validation progress dialog](../../dist/validation-progress-dialog.png)
 
 This dialog is part of the [validate dataset](#dataset-validation) flow.
 

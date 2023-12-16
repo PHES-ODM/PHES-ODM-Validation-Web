@@ -4,11 +4,11 @@
 
 (*) --> [User is in the **New Validation** dialog]"
 {{
-    $new_validation_dialog()
+    $validation_setup_dialog()
 }}
-" as new_validation_dialog
+" as validation_setup_dialog
 
-new_validation_dialog --> [User clicks the **Customize Validation** \
+validation_setup_dialog --> [User clicks the **Customize Validation** \
 button]"
 {{
     $create_validation_profile_dialog()
@@ -16,9 +16,9 @@ button]"
 " as create_validation_profile_dialog
 
 create_validation_profile_dialog --> [User clicks on the **Create Profile** \
-button] new_validation_dialog
+button] validation_setup_dialog
 
 create_validation_profile_dialog --> [User clicks on the **Cancel** button]\
-new_validation_dialog
+validation_setup_dialog
 
 @enduml

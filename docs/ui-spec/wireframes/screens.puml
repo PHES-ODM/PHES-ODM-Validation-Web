@@ -62,7 +62,7 @@ salt
     !else
         Tables
         {#
-            Sheet Name | Table 
+            Sheet Name | Table
             Sample | ^Table^
             lab | ^Table^ Ignore sheet^ Addresses^
         }
@@ -93,10 +93,10 @@ salt
 }
 !endprocedure
 
-!procedure $new_validation_dialog()
+!procedure $validation_setup_dialog()
 salt
 {
-    title New Validation Dialog
+    title Validation Setup Dialog
     { Choose validation profile | ^validation profile^^ ODM profile^ }
     ..
     ..
@@ -111,10 +111,10 @@ salt
 }
 !endprocedure
 
-!procedure $validating_dialog()
+!procedure $validation_progress_dialog()
 salt
 {
-    title Validating Dialog
+    title Validation Progress Dialog
     Validating <file_name>....
     [Cancel]
 }
