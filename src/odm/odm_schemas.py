@@ -1,11 +1,10 @@
 import logging
-import inspect
 import os
 import time
 import yaml
 from typing import List
 
-import odm_validation
+from odm_validation import part_tables as odmpt
 
 from .odm_defs import (
     ColumnName,
@@ -35,12 +34,16 @@ def _get_file_paths(dir: str) -> List[str]:
         return list(paths)
 
 
+def _get_schema_dir() -> str:
+    asset_dir = odmpt._get_asset_dir()
+    schema_dir = os.path.join(asset_dir, 'validation-schemas')
+    return schema_dir
+
+
 def _get_schema_paths() -> List[str]:
     """returns a list of odm-validation schema file paths"""
-    mod_path = inspect.getfile(odm_validation)
-    mod_dir = os.path.dirname(mod_path)
-    asset_dir = os.path.join(mod_dir, 'assets', 'validation-schemas')
-    return _get_file_paths(asset_dir)
+    schema_dir = _get_schema_dir()
+    return _get_file_paths(schema_dir)
 
 
 def _get_tables(schema: dict) -> List[TableName]:
@@ -64,6 +67,14 @@ def _gen_table_metadata() -> TableMetadata:
                 table_columns[table] = _get_table_columns(schema, table)
             result[version_str] = table_columns
     return result
+
+
+def load_schema(version: Version) -> dict:
+    dir = _get_schema_dir()
+    filename = f'schema-{version.value}.yml'
+    path = os.path.join(dir, filename)
+    with open(path) as f:
+        return yaml.load(f, Loader=yaml.Loader)
 
 
 def init() -> None:

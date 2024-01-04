@@ -2,10 +2,10 @@ import logging
 from typing import (
     Dict,
     List,
+    Optional,
 )
 
 import dash
-import dash.dcc as dcc
 from dash import (
     Input,
     Output,
@@ -19,7 +19,7 @@ from dash.development.base_component import Component
 import stores
 import utils
 from components import sidebar
-from dataset_import import Dataset, TableData
+from dataset_import import Dataset, SheetName, TableData
 from odm import odm
 
 PAGE_URL = '/datasets/<dataset_id>'
@@ -28,35 +28,30 @@ dash.register_page(__name__, path_template=PAGE_URL)
 
 _page_content = html.Div(id='dataset-page-content')
 
-layout = html.Div([
-    dcc.Location(id='dataset-url'),
-    sidebar.layout,
-    _page_content,
-])
+
+def layout(dataset_id: Optional[str] = None) -> Component:
+    return html.Div([
+        sidebar.layout,
+        html.H1('Dataset'),
+        html.H2(dataset_id),
+        _page_content,
+    ])
 
 
 def _fmt_list(values: List[str]) -> str:
     return ', '.join(values)
 
 
-def _get_dataset_id(pathname: str) -> str:
-    """Returns dataset id from url path, or empty string when not found"""
-    ix = pathname.rfind('/')
-    if ix < 0:
-        return ''
-    return pathname[(ix+1):]
-
-
 def _gen_odm_table_list(
     version: odm.Version,
     sheet_tables: Dict[str, str],
-    table_data: Dict[odm.TableName, TableData],
+    sheet_data: Dict[SheetName, TableData],
 ) -> Component:
     entries: List[Component] = []
     for sheet, table, in sheet_tables.items():
         if not table:
             continue
-        data = table_data[sheet]
+        data = sheet_data[sheet]
 
         num_rows = len(data)
         num_cols = len(data[0]) if num_rows > 0 else 0
@@ -109,7 +104,7 @@ def _init_upload_report(ds: Dataset) -> List[Component]:
         entry('Upload time', timestr),
         entry('ODM version', ver_str),
         entry(f'ODM tables ({num_odm_tables})'),
-        _gen_odm_table_list(ver, table_mapping, ds['tables']),
+        _gen_odm_table_list(ver, table_mapping, ds['sheets']),
         entry(f'Ignored tables ({num_ignored_tables})'),
         _gen_unknown_table_list(table_mapping),
     ]
@@ -125,13 +120,25 @@ def on_dataset_page(
     pathname: str,
 ) -> Component:
     '''(re)initializes the dataset page on load and when changed'''
-    dataset_id = _get_dataset_id(pathname)
+    dataset_id = utils.get_dataset_id(pathname)
     logging.info(f'dataset id: {dataset_id}')
     ds = datasets.get(dataset_id)
     if not ds:
         return no_update
-    content = [
-        html.H1('Dataset'),
-        html.H2(utils.quoted(ds['filename'])),
-    ] + _init_upload_report(ds)
-    return content
+    return _init_upload_report(ds)
+
+
+@callback(
+    Output(stores.dataset_id, 'data', allow_duplicate=True),
+    Input('url', 'pathname'),
+    prevent_initial_call='initial_duplicate',
+)
+def on_url_pathname(pathname: str) -> str:
+    '''sets dataset_id from pathname on page load'''
+    # XXX: This can't be combined with on_dataset_page because:
+    # - dataset_id output requires allow_duplicate
+    # - allow_duplicate requires prevent_initial_call='initial_duplicate'
+    # - prevent_initial_call not being False causes dash to complain about the
+    #   on_dataset_page output (_page_content) component not existing yet
+    ds_id = utils.get_dataset_id(pathname)
+    return ds_id if ds_id else no_update

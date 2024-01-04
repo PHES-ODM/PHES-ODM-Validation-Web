@@ -16,6 +16,8 @@ from components import (
 from dialogs import (
     conf_dialog,
     upload_dialog,
+    validation_setup_dialog,
+    validation_progress_dialog,
 )
 from odm import odm_schemas
 
@@ -33,16 +35,24 @@ app = Dash(__name__, use_pages=True, external_stylesheets=stylesheets,
 
 app.layout = html.Div([
     # stores
+    stores.cancel_operation,
     stores.conf_dialog_flag,
     stores.dataset_conf_form,
     stores.dataset_id,
     stores.datasets,
+    stores.progress_dialog_flag,
     stores.upload_dialog_flag,
     stores.uploaded_file,
+    stores.validation_dialog_flag,
+    stores.validation_setup,
+    stores.validation_trigger,
+    stores.validations,
 
     # dialogs
-    upload_dialog.layout,
     conf_dialog.layout,
+    upload_dialog.layout,
+    validation_setup_dialog.layout,
+    validation_progress_dialog.layout,
 
     # page
     dcc.Location(id='url', refresh='callback-nav'),
@@ -53,12 +63,13 @@ app.layout = html.Div([
     ),
 ])
 
-# components
+# register component/dialog callbacks
 conf_dialog.register(app)  # type: ignore
 sidebar.register(app)  # type: ignore
 topbar.register(app)  # type: ignore
 upload_dialog.register(app)  # type: ignore
-
+validation_setup_dialog.register(app)  # type: ignore
+validation_progress_dialog.register(app)  # type: ignore
 
 if __name__ == '__main__':
     app.run_server(debug=True)

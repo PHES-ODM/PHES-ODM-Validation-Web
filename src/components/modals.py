@@ -16,4 +16,5 @@ def init_modal(id: str, title: str, body: List[Component],
         id=id,
         is_open=False,
         keyboard=escape,
+        backdrop='static',
     )

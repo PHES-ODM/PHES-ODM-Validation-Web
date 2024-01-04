@@ -1,6 +1,11 @@
 import sys
-from urllib.parse import quote
-from typing import Any
+from urllib.parse import quote, unquote
+from typing import Any, List, Tuple
+
+from dash import (
+    html,
+)
+from dash.development.base_component import Component
 
 
 def echo(x: Any) -> None:  # type: ignore
@@ -25,4 +30,31 @@ def quoted(s: str) -> str:
 
 
 def get_dataset_path(filename: str) -> str:
-    return f'/datasets/{quote(filename)}'
+    return quote(f'/datasets/{filename}')
+
+
+def get_validation_path(dataset_id: str, validation_name: str) -> str:
+    return quote(f'/validations/{dataset_id}/{validation_name}')
+
+
+def get_pathname_parts(pathname: str) -> List[str]:
+    return unquote(pathname).split('/')[1:]
+
+
+def get_dataset_id(pathname: str) -> str:
+    '''returns dataset id from url path, or empty string when not found'''
+    parts = get_pathname_parts(pathname)
+    if parts[0] != 'datasets':
+        return ''
+    return parts[1]
+
+
+def get_validation_id(pathname: str) -> Tuple[str, str]:
+    '''validation id is (dataset_id, validation_name)'''
+    parts = get_pathname_parts(pathname)
+    assert parts[0] == 'validations'
+    return (parts[1], parts[2])
+
+
+def gen_html_list(items: list) -> Component:
+    return html.Ul(list(map(html.Li, items)), className='compact-list')
