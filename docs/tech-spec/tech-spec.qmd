@@ -17,6 +17,7 @@ Stores required:
 
 - [Uploaded file](#uploaded-file-store)
 - [Datasets](#dataset-store)
+- [Replace_on_dup](#replace-on-dup-store)
 
 ### Importing a dataset
 
@@ -293,30 +294,65 @@ Dialogs are implemented using the [Modal](#modal) component.
 
 ## Upload dataset dialog
 
-This dialog lets the user upload a dataset from a spreadsheet file.
+The upload dialog & co. let the user upload a dataset from a spreadsheet file.
+
+The upload dialog is the main dialog, which performs the actual upload. The
+import dialog performs the import and shows progress. It is decoupled from the
+upload dialog to enable intermediate actions. One such action is detection and
+resolution of uploading a dataset with an existing name, which shows the
+duplicate dialog that lets the user decide if they want to update or replace
+the dataset. A confirmation dialog is shown if the user chooses to replace the
+dataset.
 
 Components:
 
-- modal:
+- upload dialog (modal):
     - file uploader ([dcc.Upload](https://dash.plotly.com/dash-core-components/upload))
     - status text
     - ok button
     - cancel button
+- duplicate dialog (modal):
+    - explanation text
+    - dataset name
+    - update button
+    - replace button
+- confirm replace dialog (dcc.ConfirmDialog)
+- import dialog (modal):
+    - status text
+    - progress bar
 
 Behaviors:
 
 1. When the [upload-dialog-flag](#dialog-flag-stores) changes:
-    - The dialog should open/close
+    - The upload dialog should open/close
     - The ok button should be disabled, and status and uploader content cleared
 2. A file can be uploaded by either clicking the file-uploader or dragging a
    file onto it. Only one file can be uploaded at a time, and the allowed
    formats are CSV and XLSX.
 3. When the upload completes:
     - The file should be stored in the [uploaded-file](#uploaded-file-store) store
-    - The dialog status text should change to show the uploaded filename
+    - The upload dialog status text should change to show the uploaded filename
     - The ok button should be enabled
-4. When the ok button is pressed, it should do the following:
-    1. Construct a Dataset as follows:
+4. When the cancel button is pressed, it should simply close the upload dialog,
+   ignoring any uploaded file.
+5. When the ok button is pressed, it should:
+    1. Close the upload dialog
+    2. If duplicate, then open the duplicate dialog, otherwise open the import
+       dialog (and initialize its status text to the dataset id)
+6. When the duplicate dialog is opened, it should:
+    1. Initialize its dataset id text from the uploaded file name
+7. When a duplicate resolution is chosen (update/replace), it should:
+    1. Close the duplicate dialog
+    2. Set [replace-on-dup](#replace-on-dup-store) accordingly
+    3. If replace is chosen, then open the replace confirmation dialog,
+       otherwise open the import dialog (and initialize its status text to the
+       dataset id)
+8. When the replacement is confirmed, then it should open the import dialog,
+   otherwise (when canceled) it should simply end the flow.
+9. When the import dialog is opened, it should:
+    1. If it's a duplicate and replace-on-dup is true, then clear any previous
+       validations for this dataset.
+    2. Construct a Dataset as follows:
         - **filename**: Set from the uploaded file name.
         - **odm_version**: Set from the ODM version inferred while matching table
           names.
@@ -328,10 +364,9 @@ Behaviors:
           the latest version.
         - **tables**: Set to the extracted data of each sheet with a corresponding
           valid ODM table.
-    2. Add the dataset to the [datasets](#dataset-store) store
-    3. Close this dialog
-    4. Open the [configure dataset dialog](#configure-dataset-dialog)
-5. The cancel button should simply close the dialog, ignoring any uploaded file.
+    3. Add/update the dataset to/in the [datasets](#dataset-store) store.
+    4. If it's not a re-upload, then open the
+       [configure dataset dialog](#configure-dataset-dialog).
 
 ## Configure dataset dialog
 
@@ -649,6 +684,16 @@ to the dataset, they will need to re-upload it to the tool if they wish to
 validate it again. This upload, validate, fix, re-upload cycle means that there
 is no need to permanently store a dataset in the OPFS store, since it will
 always be out of sync with the version on the user’s local file system.
+
+### Replace on dup store
+
+Type: `bool`
+
+This is an intermediate value indicating if the uploaded dataset should be
+updated or replaced when it already exists.
+
+It's needed because it's set and used in two different dialogs (duplicate and
+import).
 
 ### Dataset conf form store
 
