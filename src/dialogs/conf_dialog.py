@@ -222,7 +222,7 @@ def register(app):  # type: ignore
         dup_tables = utils.duplicates(selected_tables)
         if len(dup_tables) > 0:
             msg = _duplicate_err_msg + ', '.join(dup_tables)
-            return (True, msg) + (no_update)*3
+            return (True, msg) + (no_update,)*3
 
         patch = Patch()
         patch[filename] = ds
