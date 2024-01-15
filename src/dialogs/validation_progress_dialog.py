@@ -162,6 +162,7 @@ def register(app):  # type: ignore
             name=validation_name,
             summary='',
             report=json.dumps(report.__dict__),
+            ds_revision=ds['revision'],
         )
         return '', summary, validation
 
