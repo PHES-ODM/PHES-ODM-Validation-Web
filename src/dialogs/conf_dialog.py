@@ -32,7 +32,6 @@ ok_btn = dbc.Button('Ok')
 cancel_btn = dbc.Button('Cancel')
 
 duplicate_err = dbc.Alert('', color='danger', is_open=False)
-_duplicate_err_msg = 'multiple sheets are mapped to the same table: '
 
 # this store is only used by this module
 '''type: list of dropdown ids'''
@@ -53,6 +52,13 @@ _conf_dialog = modals.init_modal(
 )
 
 layout = _conf_dialog
+
+
+def find_keys(d: dict, val: str) -> List[str]:
+    '''returns list of keys in dict `d` with value `val`'''
+    return list(
+        map(lambda pair: pair[0],
+            filter(lambda pair: pair[1] == val, d.items())))
 
 
 def register(app):  # type: ignore
@@ -218,11 +224,19 @@ def register(app):  # type: ignore
             mapping[sheet] = table
 
         # check for duplicates
+        error_prefix = 'Multiple sheets are mapped to table'
         selected_tables = list(filter(bool, mapping.values()))
         dup_tables = utils.duplicates(selected_tables)
         if len(dup_tables) > 0:
-            msg = _duplicate_err_msg + ', '.join(dup_tables)
-            return (True, msg) + (no_update)*3
+            entries: List[str] = []
+            for table in dup_tables:
+                keys = find_keys(mapping, table)
+                entries.append(html.Span([
+                    f'{error_prefix} "{table}": ',
+                    utils.gen_html_list(keys),
+                ]))
+            error_list = utils.gen_html_list(entries)
+            return (True, error_list) + (no_update,)*3
 
         patch = Patch()
         patch[filename] = ds
