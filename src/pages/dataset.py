@@ -102,6 +102,7 @@ def _init_upload_report(ds: Dataset) -> List[Component]:
     num_ignored_tables = num_sheets - num_odm_tables
 
     return [
+        entry('Revision', ds['revision']),
         entry('Upload time', timestr),
         entry('ODM version', ver_str),
         entry(f'ODM tables ({num_odm_tables})'),

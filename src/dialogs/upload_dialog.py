@@ -266,12 +266,15 @@ def register(app):  # type: ignore
         contents = uploaded_file['contents']
         (_, data) = _decode_contents(contents)
         dataset_id = filename
+        is_dup = dataset_id in datasets
         ds = import_dataset(dataset_id, data)
+        if is_dup and (not replace_on_dup):
+            prev_ds = datasets[dataset_id]
+            ds['revision'] = prev_ds['revision'] + 1
         dataset_patch = Patch()
         dataset_patch[dataset_id] = ds
         validations_patch = Patch()
         validations_patch[dataset_id] = {}
-        is_dup = dataset_id in datasets
         conf_flag = no_update if is_dup else stores.OPEN_FROM_UPLOAD
         url = utils.get_dataset_path(filename) if is_dup else no_update
         return (
