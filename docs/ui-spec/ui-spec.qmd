@@ -73,7 +73,7 @@ have the same file names.
 Since users cannot edit their dataset within the tool, after validation, they
 will need to reupload it in order to validate it again. By allowing users to
 replace an existing dataset during the upload process, they can have a history
-of all the previous validations done on the different versions of the same
+of all the previous validations done on the different revisions of the same
 dataset.
 
 ## [Dataset Metadata](../tool-spec/tool-spec.qmd#dataset-metadata)
@@ -475,13 +475,13 @@ From the sidebar the user can:
   Dataset** button
 * View their previous validations by clicking on one of them in the
   **Previous Validations** section.
-  * If there are multiple versions of a dataset then:
+  * If there are multiple revisions of a dataset then:
     * The previous validations should be presented grouped by the dataset
-      version they belong to. A button for each previous validation should be
+      revision they belong to. A button for each previous validation should be
       shown, with the name of the validation in the button text. For example,
       the v1 grouping shown in the above image.
     * The groupings should be in reverse chronological order, i.e. the
-      latest uploaded dataset version should be presented first.
+      latest uploaded dataset revision should be presented first.
 * Start a new validation by clicking the **Validate Dataset** button
 
 # Appendix

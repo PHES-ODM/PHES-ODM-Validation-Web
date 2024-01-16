@@ -25,11 +25,11 @@
     !if ($show_validations)
         {^"Previous Validations"
 
-            {^"v2"
+            {^"rev. 2"
                 [Validation 3]
             }
 
-            {^"v1"
+            {^"rev. 1"
                 [Validation 2]
                 [Validation 1]
             }
