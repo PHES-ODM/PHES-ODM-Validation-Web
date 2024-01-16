@@ -467,13 +467,7 @@ The sidebar is used in the [View Dataset](#view-dataset-page) and
 [Validation Summary](#validation-summary-page) pages. It shows user actions
 for a particular dataset.
 
-There are two versions of the sidebar depending on whether there are
-[multiple versions](#uploading-a-duplicate-dataset) of the current dataset as
-shown below:
-
-![sidebar with a single dataset version](../../dist/sidebar-no-multiple-versions.png)
-
-![sidebar with multiple dataset versions](../../dist/sidebar-multiple-versions.png)
+![sidebar](../../dist/sidebar.png)
 
 From the sidebar the user can:
 
@@ -483,17 +477,11 @@ From the sidebar the user can:
   **Previous Validations** section.
   * If there are multiple versions of a dataset then:
     * The previous validations should be presented grouped by the dataset
-      version they belong to.
+      version they belong to. A button for each previous validation should be
+      shown, with the name of the validation in the button text. For example,
+      the v1 grouping shown in the above image.
     * The groupings should be in reverse chronological order, i.e. the
       latest uploaded dataset version should be presented first.
-    * If a dataset version has only one previous validation, it should not be
-      grouped under the dataset version number. Instead, a button should be
-      shown to the user whose text includes the version number and the
-      validation title. For example, the v2 button shown in the above image.
-    * If a dataset version has multiple previous validations, they should be
-      grouped within the dataset version name. A button for each previous
-      validation should be shown, with the name of the validation in the button
-      text. For example, the v1 grouping shown in the above image.
 * Start a new validation by clicking the **Validate Dataset** button
 
 # Appendix

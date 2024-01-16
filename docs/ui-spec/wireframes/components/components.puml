@@ -17,19 +17,12 @@
         ...
 !endprocedure
 
-!procedure $sidebar($file_name, $show_validations, $multiple_versions)
+!procedure $sidebar($file_name, $show_validations)
 {^"Sidebar"
     [Configure Dataset]
     [Validate Dataset]
 
-    !if ($show_validations) && ($multiple_versions == 0)
-        {^"Previous Validations"
-            [Validation 1]
-            [Validation 2]
-        }
-    !endif
-
-    !if ($show_validations) && ($multiple_versions == 1)
+    !if ($show_validations)
         {^"Previous Validations"
 
             {^"v2"
