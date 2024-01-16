@@ -16,7 +16,7 @@ import utils
 
 conf_btn = dbc.Button('Configure Dataset')
 validate_btn = dbc.Button('Validate Dataset')
-validation_list = html.Div('None')
+validation_list = html.Div()
 
 layout = html.Div(
     [
@@ -77,6 +77,8 @@ def register(app):  # type: ignore
 
         # gen validation links from dataset id and validation names
         names = validations.get(dataset_id, {}).keys()
+        if len(names) == 0:
+            return 'None'
         name_urls = map(get_nameurl, names)
         links = map(get_link, name_urls)
         return utils.gen_html_list(list(links))
