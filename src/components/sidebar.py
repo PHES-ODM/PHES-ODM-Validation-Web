@@ -24,6 +24,7 @@ layout = html.Div(
             conf_btn,
             validate_btn,
         ]),
+        html.Br(),
         html.Strong('Validations'),
         validation_list,
     ],
