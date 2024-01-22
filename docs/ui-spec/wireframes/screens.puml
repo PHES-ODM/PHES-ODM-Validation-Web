@@ -80,7 +80,7 @@ salt
 
     $top_bar(1)
 
-    $sidebar($file_name, $show_validations, 0) | {
+    $sidebar($file_name, $show_validations) | {
         <File Name>
         {SI
             Validation Summary Text
@@ -138,7 +138,7 @@ salt
 
     $top_bar(1)
 
-    $sidebar("<File Name>", 1, 0) |
+    $sidebar("<File Name>", 1) |
     {^"Main Content"
         <File Name>
         {SI

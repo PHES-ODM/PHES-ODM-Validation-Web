@@ -61,7 +61,8 @@ def _gen_odm_table_list(
         ignored_cols = cols - odm_cols
 
         entry = html.Li([
-            f'"{sheet}" ⇒ {table}:',
+            html.Strong(table),
+            f' ⟵ "{sheet}":',
             html.Ul(
                 [
                     html.Li(f'{num_cols} columns, {num_rows} rows'),
@@ -101,11 +102,12 @@ def _init_upload_report(ds: Dataset) -> List[Component]:
     num_ignored_tables = num_sheets - num_odm_tables
 
     return [
+        entry('Revision', ds['revision']),
         entry('Upload time', timestr),
         entry('ODM version', ver_str),
         entry(f'ODM tables ({num_odm_tables})'),
         _gen_odm_table_list(ver, table_mapping, ds['sheets']),
-        entry(f'Ignored tables ({num_ignored_tables})'),
+        entry(f'Ignored sheets ({num_ignored_tables})'),
         _gen_unknown_table_list(table_mapping),
     ]
 

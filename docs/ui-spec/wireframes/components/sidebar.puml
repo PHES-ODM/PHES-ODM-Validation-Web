@@ -1,0 +1,11 @@
+@startuml
+
+!include ./components.puml
+
+salt
+{
+    title Sidebar Validations
+    $sidebar("<File Name>", 1)
+}
+
+@enduml

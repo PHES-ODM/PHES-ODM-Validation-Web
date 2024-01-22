@@ -392,6 +392,7 @@ Behaviors:
     - The dialog should open/close
 3. When the [conf-dialog-flag](#dialog-flag-stores) is true:
     - The filename and version should be set from the selected dataset
+    - Form errors should be reset
 4. When the version changes:
     - The table mapping should be re-inferred from the dataset with the new
       version, and the [dataset-conf-form](#dataset-conf-form-store) store should be

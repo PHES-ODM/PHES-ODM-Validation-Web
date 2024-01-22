@@ -2,10 +2,10 @@
 
 !procedure $top_bar($has_datasets = 0)
     {*
-        **Upload Dataset** | **Datasets** | **View Validation Profiles** | **Tutorials** 
-        **Datasets** | 
-        !if $has_datasets 
-            Ontario Lab.csv | Hamilton Lab.xlsx 
+        **Upload Dataset** | **Datasets** | **View Validation Profiles** | **Tutorials**
+        **Datasets** |
+        !if $has_datasets
+            Ontario Lab.csv | Hamilton Lab.xlsx
         !else
             No Dataset Uploaded
         !endif
@@ -17,26 +17,21 @@
         ...
 !endprocedure
 
-!procedure $sidebar($file_name, $show_validations, $multiple_versions)
+!procedure $sidebar($file_name, $show_validations)
 {^"Sidebar"
-    [Configure Dataset] 
+    [Configure Dataset]
     [Validate Dataset]
 
-    !if ($show_validations) && ($multiple_versions == 0)
-        {^"Previous Validations"
-            [Validation 1]
-            [Validation 2]
-        } 
-    !endif 
-
-    !if ($show_validations) && ($multiple_versions == 1)
+    !if ($show_validations)
         {^"Previous Validations"
 
-            [v2 (Current) - validation 1]
-
-            {^"v1" 
-                [Validation 2]
+            {^"rev. 2"
                 [Validation 3]
+            }
+
+            {^"rev. 1"
+                [Validation 2]
+                [Validation 1]
             }
         }
     !endif

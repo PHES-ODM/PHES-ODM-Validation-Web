@@ -9,7 +9,7 @@ iframe {
     bottom: 0;
     width: 18rem;
     padding: 2rem 1rem;
-    background-color: #f8f9fa;
+    background-color: #e8e9ea;
 }
 
 #page-content {
@@ -32,6 +32,15 @@ iframe {
     width: 100%;
 }
 
+ul li {
+    list-style: inside circle;
+}
+
+ul li ul {
+    margin-top: 0.5rem;
+}
+
 .compact-list li {
     margin-bottom: 0.5rem;
+    list-style: inside square;
 }

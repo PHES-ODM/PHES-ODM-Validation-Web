@@ -15,6 +15,7 @@ class Validation(TypedDict):
     name: str
     summary: str
     report: str
+    ds_revision: int
 
 
 class ValidationSetup(TypedDict):

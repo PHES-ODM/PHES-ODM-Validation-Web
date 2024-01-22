@@ -1,6 +1,6 @@
 import sys
 from urllib.parse import quote, unquote
-from typing import Any, List, Tuple
+from typing import Any, List, Tuple, Union
 
 from dash import (
     html,
@@ -22,7 +22,7 @@ def duplicates(a: list) -> list:
             result.append(x)
         else:
             seen.add(x)
-    return result
+    return list(set(result))
 
 
 def quoted(s: str) -> str:
@@ -56,5 +56,12 @@ def get_validation_id(pathname: str) -> Tuple[str, str]:
     return (parts[1], parts[2])
 
 
-def gen_html_list(items: list) -> Component:
-    return html.Ul(list(map(html.Li, items)), className='compact-list')
+def gen_html_list(xs: Union[list, dict]) -> Component:
+    if isinstance(xs, list):
+        return html.Ul(list(map(html.Li, xs)), className='compact-list')
+    elif isinstance(xs, dict):
+        items: List[html.Li] = []
+        for key, values in xs.items():
+            items.append(html.Li([key, gen_html_list(values)]))
+        return html.Ul(items)
+    assert False

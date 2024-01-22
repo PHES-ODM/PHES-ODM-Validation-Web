@@ -14,6 +14,7 @@ from dash import (
 from dash.dash import no_update
 
 import stores
+import utils
 from components import modals
 from dataset_import import import_dataset
 
@@ -243,6 +244,7 @@ def register(app):  # type: ignore
             Output(stores.validations, 'data', allow_duplicate=True),
             Output(_import_dialog, 'is_open', allow_duplicate=True),
             Output(stores.conf_dialog_flag, 'data', allow_duplicate=True),
+            Output('url', 'pathname', allow_duplicate=True),
         ],
         Input(_import_dialog, 'is_open'),
         State(stores.uploaded_file, 'data'),
@@ -254,8 +256,9 @@ def register(app):  # type: ignore
         uploaded_file: dict,
         replace_on_dup: bool,
         datasets: dict,
-    ) -> Tuple[str, Patch, Patch, bool, bool]:
-        """import dataset, close import dialog, open conf dialog"""
+    ) -> Tuple[str, Patch, Patch, bool, bool, str]:
+        """import dataset, close import dialog, open conf dialog or go to
+        dataset page directly"""
         # TODO: error handling around import_dataset
         if not flag:
             return no_update
@@ -263,17 +266,22 @@ def register(app):  # type: ignore
         contents = uploaded_file['contents']
         (_, data) = _decode_contents(contents)
         dataset_id = filename
+        is_dup = dataset_id in datasets
         ds = import_dataset(dataset_id, data)
+        if is_dup and (not replace_on_dup):
+            prev_ds = datasets[dataset_id]
+            ds['revision'] = prev_ds['revision'] + 1
         dataset_patch = Patch()
         dataset_patch[dataset_id] = ds
         validations_patch = Patch()
         validations_patch[dataset_id] = {}
-        is_dup = dataset_id in datasets
         conf_flag = no_update if is_dup else stores.OPEN_FROM_UPLOAD
+        url = utils.get_dataset_path(filename) if is_dup else no_update
         return (
             dataset_id,
             dataset_patch,
             (validations_patch if (is_dup and replace_on_dup) else no_update),
             False,
             conf_flag,
+            url,
         )

@@ -24,6 +24,7 @@ class Dataset(TypedDict):
     upload_time: datetime
     table_mapping: Dict[SheetName, odm.TableName]
     sheets: Dict[SheetName, TableData]
+    revision: int
 
 
 def _to_dict_list(df: pd.DataFrame) -> List[dict]:
@@ -64,4 +65,5 @@ def import_dataset(filename: Filename, data: bytes) -> Dataset:
         upload_time=datetime.now(),
         table_mapping=table_mapping,
         sheets=sheets,
+        revision=1,
     )

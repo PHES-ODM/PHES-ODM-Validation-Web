@@ -1,4 +1,6 @@
 from typing import Tuple
+from operator import itemgetter
+from itertools import groupby
 
 import dash_bootstrap_components as dbc
 from dash import (
@@ -16,7 +18,7 @@ import utils
 
 conf_btn = dbc.Button('Configure Dataset')
 validate_btn = dbc.Button('Validate Dataset')
-validation_list = html.Div('None')
+validation_list = html.Div()
 
 layout = html.Div(
     [
@@ -24,6 +26,7 @@ layout = html.Div(
             conf_btn,
             validate_btn,
         ]),
+        html.Br(),
         html.Strong('Validations'),
         validation_list,
     ],
@@ -75,7 +78,22 @@ def register(app):  # type: ignore
             return dcc.Link(name, href=url)
 
         # gen validation links from dataset id and validation names
-        names = validations.get(dataset_id, {}).keys()
-        name_urls = map(get_nameurl, names)
-        links = map(get_link, name_urls)
-        return utils.gen_html_list(list(links))
+        ds_validations = validations.get(dataset_id, {})
+        if len(ds_validations) == 0:
+            return 'None'
+
+        named_revisions = list(map(lambda x: (x[0], x[1]['ds_revision']),
+                                   ds_validations.items()))
+        named_revisions.sort(key=itemgetter(1))
+        group_iter = groupby(named_revisions, key=itemgetter(1))
+        rev_names = {
+            rev: list(map(itemgetter(0), names)) for (rev, names) in group_iter
+        }
+
+        rev_links = {}
+        for rev, names in reversed(rev_names.items()):
+            rev_text = f'rev. {rev}'
+            links = list(map(get_link, map(get_nameurl, reversed(names))))
+            rev_links[rev_text] = links
+
+        return utils.gen_html_list(rev_links)
