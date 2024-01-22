@@ -22,7 +22,7 @@ def duplicates(a: list) -> list:
             result.append(x)
         else:
             seen.add(x)
-    return result
+    return list(set(result))
 
 
 def quoted(s: str) -> str:
