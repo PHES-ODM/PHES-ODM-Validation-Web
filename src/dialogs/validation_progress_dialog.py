@@ -1,6 +1,7 @@
 import json
 import logging
 from typing import Callable, Tuple
+# from pprint import pprint
 
 import dash_bootstrap_components as dbc
 from dash import (
@@ -14,8 +15,10 @@ from dash import (
 )
 from dash.development.base_component import Component
 
-from odm_validation.validation import _validate_data_ext
 from odm_validation.input_data import DataKind
+from odm_validation.reports import ErrorVerbosity
+from odm_validation.summarization import SummaryKey, summarize_report
+from odm_validation.validation import _validate_data_ext
 
 import stores
 import utils
@@ -144,13 +147,18 @@ def register(app):  # type: ignore
 
         logging.info(f'running validation "{validation_name}" ' +
                      f'of "{dataset_id}" with "{profile_id}"')
+
         report = _validate_data_ext(schema=schema,
                                     data=tables,
                                     data_kind=DataKind.spreadsheet,
                                     data_version=version.value,
-                                    on_progress=on_progress)
+                                    on_progress=on_progress,
+                                    verbosity=ErrorVerbosity.MESSAGE)
+
         es = report.errors
         ws = report.warnings
+        keys = {SummaryKey.TABLE, SummaryKey.COLUMN, SummaryKey.ROW}
+        report_summary = summarize_report(report, by=keys)
 
         summary = [
             html.P('Validation complete'),
@@ -162,6 +170,7 @@ def register(app):  # type: ignore
             name=validation_name,
             summary='',
             report=json.dumps(report.__dict__),
+            report_summary=report_summary.toJson(),
             ds_revision=ds['revision'],
         )
         return '', summary, validation

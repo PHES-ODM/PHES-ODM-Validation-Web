@@ -69,3 +69,24 @@ def gen_html_list(xs: Union[list, dict]) -> Component:
         return html.Ul(items)
     else:
         return html.Li(xs)
+
+
+def gen_html_table(rows: List[dict]) -> Component:
+    def gen_td(obj: Union[int, str]) -> Component:
+        cn = ('number' if isinstance(obj, int) else 'text') + '-cell'
+        return html.Td(obj, className=cn)
+
+    def gen_tr(row: dict) -> Component:
+        return html.Tr(list(map(gen_td, row.values())))
+
+    cn = 'data-table'
+    if len(rows) == 0:
+        return html.Table(className=cn)
+    headers = list(rows[0].keys())
+    return html.Table(
+        children=(
+            [html.Tr(list(map(html.Th, headers)))] +
+            list(map(gen_tr, rows))
+        ),
+        className=cn,
+    )

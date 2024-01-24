@@ -5,7 +5,8 @@ from dash.development.base_component import Component
 
 
 def init_modal(id: str, title: str, body: List[Component],
-               buttons: List[Component], escape: bool = True) -> Component:
+               buttons: List[Component], escape: bool = True,
+               class_name: str = '') -> Component:
     """Constructs a modal dialog."""
     return dbc.Modal(
         [
@@ -17,4 +18,5 @@ def init_modal(id: str, title: str, body: List[Component],
         is_open=False,
         keyboard=escape,
         backdrop='static',
+        class_name=class_name,
     )

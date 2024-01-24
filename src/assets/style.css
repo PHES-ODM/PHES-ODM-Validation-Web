@@ -40,3 +40,19 @@ ul li ul {
     margin-bottom: 0.5rem;
     list-style: inside square;
 }
+
+.report-modal {
+    max-width: none !important;
+}
+
+/* {{{1 dash data table */
+
+.dash-table-container {
+    overflow: scroll;
+}
+
+.data-table th, .data-table td {
+    margin: 0;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
