@@ -72,5 +72,9 @@ upload_dialog.register(app)  # type: ignore
 validation_setup_dialog.register(app)  # type: ignore
 validation_progress_dialog.register(app)  # type: ignore
 
+# Flask app instance, needed by Gunicorn and specified on command-line
+# eg. gunicorn -b 127.0.0.1:8000 app:server
+server = app.server
+
 if __name__ == '__main__':
     app.run_server(debug=True)
