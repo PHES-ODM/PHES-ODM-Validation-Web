@@ -221,10 +221,9 @@ salt
 {
     title Validation Report Dialog
 
-    Validation Report Text
+    <Full Validation Report Content>
 
-    ^ Download Report ^^ Download as CSV ^^ Download as YAML ^^ Download as \
-JSON ^
+    ^ Download Format ^^ CSV ^^ JSON ^^ YAML ^
     ..
     ..
     ..
@@ -239,6 +238,7 @@ JSON ^
     ..
     ..
 
+    [Download]
     [Close]
 }
 !endprocedure
