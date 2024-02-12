@@ -407,9 +407,9 @@ provided by the browser.
 From this dialog the user can:
 
 * View the full results of a validation.
-* Choose downloaded file format from the **Download Format** dropdown.
-* Choose what to include in the downloaded report from the **Download Options**
-  dropdown.
+* Choose downloaded file format from the **Format** dropdown.
+* Choose which error level/severity to include in the downloaded report from
+  the **Error Level** dropdown. Lower levels include higher levels as well.
 * Download the validation report by clicking the **Download** button.
 * Close the validation report by clicking the **Close** button.
 

@@ -223,14 +223,14 @@ salt
 
     <Full Validation Report Content>
 
-    ^ Download Format ^^ CSV ^^ JSON ^^ YAML ^
+    ^ Format ^^ CSV ^^ JSON ^^ YAML ^
     ..
     ..
     ..
     ..
     ..
     ..
-    ^ Download Options ^^ Full ^^ Errors ^^ Warnings ^^
+    ^ Error Level ^^ WARNING ^^ ERROR ^^
     ..
     ..
     ..
