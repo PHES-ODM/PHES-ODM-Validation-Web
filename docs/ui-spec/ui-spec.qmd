@@ -406,12 +406,12 @@ provided by the browser.
 
 From this dialog the user can:
 
-* View the full results of a validation
-* Download the validation report by clicking on one of the options in the
-  **Download Report** dropdown.
-* Set what they want to include in the downloaded report by using the **Download
-  Options** dropdown.
-* Close the validation report by clicking the **Close** button
+* View the full results of a validation.
+* Choose downloaded file format from the **Format** dropdown.
+* Choose which error level/severity to include in the downloaded report from
+  the **Error Level** dropdown. Lower levels include higher levels as well.
+* Download the validation report by clicking the **Download** button.
+* Close the validation report by clicking the **Close** button.
 
 ## Duplicate Dataset Dialog
 

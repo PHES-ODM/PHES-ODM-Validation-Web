@@ -15,6 +15,7 @@ class Validation(TypedDict):
     name: str
     summary: str
     report: str
+    report_summary: str
     ds_revision: int
 
 
@@ -40,15 +41,16 @@ OPEN_FROM_UPLOAD: int = 2
 #
 
 conf_dialog_flag = dcc.Store(id='conf-dialog-flag', data=False)
+progress_dialog_flag = dcc.Store(id='validation-prog-dialog-flag', data=False)
+report_dialog_flag = dcc.Store(id='report-dialog-flag', data=False)
 upload_dialog_flag = dcc.Store(id='upload-dialog-flag', data=False)
 validation_dialog_flag = dcc.Store(id='validation-dialog-flag', data=False)
-progress_dialog_flag = dcc.Store(id='validation-prog-dialog-flag', data=False)
 
 # collections
 #
 
-datasets = dcc.Store(id='datasets', data={})
-validations = dcc.Store(id='validations', data={})
+datasets = dcc.Store(id='datasets', data={}, storage_type='memory')
+validations = dcc.Store(id='validations', data={}, storage_type='memory')
 
 # intermediaries
 #

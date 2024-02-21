@@ -239,7 +239,7 @@ def register(app):  # type: ignore
 
     @app.callback(
         [
-            Output(stores.dataset_id, 'data'),
+            Output(stores.dataset_id, 'data', allow_duplicate=True),
             Output(stores.datasets, 'data'),
             Output(stores.validations, 'data', allow_duplicate=True),
             Output(_import_dialog, 'is_open', allow_duplicate=True),

@@ -58,10 +58,35 @@ def get_validation_id(pathname: str) -> Tuple[str, str]:
 
 def gen_html_list(xs: Union[list, dict]) -> Component:
     if isinstance(xs, list):
-        return html.Ul(list(map(html.Li, xs)), className='compact-list')
+        return html.Ul(list(map(gen_html_list, xs)), className='compact-list')
     elif isinstance(xs, dict):
         items: List[html.Li] = []
-        for key, values in xs.items():
-            items.append(html.Li([key, gen_html_list(values)]))
+        for key, val in xs.items():
+            if not (isinstance(val, dict) or isinstance(val, list)):
+                items.append(html.Li(f'{key}: {val}'))
+            else:
+                items.append(html.Li([key, gen_html_list(val)]))
         return html.Ul(items)
-    assert False
+    else:
+        return html.Li(xs)
+
+
+def gen_html_table(rows: List[dict]) -> Component:
+    def gen_td(obj: Union[int, str]) -> Component:
+        cn = ('number' if isinstance(obj, int) else 'text') + '-cell'
+        return html.Td(obj, className=cn)
+
+    def gen_tr(row: dict) -> Component:
+        return html.Tr(list(map(gen_td, row.values())))
+
+    cn = 'data-table'
+    if len(rows) == 0:
+        return html.Table(className=cn)
+    headers = list(rows[0].keys())
+    return html.Table(
+        children=(
+            [html.Tr(list(map(html.Th, headers)))] +
+            list(map(gen_tr, rows))
+        ),
+        className=cn,
+    )

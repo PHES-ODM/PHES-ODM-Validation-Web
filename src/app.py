@@ -15,6 +15,7 @@ from components import (
 )
 from dialogs import (
     conf_dialog,
+    report_dialog,
     upload_dialog,
     validation_setup_dialog,
     validation_progress_dialog,
@@ -42,6 +43,7 @@ app.layout = html.Div([
     stores.datasets,
     stores.progress_dialog_flag,
     stores.replace_on_dup,
+    stores.report_dialog_flag,
     stores.upload_dialog_flag,
     stores.uploaded_file,
     stores.validation_dialog_flag,
@@ -51,6 +53,7 @@ app.layout = html.Div([
 
     # dialogs
     conf_dialog.layout,
+    report_dialog.layout,
     upload_dialog.layout,
     validation_setup_dialog.layout,
     validation_progress_dialog.layout,
@@ -66,6 +69,7 @@ app.layout = html.Div([
 
 # register component/dialog callbacks
 conf_dialog.register(app)  # type: ignore
+report_dialog.register(app)  # type: ignore
 sidebar.register(app)  # type: ignore
 topbar.register(app)  # type: ignore
 upload_dialog.register(app)  # type: ignore
