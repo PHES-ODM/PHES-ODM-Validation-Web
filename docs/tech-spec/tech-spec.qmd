@@ -267,7 +267,7 @@ Components:
 - Ignored sheet count
 - Ignored sheet names
 
-## Validation page
+## Validation summary page
 
 Path: `/validations/<dataset_id>/<validation_name>`
 
@@ -285,8 +285,9 @@ Components:
 - Validation page header
 - Dataset name
 - Validation name
-- Validation summary
-- Validation report download button
+- Validation table summary
+- Validation column summary
+- Show-validation-report button
 
 # Dialogs
 
