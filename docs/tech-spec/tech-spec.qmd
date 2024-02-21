@@ -502,6 +502,30 @@ It also has a button to cancel the validation.
   clicked, before the cancellation is confirmed. It looks like we have limited
   control over this, and that we just have to make the best out of it.
 
+## Validation report dialog
+
+**Components**
+
+- modal:
+    - Validation report data-table (dash.dash_table.DataTable)
+    - Format dropdown
+    - Error level dropdown
+    - Downloader (dcc.Download)
+    - Download button
+    - Close button
+
+**Behaviors**
+
+1. when [report-dialog-flag](#dialog-flag-stores) changes:
+    - if false, the dialog should close
+    - if true, the dialog should open, as well as:
+        - generate data table from report
+2. when the close-button is pressed:
+    - unset report-dialog-flag
+3. when the download-button is pressed:
+    - the report should be filtered according to the selected error level,
+      converted to the selected format, and passed to the downloader
+
 ## View validation profiles dialog
 
 TODO
