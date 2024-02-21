@@ -411,7 +411,7 @@ Behaviors:
         - Update the current dataset with the new config values
         - Go to the page for the current dataset
 
-## Validation dialog
+## Validation setup dialog
 
 This dialog sets up a new validation to run. The user can specify the
 validation name and profile before starting the validation.
