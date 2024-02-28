@@ -6,4 +6,4 @@ openpyxl==3.1.2
 pandas==2.0.2
 typing_extensions==4.8.0
 
-odm_validation @ git+https://github.com/Big-Life-Lab/PHES-ODM-Validation.git@2fdf81b6
+odm_validation @ git+https://github.com/Big-Life-Lab/PHES-ODM-Validation.git@c0c80084
