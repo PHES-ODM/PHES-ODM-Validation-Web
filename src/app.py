@@ -44,6 +44,7 @@ app.layout = html.Div([
     stores.progress_dialog_flag,
     stores.replace_on_dup,
     stores.report_dialog_flag,
+    stores.report_dialog_init,
     stores.upload_dialog_flag,
     stores.uploaded_file,
     stores.validation_dialog_flag,

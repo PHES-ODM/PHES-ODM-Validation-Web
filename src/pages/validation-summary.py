@@ -1,4 +1,3 @@
-import json
 from itertools import groupby
 # from pprint import pformat, pprint
 from typing import (
@@ -100,8 +99,8 @@ def on_page_load(dummy: Component, pathname: str, validations: dict
 
     (dataset_id, validation_name) = utils.get_validation_id(pathname)
     v = validations[dataset_id][validation_name]
-    report = json.loads(v['report'])
-    report_summary = json.loads(v['report_summary'])
+    report = v['report']
+    report_summary = v['report_summary']
 
     table_names = sorted(
         set(list(report_summary['errors']) +

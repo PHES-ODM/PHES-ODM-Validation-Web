@@ -1,9 +1,9 @@
-import json
 from typing import Dict, List, Tuple
 from enum import Enum
 # from pprint import pprint
 
 import dash_bootstrap_components as dbc
+import orjson as json
 import pandas as pd
 import yaml
 from dash import (
@@ -101,20 +101,28 @@ def register(app):  # type: ignore
     @app.callback(
         [
             Output(layout, 'is_open'),
-            Output(_content, 'children'),
+            Output(stores.report_dialog_init, 'data'),
         ],
         Input(stores.report_dialog_flag, 'data'),
+    )
+    def on_report_dialog_flag(flag: bool) -> Tuple[bool, bool]:
+        """Open/close dialog"""
+        return (flag, (True if flag else no_update))
+
+    @app.callback(
+        Output(_content, 'children'),
+        Input(stores.report_dialog_init, 'data'),
         State('url', 'pathname'),
         State(stores.validations, 'data'),
     )
-    def on_report_dialog_flag(flag: bool, pathname: str, validations: dict
-                              ) -> Tuple[bool, Component]:
-        """Open/close dialog"""
-        if not flag:
-            return (False, no_update)
+    def on_report_dialog_init(flag: bool, pathname: str, validations: dict
+                              ) -> Component:
+        """init dialog"""
+        # XXX: dialog init requires separate store/signal to avoid
+        # re-transferring state-input when closing the dialog.
         (dataset_id, validation_name) = utils.get_validation_id(pathname)
         v = validations[dataset_id][validation_name]
-        report = json.loads(v['report'])
+        report = v['report']
         errors = report['errors']
         rows = fmttable(errors)
         table = dash_table.DataTable(
@@ -132,7 +140,7 @@ def register(app):  # type: ignore
                 }
             ],
         )
-        return (True, table)
+        return table
 
     @app.callback(
         Output(stores.report_dialog_flag, 'data', allow_duplicate=True),
@@ -161,7 +169,7 @@ def register(app):  # type: ignore
         v = validations[dataset_id][validation_name]
         ds_rev = v['ds_revision']
 
-        report = json.loads(v['report'])
+        report = v['report']
 
         # del metadata
         metadata_keys = [
@@ -183,9 +191,10 @@ def register(app):  # type: ignore
                 break
             report.pop(error_kind_key(kind), None)
 
+        # XXX: orjson.dumps -> bytes
         out_data = ''
         if fmt == Format.JSON:
-            out_data = json.dumps(report)
+            out_data = json.dumps(report).decode()
         elif fmt == Format.YAML:
             out_data = yaml.dump(report, sort_keys=False)
         elif fmt == Format.CSV:

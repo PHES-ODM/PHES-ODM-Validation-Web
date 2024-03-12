@@ -14,8 +14,8 @@ DatasetDict = Dict[Filename, Dataset]
 class Validation(TypedDict):
     name: str
     summary: str
-    report: str
-    report_summary: str
+    report: dict
+    report_summary: dict
     ds_revision: int
 
 
@@ -45,6 +45,11 @@ progress_dialog_flag = dcc.Store(id='validation-prog-dialog-flag', data=False)
 report_dialog_flag = dcc.Store(id='report-dialog-flag', data=False)
 upload_dialog_flag = dcc.Store(id='upload-dialog-flag', data=False)
 validation_dialog_flag = dcc.Store(id='validation-dialog-flag', data=False)
+
+# signals
+#
+
+report_dialog_init = dcc.Store(id='report-dialog-init', data=False)
 
 # collections
 #

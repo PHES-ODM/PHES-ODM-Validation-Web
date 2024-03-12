@@ -1,4 +1,3 @@
-import json
 import logging
 from typing import Callable, Tuple
 # from pprint import pprint
@@ -14,7 +13,6 @@ from dash import (
     no_update,
 )
 from dash.development.base_component import Component
-
 from odm_validation.input_data import DataKind
 from odm_validation.reports import ErrorVerbosity
 from odm_validation.summarization import SummaryKey, summarize_report
@@ -28,7 +26,6 @@ from stores import ValidationSetup
 
 cancel_btn = dbc.Button('Cancel')
 close_btn = dbc.Button('Close', disabled=True)
-progress_text = html.P(id='progress-text')
 result_text = html.P(id='result-text')
 dataset_name_text = html.Strong(id='dataset-name-text')
 table_name_text = html.P(id='table-name-text')
@@ -143,7 +140,11 @@ def register(app):  # type: ignore
         def on_progress(action: str, table_id: str, current: int, total: int
                         ) -> None:
             # per table
-            set_progress((table_id, str(current), str(total)))
+            set_progress((
+                f'{action.capitalize()} {table_id}',
+                str(current),
+                str(total)
+            ))
 
         logging.info(f'running validation "{validation_name}" ' +
                      f'of "{dataset_id}" with "{profile_id}"')
@@ -169,8 +170,8 @@ def register(app):  # type: ignore
         validation[dataset_id][validation_name] = stores.Validation(
             name=validation_name,
             summary='',
-            report=json.dumps(report.__dict__),
-            report_summary=report_summary.toJson(),
+            report=report.__dict__,
+            report_summary=report_summary.__dict__,
             ds_revision=ds['revision'],
         )
         return '', summary, validation

@@ -516,13 +516,19 @@ It also has a button to cancel the validation.
 
 **Behaviors**
 
+This dialog has a separate initialization flag in addition to its open/close
+flag for optimization purposes. Without this separation, the initialization
+data would be re-loaded when the dialog is closing.
+
 1. when [report-dialog-flag](#dialog-flag-stores) changes:
     - if false, the dialog should close
-    - if true, the dialog should open, as well as:
-        - generate data table from report
-2. when the close-button is pressed:
+    - if true, the dialog should open, as well as setting the initialization
+      flag [report-dialog-init](#dialog-init-flag-stores).
+2. when report-dialog-init changes:
+    - generate data table from report
+3. when the close-button is pressed:
     - unset report-dialog-flag
-3. when the download-button is pressed:
+4. when the download-button is pressed:
     - the report should be filtered according to the selected error level,
       converted to the selected format, and passed to the downloader
 
@@ -658,6 +664,16 @@ The flags are:
   [upload dataset dialog](#upload-dataset-dialog)
 - validation-dialog-flag, for the
   [validation dialog](#validation-dialog)
+
+### Dialog init-flag stores
+
+Some dialogs transfer a lot of data when opened, and we don't want that to
+happen more than necessary. These dialog init-flag stores makes sure that
+open/close-operations are separate from init-operations, so that init doesn't
+happen when closing the dialogs, etc.
+
+The init-flags are:
+- [report-dialog-init](#validation-report-dialog)
 
 ### Uploaded file store
 
