@@ -14,8 +14,8 @@ DatasetDict = Dict[Filename, Dataset]
 class Validation(TypedDict):
     name: str
     summary: str
-    report: str
-    report_summary: str
+    report: dict
+    report_summary: dict
     ds_revision: int
 
 

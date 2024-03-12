@@ -19,7 +19,6 @@ from dash import (
 )
 from dash.development.base_component import Component
 import dash_bootstrap_components as dbc
-import orjson as json
 
 from odm_validation.rules import RuleId
 from odm_validation.reports import ErrorKind
@@ -100,8 +99,8 @@ def on_page_load(dummy: Component, pathname: str, validations: dict
 
     (dataset_id, validation_name) = utils.get_validation_id(pathname)
     v = validations[dataset_id][validation_name]
-    report = json.loads(v['report'])
-    report_summary = json.loads(v['report_summary'])
+    report = v['report']
+    report_summary = v['report_summary']
 
     table_names = sorted(
         set(list(report_summary['errors']) +

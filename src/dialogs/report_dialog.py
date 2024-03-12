@@ -122,7 +122,7 @@ def register(app):  # type: ignore
         # re-transferring state-input when closing the dialog.
         (dataset_id, validation_name) = utils.get_validation_id(pathname)
         v = validations[dataset_id][validation_name]
-        report = json.loads(v['report'])
+        report = v['report']
         errors = report['errors']
         rows = fmttable(errors)
         table = dash_table.DataTable(
@@ -169,7 +169,7 @@ def register(app):  # type: ignore
         v = validations[dataset_id][validation_name]
         ds_rev = v['ds_revision']
 
-        report = json.loads(v['report'])
+        report = v['report']
 
         # del metadata
         metadata_keys = [

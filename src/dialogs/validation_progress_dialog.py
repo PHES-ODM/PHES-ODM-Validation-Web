@@ -3,7 +3,6 @@ from typing import Callable, Tuple
 # from pprint import pprint
 
 import dash_bootstrap_components as dbc
-import orjson as json
 from dash import (
     Input,
     Output,
@@ -168,8 +167,8 @@ def register(app):  # type: ignore
         validation[dataset_id][validation_name] = stores.Validation(
             name=validation_name,
             summary='',
-            report=json.dumps(report.__dict__),
-            report_summary=report_summary.toJson(),
+            report=report.__dict__,
+            report_summary=report_summary.__dict__,
             ds_revision=ds['revision'],
         )
         return '', summary, validation
