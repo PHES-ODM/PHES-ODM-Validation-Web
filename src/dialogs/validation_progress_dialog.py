@@ -1,9 +1,9 @@
-import json
 import logging
 from typing import Callable, Tuple
 # from pprint import pprint
 
 import dash_bootstrap_components as dbc
+import orjson as json
 from dash import (
     Input,
     Output,
@@ -14,7 +14,6 @@ from dash import (
     no_update,
 )
 from dash.development.base_component import Component
-
 from odm_validation.input_data import DataKind
 from odm_validation.reports import ErrorVerbosity
 from odm_validation.summarization import SummaryKey, summarize_report

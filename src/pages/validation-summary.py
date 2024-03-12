@@ -1,4 +1,3 @@
-import json
 from itertools import groupby
 # from pprint import pformat, pprint
 from typing import (
@@ -20,6 +19,7 @@ from dash import (
 )
 from dash.development.base_component import Component
 import dash_bootstrap_components as dbc
+import orjson as json
 
 from odm_validation.rules import RuleId
 from odm_validation.reports import ErrorKind

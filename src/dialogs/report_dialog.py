@@ -1,9 +1,9 @@
-import json
 from typing import Dict, List, Tuple
 from enum import Enum
 # from pprint import pprint
 
 import dash_bootstrap_components as dbc
+import orjson as json
 import pandas as pd
 import yaml
 from dash import (
@@ -191,9 +191,10 @@ def register(app):  # type: ignore
                 break
             report.pop(error_kind_key(kind), None)
 
+        # XXX: orjson.dumps -> bytes
         out_data = ''
         if fmt == Format.JSON:
-            out_data = json.dumps(report)
+            out_data = json.dumps(report).decode()
         elif fmt == Format.YAML:
             out_data = yaml.dump(report, sort_keys=False)
         elif fmt == Format.CSV:
