@@ -46,6 +46,11 @@ report_dialog_flag = dcc.Store(id='report-dialog-flag', data=False)
 upload_dialog_flag = dcc.Store(id='upload-dialog-flag', data=False)
 validation_dialog_flag = dcc.Store(id='validation-dialog-flag', data=False)
 
+# signals
+#
+
+report_dialog_init = dcc.Store(id='report-dialog-init', data=False)
+
 # collections
 #
 
