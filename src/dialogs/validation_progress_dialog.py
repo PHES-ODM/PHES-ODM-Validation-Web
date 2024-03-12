@@ -140,7 +140,11 @@ def register(app):  # type: ignore
         def on_progress(action: str, table_id: str, current: int, total: int
                         ) -> None:
             # per table
-            set_progress((table_id, str(current), str(total)))
+            set_progress((
+                f'{action.capitalize()} {table_id}',
+                str(current),
+                str(total)
+            ))
 
         logging.info(f'running validation "{validation_name}" ' +
                      f'of "{dataset_id}" with "{profile_id}"')
