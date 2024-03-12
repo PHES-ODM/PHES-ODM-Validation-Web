@@ -26,7 +26,6 @@ from stores import ValidationSetup
 
 cancel_btn = dbc.Button('Cancel')
 close_btn = dbc.Button('Close', disabled=True)
-progress_text = html.P(id='progress-text')
 result_text = html.P(id='result-text')
 dataset_name_text = html.Strong(id='dataset-name-text')
 table_name_text = html.P(id='table-name-text')
