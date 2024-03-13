@@ -159,6 +159,8 @@ def register(app):  # type: ignore
         es = report.errors
         ws = report.warnings
         keys = {SummaryKey.TABLE, SummaryKey.COLUMN, SummaryKey.ROW}
+
+        on_progress('summarizing report', '', 1, 2)
         report_summary = summarize_report(report, by=keys)
 
         summary = [
