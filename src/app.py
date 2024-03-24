@@ -51,6 +51,8 @@ app.layout = html.Div([
     stores.validation_dialog_flag,
     stores.validation_setup,
     stores.validation_trigger,
+    stores.validation_reports,
+    stores.validation_summaries,
     stores.validations,
 
     # dialogs

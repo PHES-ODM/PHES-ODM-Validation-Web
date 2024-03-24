@@ -62,6 +62,7 @@ def layout(
     ])
 
 
+# TODO: optimize using clientside callback to avoid big data transfer
 @callback(
     [
         Output(_page_content, 'children'),
@@ -70,11 +71,11 @@ def layout(
     Input(_trigger, 'id'),
     State('url', 'pathname'),
     State(stores.datasets, 'data'),
-    State(stores.validations, 'data'),
+    State(stores.validation_summaries, 'data'),
     prevent_initial_call='initial_duplicate',
 )
 def on_page_load(dummy: Component, pathname: str,
-                 datasets: dict, validations: dict
+                 datasets: dict, summaries: dict
                  ) -> Tuple[Component, str]:
     # - number of invalid tables (excel)
     # - for each table:
@@ -104,8 +105,7 @@ def on_page_load(dummy: Component, pathname: str,
     ds = datasets[dataset_id]
     sheet_tables = ds['sheet_tables']
 
-    v = validations[dataset_id][validation_name]
-    report_summary = v['report_summary']
+    report_summary = summaries[dataset_id][validation_name]
 
     # tables
     # XXX: validations can't be read with an updated version of the app, if

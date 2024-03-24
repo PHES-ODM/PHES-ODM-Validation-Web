@@ -99,6 +99,8 @@ def register(app):  # type: ignore
             Output(table_name_text, 'children'),
             Output(result_text, 'children'),
             Output(stores.validations, 'data'),
+            Output(stores.validation_reports, 'data'),
+            Output(stores.validation_summaries, 'data'),
         ],
         inputs=[
             Input(stores.validation_trigger, 'data'),
@@ -127,7 +129,7 @@ def register(app):  # type: ignore
         datasets: dict,
         dataset_sheets: dict,
         setup: ValidationSetup,
-    ) -> Tuple[Component, Component, Patch]:
+    ) -> Tuple[Component, Component, Patch, Patch, Patch]:
         '''open/close dialog, start validation when opening, show report'''
         if not trigger:
             return no_update
@@ -171,15 +173,19 @@ def register(app):  # type: ignore
             html.P(f'errors: {len(es)}, warnings: {len(ws)}'),
         ]
 
+        # patches
         validation = Patch()
         validation[dataset_id][validation_name] = stores.Validation(
             name=validation_name,
             summary='',
-            report=report.__dict__,
-            report_summary=report_summary.__dict__,
             ds_revision=ds['revision'],
         )
-        return '', summary, validation
+        val_report = Patch()
+        val_report[dataset_id][validation_name] = report.__dict__
+        val_summary = Patch()
+        val_summary[dataset_id][validation_name] = report_summary.__dict__
+
+        return '', summary, validation, val_report, val_summary
 
     @app.callback(
         Output(confirm_cancel_dialog, 'displayed', allow_duplicate=True),
