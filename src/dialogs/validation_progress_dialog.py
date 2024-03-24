@@ -103,6 +103,7 @@ def register(app):  # type: ignore
         inputs=[
             Input(stores.validation_trigger, 'data'),
             State(stores.datasets, 'data'),
+            State(stores.dataset_sheets, 'data'),
             State(stores.validation_setup, 'data'),
         ],
         background=True,
@@ -124,6 +125,7 @@ def register(app):  # type: ignore
         set_progress: Callable,
         trigger: bool,
         datasets: dict,
+        dataset_sheets: dict,
         setup: ValidationSetup,
     ) -> Tuple[Component, Component, Patch]:
         '''open/close dialog, start validation when opening, show report'''
@@ -133,7 +135,8 @@ def register(app):  # type: ignore
         assert dataset_id in datasets, f'unknown dataset {dataset_id}'
         ds = datasets[dataset_id]
         version = odm.Version(ds['odm_version'])
-        sheets, mapping = (ds['sheets'], ds['table_mapping'])
+        mapping = ds['table_mapping']
+        sheets = dataset_sheets[dataset_id]
         tables = map_table_data(sheets, mapping)
         schema = odm.load_schema(version)
 

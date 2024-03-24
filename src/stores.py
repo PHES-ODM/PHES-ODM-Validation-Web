@@ -54,6 +54,7 @@ report_dialog_init = dcc.Store(id='report-dialog-init', data=False)
 # collections
 #
 
+dataset_sheets = dcc.Store(id='dataset-sheets', data={})
 datasets = dcc.Store(id='datasets', data={})
 validations = dcc.Store(id='validations', data={})
 

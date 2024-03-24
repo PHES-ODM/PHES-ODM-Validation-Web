@@ -89,7 +89,7 @@ def _gen_unknown_table_list(
     return html.Ul(entries)
 
 
-def _init_upload_report(ds: Dataset) -> List[Component]:
+def _init_upload_report(ds: Dataset, sheets: dict) -> List[Component]:
     def entry(key: str, val: Component = '') -> Component:
         return html.P([html.Strong(key + ': '), val])
 
@@ -106,19 +106,22 @@ def _init_upload_report(ds: Dataset) -> List[Component]:
         entry('Upload time', timestr),
         entry('ODM version', ver_str),
         entry(f'ODM tables ({num_odm_tables})'),
-        _gen_odm_table_list(ver, table_mapping, ds['sheets']),
+        _gen_odm_table_list(ver, table_mapping, sheets),
         entry(f'Ignored sheets ({num_ignored_tables})'),
         _gen_unknown_table_list(table_mapping),
     ]
 
 
+# TODO: optimize sheet load with client callback
 @callback(
     Output(_page_content, 'children'),
     Input(stores.datasets, 'data'),
+    State(stores.dataset_sheets, 'data'),
     State('url', 'pathname'),
 )
 def on_dataset_page(
     datasets: Dict[str, Dataset],
+    dataset_sheets: dict,
     pathname: str,
 ) -> Component:
     '''(re)initializes the dataset page on load and when changed'''
@@ -127,7 +130,8 @@ def on_dataset_page(
     ds = datasets.get(dataset_id)
     if not ds:
         return no_update
-    return _init_upload_report(ds)
+    sheets = dataset_sheets[dataset_id]
+    return _init_upload_report(ds, sheets)
 
 
 @callback(

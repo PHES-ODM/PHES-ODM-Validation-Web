@@ -40,6 +40,7 @@ app.layout = html.Div([
     stores.conf_dialog_flag,
     stores.dataset_conf_form,
     stores.dataset_id,
+    stores.dataset_sheets,
     stores.datasets,
     stores.progress_dialog_flag,
     stores.replace_on_dup,
