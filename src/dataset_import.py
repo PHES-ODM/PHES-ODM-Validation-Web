@@ -19,11 +19,13 @@ TableData = List[TableRow]
 
 
 class Dataset(TypedDict):
+    '''metadata only'''
     filename: str
     odm_version: str
     upload_time: datetime
-    table_mapping: Dict[SheetName, odm.TableName]
-    sheets: Dict[SheetName, TableData]
+    sheet_tables: Dict[SheetName, odm.TableName]
+    table_headers: Dict[odm.TableName, List[str]]
+    table_sizes: Dict[odm.TableName, int]
     revision: int
 
 
@@ -33,8 +35,8 @@ def _to_dict_list(df: pd.DataFrame) -> List[dict]:
     return df.to_dict('records')
 
 
-def _load_sheets(filename: Filename, data: bytes
-                 ) -> Dict[SheetName, TableData]:
+def load_sheets(filename: Filename, data: bytes
+                ) -> Dict[SheetName, TableData]:
     """returns a dictionary of sheet-names mapped to dataframes"""
     # XXX: excel warnings are ignored to hide warning about excel
     # data-validation not being supported in pandas/openpyxl
@@ -52,18 +54,44 @@ def _load_sheets(filename: Filename, data: bytes
         assert False, 'invalid ext'
 
 
-def import_dataset(filename: Filename, data: bytes) -> Dataset:
+def get_table_headers(
+    sheet_tables: Dict[SheetName, odm.TableName],
+    sheet_data: Dict[SheetName, list],
+) -> Dict[SheetName, List[str]]:
+    result = {}
+    for sheet, table, in sheet_tables.items():
+        if not table:
+            continue
+        rows = sheet_data[sheet]
+        result[table] = list(rows[0].keys()) if len(rows) > 0 else []
+    return result
+
+
+def get_table_sizes(
+    sheet_tables: Dict[SheetName, odm.TableName],
+    sheet_data: Dict[str, list]
+) -> Dict[odm.TableName, int]:
+    result = {}
+    for sheet, table, in sheet_tables.items():
+        if table:
+            result[table] = len(sheet_data[sheet])
+    return result
+
+
+def import_dataset(filename: Filename, sheets: dict) -> Dataset:
     """Constructs a Dataset with data parsed from an Excel/CSV file. May throw
     an exceptionjif the file can't be imported."""
-    sheets = _load_sheets(filename, data)
     sheet_names = list(sheets.keys())
     odm_version = odm.infer_version(sheet_names)
-    table_mapping = odm.infer_table_mapping(sheet_names, odm_version)
+    sheet_tables = odm.infer_table_mapping(sheet_names, odm_version)
+    headers = get_table_headers(sheet_tables, sheets)
+    sizes = get_table_sizes(sheet_tables, sheets)
     return Dataset(
         filename=filename,
         odm_version=odm_version.value,
         upload_time=datetime.now(),
-        table_mapping=table_mapping,
-        sheets=sheets,
+        sheet_tables=sheet_tables,
+        table_headers=headers,
+        table_sizes=sizes,
         revision=1,
     )

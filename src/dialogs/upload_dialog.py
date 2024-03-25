@@ -1,5 +1,5 @@
 import base64
-from typing import Tuple
+from typing import Dict, Tuple
 
 import dash_bootstrap_components as dbc
 from dash import (
@@ -16,7 +16,7 @@ from dash.dash import no_update
 import stores
 import utils
 from components import modals
-from dataset_import import import_dataset
+from dataset_import import SheetName, TableData, import_dataset, load_sheets
 
 dataset_uploader = dcc.Upload(
     id='upload-data',
@@ -241,7 +241,10 @@ def register(app):  # type: ignore
         [
             Output(stores.dataset_id, 'data', allow_duplicate=True),
             Output(stores.datasets, 'data'),
+            Output(stores.dataset_sheets, 'data'),
             Output(stores.validations, 'data', allow_duplicate=True),
+            Output(stores.validation_reports, 'data', allow_duplicate=True),
+            Output(stores.validation_summaries, 'data', allow_duplicate=True),
             Output(_import_dialog, 'is_open', allow_duplicate=True),
             Output(stores.conf_dialog_flag, 'data', allow_duplicate=True),
             Output('url', 'pathname', allow_duplicate=True),
@@ -256,7 +259,7 @@ def register(app):  # type: ignore
         uploaded_file: dict,
         replace_on_dup: bool,
         datasets: dict,
-    ) -> Tuple[str, Patch, Patch, bool, bool, str]:
+    ) -> Tuple[str, Patch, Patch, Patch, Patch, Patch, bool, bool, str]:
         """import dataset, close import dialog, open conf dialog or go to
         dataset page directly"""
         # TODO: error handling around import_dataset
@@ -267,20 +270,36 @@ def register(app):  # type: ignore
         (_, data) = _decode_contents(contents)
         dataset_id = filename
         is_dup = dataset_id in datasets
-        ds = import_dataset(dataset_id, data)
+
+        sheets: Dict[SheetName, TableData] = load_sheets(filename, data)
+        ds = import_dataset(dataset_id, sheets)
+
         if is_dup and (not replace_on_dup):
             prev_ds = datasets[dataset_id]
             ds['revision'] = prev_ds['revision'] + 1
+
+        # patches
         dataset_patch = Patch()
         dataset_patch[dataset_id] = ds
-        validations_patch = Patch()
-        validations_patch[dataset_id] = {}
+        dataset_sheet_patch = Patch()
+        dataset_sheet_patch[dataset_id] = sheets
+        validation_patch = Patch()
+        validation_patch[dataset_id] = {}
+
+        # same validation patch can be used on validation reports/summaries as
+        # well, since they're all indexed by dataset_id
+        replace_val = (is_dup and replace_on_dup)
+        val_update = validation_patch if replace_val else no_update
+
         conf_flag = no_update if is_dup else stores.OPEN_FROM_UPLOAD
         url = utils.get_dataset_path(filename) if is_dup else no_update
         return (
             dataset_id,
             dataset_patch,
-            (validations_patch if (is_dup and replace_on_dup) else no_update),
+            dataset_sheet_patch,
+            val_update,
+            val_update,
+            val_update,
             False,
             conf_flag,
             url,

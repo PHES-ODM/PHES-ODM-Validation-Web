@@ -12,10 +12,9 @@ DatasetDict = Dict[Filename, Dataset]
 
 
 class Validation(TypedDict):
+    '''metadata only'''
     name: str
     summary: str
-    report: dict
-    report_summary: dict
     ds_revision: int
 
 
@@ -54,8 +53,11 @@ report_dialog_init = dcc.Store(id='report-dialog-init', data=False)
 # collections
 #
 
-datasets = dcc.Store(id='datasets', data={}, storage_type='memory')
-validations = dcc.Store(id='validations', data={}, storage_type='memory')
+dataset_sheets = dcc.Store(id='dataset-sheets', data={})
+datasets = dcc.Store(id='datasets', data={})
+validations = dcc.Store(id='validations', data={})
+validation_reports = dcc.Store(id='validation-reports', data={})
+validation_summaries = dcc.Store(id='validation-summaries', data={})
 
 # intermediaries
 #

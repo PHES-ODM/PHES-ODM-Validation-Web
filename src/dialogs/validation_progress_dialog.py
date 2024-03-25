@@ -99,10 +99,13 @@ def register(app):  # type: ignore
             Output(table_name_text, 'children'),
             Output(result_text, 'children'),
             Output(stores.validations, 'data'),
+            Output(stores.validation_reports, 'data'),
+            Output(stores.validation_summaries, 'data'),
         ],
         inputs=[
             Input(stores.validation_trigger, 'data'),
             State(stores.datasets, 'data'),
+            State(stores.dataset_sheets, 'data'),
             State(stores.validation_setup, 'data'),
         ],
         background=True,
@@ -124,8 +127,9 @@ def register(app):  # type: ignore
         set_progress: Callable,
         trigger: bool,
         datasets: dict,
+        dataset_sheets: dict,
         setup: ValidationSetup,
-    ) -> Tuple[Component, Component, Patch]:
+    ) -> Tuple[Component, Component, Patch, Patch, Patch]:
         '''open/close dialog, start validation when opening, show report'''
         if not trigger:
             return no_update
@@ -133,7 +137,8 @@ def register(app):  # type: ignore
         assert dataset_id in datasets, f'unknown dataset {dataset_id}'
         ds = datasets[dataset_id]
         version = odm.Version(ds['odm_version'])
-        sheets, mapping = (ds['sheets'], ds['table_mapping'])
+        mapping = ds['sheet_tables']
+        sheets = dataset_sheets[dataset_id]
         tables = map_table_data(sheets, mapping)
         schema = odm.load_schema(version)
 
@@ -159,6 +164,8 @@ def register(app):  # type: ignore
         es = report.errors
         ws = report.warnings
         keys = {SummaryKey.TABLE, SummaryKey.COLUMN, SummaryKey.ROW}
+
+        on_progress('summarizing report', '', 1, 2)
         report_summary = summarize_report(report, by=keys)
 
         summary = [
@@ -166,15 +173,19 @@ def register(app):  # type: ignore
             html.P(f'errors: {len(es)}, warnings: {len(ws)}'),
         ]
 
+        # patches
         validation = Patch()
         validation[dataset_id][validation_name] = stores.Validation(
             name=validation_name,
             summary='',
-            report=report.__dict__,
-            report_summary=report_summary.__dict__,
             ds_revision=ds['revision'],
         )
-        return '', summary, validation
+        val_report = Patch()
+        val_report[dataset_id][validation_name] = report.__dict__
+        val_summary = Patch()
+        val_summary[dataset_id][validation_name] = report_summary.__dict__
+
+        return '', summary, validation, val_report, val_summary
 
     @app.callback(
         Output(confirm_cancel_dialog, 'displayed', allow_duplicate=True),

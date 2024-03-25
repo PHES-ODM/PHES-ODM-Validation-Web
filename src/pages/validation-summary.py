@@ -62,6 +62,7 @@ def layout(
     ])
 
 
+# TODO: optimize using clientside callback to avoid big data transfer
 @callback(
     [
         Output(_page_content, 'children'),
@@ -69,10 +70,12 @@ def layout(
     ],
     Input(_trigger, 'id'),
     State('url', 'pathname'),
-    State(stores.validations, 'data'),
+    State(stores.datasets, 'data'),
+    State(stores.validation_summaries, 'data'),
     prevent_initial_call='initial_duplicate',
 )
-def on_page_load(dummy: Component, pathname: str, validations: dict
+def on_page_load(dummy: Component, pathname: str,
+                 datasets: dict, summaries: dict
                  ) -> Tuple[Component, str]:
     # - number of invalid tables (excel)
     # - for each table:
@@ -98,20 +101,20 @@ def on_page_load(dummy: Component, pathname: str, validations: dict
         return e.get('count', 0)
 
     (dataset_id, validation_name) = utils.get_validation_id(pathname)
-    v = validations[dataset_id][validation_name]
-    report = v['report']
-    report_summary = v['report_summary']
 
-    table_names = sorted(
-        set(list(report_summary['errors']) +
-            list(report_summary['warnings'])))
+    ds = datasets[dataset_id]
+    sheet_tables = ds['sheet_tables']
+
+    report_summary = summaries[dataset_id][validation_name]
 
     # tables
     # XXX: validations can't be read with an updated version of the app, if
     # RuleId value changes in the next version
     rs = report_summary
     table_errors = []
-    for table in table_names:
+    for sheet, table in sheet_tables.items():
+        if not table:
+            continue
         es = get_entries(rs, ErrorKind.ERROR, table, SummaryKey.TABLE)
         ws = get_entries(rs, ErrorKind.WARNING, table, SummaryKey.TABLE)
         num_errors = get_count(es, RuleId._all)
@@ -119,7 +122,7 @@ def on_page_load(dummy: Component, pathname: str, validations: dict
 
         es = get_entries(rs, ErrorKind.ERROR, table, SummaryKey.ROW)
         invalid_rows = list(get_value_set(es))
-        total_rows = report['table_info'][table]['rows']
+        total_rows = ds['table_sizes'][table]
 
         table_errors.append({
             'Table': table,
@@ -144,7 +147,9 @@ def on_page_load(dummy: Component, pathname: str, validations: dict
         return result
 
     col_errors = []
-    for table in table_names:
+    for table in sheet_tables.values():
+        if not table:
+            continue
         es = get_entries(rs, ErrorKind.ERROR, table, SummaryKey.COLUMN)
         col_errors += getrows(table, es)
 

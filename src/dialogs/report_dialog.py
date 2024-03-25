@@ -102,27 +102,30 @@ def register(app):  # type: ignore
         [
             Output(layout, 'is_open'),
             Output(stores.report_dialog_init, 'data'),
+            Output(_content, 'children', allow_duplicate=True),
         ],
         Input(stores.report_dialog_flag, 'data'),
     )
-    def on_report_dialog_flag(flag: bool) -> Tuple[bool, bool]:
+    def on_report_dialog_flag(flag: bool) -> Tuple[bool, bool, str]:
         """Open/close dialog"""
-        return (flag, (True if flag else no_update))
+        if not flag:
+            return (flag, no_update, no_update)
+        return (flag, True, 'Loading...')
 
+    # TODO: optimize using client callback due to transfer of big reports
     @app.callback(
-        Output(_content, 'children'),
+        Output(_content, 'children', allow_duplicate=True),
         Input(stores.report_dialog_init, 'data'),
         State('url', 'pathname'),
-        State(stores.validations, 'data'),
+        State(stores.validation_reports, 'data'),
     )
-    def on_report_dialog_init(flag: bool, pathname: str, validations: dict
+    def on_report_dialog_init(flag: bool, pathname: str, reports: dict
                               ) -> Component:
         """init dialog"""
         # XXX: dialog init requires separate store/signal to avoid
         # re-transferring state-input when closing the dialog.
         (dataset_id, validation_name) = utils.get_validation_id(pathname)
-        v = validations[dataset_id][validation_name]
-        report = v['report']
+        report = reports[dataset_id][validation_name]
         errors = report['errors']
         rows = fmttable(errors)
         table = dash_table.DataTable(
@@ -155,11 +158,13 @@ def register(app):  # type: ignore
         Input(_download_btn, 'n_clicks'),
         State('url', 'pathname'),
         State(stores.validations, 'data'),
+        State(stores.validation_reports, 'data'),
         State(_format, 'value'),
         State(_error_level, 'value'),
         prevent_initial_call=True,
     )
-    def on_download_btn_click(n: int, pathname: str, validations: dict,
+    def on_download_btn_click(n: int, pathname: str,
+                              validations: dict, reports: dict,
                               fmt_name: str, error_level: str) -> dict:
         if not n:
             return no_update
@@ -168,8 +173,7 @@ def register(app):  # type: ignore
         (dataset_id, validation_name) = utils.get_validation_id(pathname)
         v = validations[dataset_id][validation_name]
         ds_rev = v['ds_revision']
-
-        report = v['report']
+        report = reports[dataset_id][validation_name]
 
         # del metadata
         metadata_keys = [

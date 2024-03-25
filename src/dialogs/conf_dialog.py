@@ -127,7 +127,7 @@ def register(app):  # type: ignore
         selected version changes'''
         assert selected_version_str
         ds = datasets[dataset_id]
-        mapping = ds['table_mapping']
+        mapping = ds['sheet_tables']
         old_version = odm.Version(ds['odm_version'])
         selected_version = odm.Version(selected_version_str)
         new_mapping = {}
@@ -221,7 +221,7 @@ def register(app):  # type: ignore
         ds = datasets[dataset_id]
         ds['odm_version'] = version_str
         filename = ds['filename']
-        mapping = ds['table_mapping']
+        mapping = ds['sheet_tables']
         for sheet, table in new_mapping.items():
             mapping[sheet] = table
 
