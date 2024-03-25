@@ -102,16 +102,19 @@ def register(app):  # type: ignore
         [
             Output(layout, 'is_open'),
             Output(stores.report_dialog_init, 'data'),
+            Output(_content, 'children', allow_duplicate=True),
         ],
         Input(stores.report_dialog_flag, 'data'),
     )
-    def on_report_dialog_flag(flag: bool) -> Tuple[bool, bool]:
+    def on_report_dialog_flag(flag: bool) -> Tuple[bool, bool, str]:
         """Open/close dialog"""
-        return (flag, (True if flag else no_update))
+        if not flag:
+            return (flag, no_update, no_update)
+        return (flag, True, 'Loading...')
 
     # TODO: optimize using client callback due to transfer of big reports
     @app.callback(
-        Output(_content, 'children'),
+        Output(_content, 'children', allow_duplicate=True),
         Input(stores.report_dialog_init, 'data'),
         State('url', 'pathname'),
         State(stores.validation_reports, 'data'),
