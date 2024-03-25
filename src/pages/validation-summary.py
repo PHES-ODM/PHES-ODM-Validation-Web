@@ -105,7 +105,6 @@ def on_page_load(dummy: Component, pathname: str,
     sheet_tables = ds['sheet_tables']
 
     v = validations[dataset_id][validation_name]
-    report = v['report']
     report_summary = v['report_summary']
 
     # tables
@@ -123,7 +122,7 @@ def on_page_load(dummy: Component, pathname: str,
 
         es = get_entries(rs, ErrorKind.ERROR, table, SummaryKey.ROW)
         invalid_rows = list(get_value_set(es))
-        total_rows = report['table_info'][table]['rows']
+        total_rows = ds['table_sizes'][table]
 
         table_errors.append({
             'Table': table,

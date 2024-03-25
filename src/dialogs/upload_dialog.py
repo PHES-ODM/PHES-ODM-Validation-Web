@@ -270,8 +270,7 @@ def register(app):  # type: ignore
         is_dup = dataset_id in datasets
 
         sheets: Dict[SheetName, TableData] = load_sheets(filename, data)
-        sheet_names = list(sheets.keys())
-        ds = import_dataset(dataset_id, sheet_names)
+        ds = import_dataset(dataset_id, sheets)
 
         if is_dup and (not replace_on_dup):
             prev_ds = datasets[dataset_id]

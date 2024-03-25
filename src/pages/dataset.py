@@ -19,7 +19,7 @@ from dash.development.base_component import Component
 import stores
 import utils
 from components import sidebar
-from dataset_import import Dataset, SheetName, TableData
+from dataset_import import Dataset
 from odm import odm
 
 PAGE_URL = '/datasets/<dataset_id>'
@@ -45,17 +45,16 @@ def _fmt_list(values: List[str]) -> str:
 def _gen_odm_table_list(
     version: odm.Version,
     sheet_tables: Dict[str, str],
-    sheet_data: Dict[SheetName, TableData],
+    table_headers: Dict[odm.TableName, List[str]],
+    table_sizes: Dict[odm.TableName, int],
 ) -> Component:
     entries: List[Component] = []
     for sheet, table, in sheet_tables.items():
         if not table:
             continue
-        data = sheet_data[sheet]
-
-        num_rows = len(data)
-        num_cols = len(data[0]) if num_rows > 0 else 0
-        cols = set(data[0].keys())
+        num_rows = table_sizes[table]
+        cols = set(table_headers[table])
+        num_cols = len(cols)
         all_odm_cols = set(odm.get_column_names(version, table))
         odm_cols = all_odm_cols.intersection(cols)
         ignored_cols = cols - odm_cols
@@ -89,7 +88,7 @@ def _gen_unknown_table_list(
     return html.Ul(entries)
 
 
-def _init_upload_report(ds: Dataset, sheets: dict) -> List[Component]:
+def _init_upload_report(ds: Dataset) -> List[Component]:
     def entry(key: str, val: Component = '') -> Component:
         return html.P([html.Strong(key + ': '), val])
 
@@ -106,7 +105,8 @@ def _init_upload_report(ds: Dataset, sheets: dict) -> List[Component]:
         entry('Upload time', timestr),
         entry('ODM version', ver_str),
         entry(f'ODM tables ({num_odm_tables})'),
-        _gen_odm_table_list(ver, sheet_tables, sheets),
+        _gen_odm_table_list(ver, sheet_tables, ds['table_headers'],
+                            ds['table_sizes']),
         entry(f'Ignored sheets ({num_ignored_tables})'),
         _gen_unknown_table_list(sheet_tables),
     ]
@@ -116,12 +116,10 @@ def _init_upload_report(ds: Dataset, sheets: dict) -> List[Component]:
 @callback(
     Output(_page_content, 'children'),
     Input(stores.datasets, 'data'),
-    State(stores.dataset_sheets, 'data'),
     State('url', 'pathname'),
 )
 def on_dataset_page(
     datasets: Dict[str, Dataset],
-    dataset_sheets: dict,
     pathname: str,
 ) -> Component:
     '''(re)initializes the dataset page on load and when changed'''
@@ -130,8 +128,7 @@ def on_dataset_page(
     ds = datasets.get(dataset_id)
     if not ds:
         return no_update
-    sheets = dataset_sheets[dataset_id]
-    return _init_upload_report(ds, sheets)
+    return _init_upload_report(ds)
 
 
 @callback(

@@ -24,6 +24,8 @@ class Dataset(TypedDict):
     odm_version: str
     upload_time: datetime
     sheet_tables: Dict[SheetName, odm.TableName]
+    table_headers: Dict[odm.TableName, List[str]]
+    table_sizes: Dict[odm.TableName, int]
     revision: int
 
 
@@ -52,15 +54,44 @@ def load_sheets(filename: Filename, data: bytes
         assert False, 'invalid ext'
 
 
-def import_dataset(filename: Filename, sheet_names: List[str]) -> Dataset:
+def get_table_headers(
+    sheet_tables: Dict[SheetName, odm.TableName],
+    sheet_data: Dict[SheetName, list],
+) -> Dict[SheetName, List[str]]:
+    result = {}
+    for sheet, table, in sheet_tables.items():
+        if not table:
+            continue
+        rows = sheet_data[sheet]
+        result[table] = list(rows[0].keys()) if len(rows) > 0 else []
+    return result
+
+
+def get_table_sizes(
+    sheet_tables: Dict[SheetName, odm.TableName],
+    sheet_data: Dict[str, list]
+) -> Dict[odm.TableName, int]:
+    result = {}
+    for sheet, table, in sheet_tables.items():
+        if table:
+            result[table] = len(sheet_data[sheet])
+    return result
+
+
+def import_dataset(filename: Filename, sheets: dict) -> Dataset:
     """Constructs a Dataset with data parsed from an Excel/CSV file. May throw
     an exceptionjif the file can't be imported."""
+    sheet_names = list(sheets.keys())
     odm_version = odm.infer_version(sheet_names)
     sheet_tables = odm.infer_table_mapping(sheet_names, odm_version)
+    headers = get_table_headers(sheet_tables, sheets)
+    sizes = get_table_sizes(sheet_tables, sheets)
     return Dataset(
         filename=filename,
         odm_version=odm_version.value,
         upload_time=datetime.now(),
         sheet_tables=sheet_tables,
+        table_headers=headers,
+        table_sizes=sizes,
         revision=1,
     )
