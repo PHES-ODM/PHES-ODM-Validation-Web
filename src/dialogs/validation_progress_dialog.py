@@ -135,7 +135,7 @@ def register(app):  # type: ignore
         assert dataset_id in datasets, f'unknown dataset {dataset_id}'
         ds = datasets[dataset_id]
         version = odm.Version(ds['odm_version'])
-        mapping = ds['table_mapping']
+        mapping = ds['sheet_tables']
         sheets = dataset_sheets[dataset_id]
         tables = map_table_data(sheets, mapping)
         schema = odm.load_schema(version)

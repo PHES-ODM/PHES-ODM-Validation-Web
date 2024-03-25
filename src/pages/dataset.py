@@ -80,10 +80,10 @@ def _gen_odm_table_list(
 
 
 def _gen_unknown_table_list(
-    table_mapping: Dict[str, str]
+    sheet_tables: Dict[str, str]
 ) -> Component:
     entries: List[html.Li] = []
-    for a, b, in table_mapping.items():
+    for a, b, in sheet_tables.items():
         if not b:
             entries.append(html.Li(f'"{a}"'))
     return html.Ul(entries)
@@ -94,9 +94,9 @@ def _init_upload_report(ds: Dataset, sheets: dict) -> List[Component]:
         return html.P([html.Strong(key + ': '), val])
 
     timestr = ds['upload_time']
-    table_mapping = ds['table_mapping']
-    num_sheets = len(table_mapping)
-    num_odm_tables = len(list(filter(bool, table_mapping.values())))
+    sheet_tables = ds['sheet_tables']
+    num_sheets = len(sheet_tables)
+    num_odm_tables = len(list(filter(bool, sheet_tables.values())))
     ver_str = ds['odm_version']
     ver = odm.Version(ver_str)
     num_ignored_tables = num_sheets - num_odm_tables
@@ -106,9 +106,9 @@ def _init_upload_report(ds: Dataset, sheets: dict) -> List[Component]:
         entry('Upload time', timestr),
         entry('ODM version', ver_str),
         entry(f'ODM tables ({num_odm_tables})'),
-        _gen_odm_table_list(ver, table_mapping, sheets),
+        _gen_odm_table_list(ver, sheet_tables, sheets),
         entry(f'Ignored sheets ({num_ignored_tables})'),
-        _gen_unknown_table_list(table_mapping),
+        _gen_unknown_table_list(sheet_tables),
     ]
 
 

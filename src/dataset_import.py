@@ -23,7 +23,7 @@ class Dataset(TypedDict):
     filename: str
     odm_version: str
     upload_time: datetime
-    table_mapping: Dict[SheetName, odm.TableName]
+    sheet_tables: Dict[SheetName, odm.TableName]
     revision: int
 
 
@@ -56,11 +56,11 @@ def import_dataset(filename: Filename, sheet_names: List[str]) -> Dataset:
     """Constructs a Dataset with data parsed from an Excel/CSV file. May throw
     an exceptionjif the file can't be imported."""
     odm_version = odm.infer_version(sheet_names)
-    table_mapping = odm.infer_table_mapping(sheet_names, odm_version)
+    sheet_tables = odm.infer_table_mapping(sheet_names, odm_version)
     return Dataset(
         filename=filename,
         odm_version=odm_version.value,
         upload_time=datetime.now(),
-        table_mapping=table_mapping,
+        sheet_tables=sheet_tables,
         revision=1,
     )

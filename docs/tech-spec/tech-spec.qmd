@@ -357,7 +357,7 @@ Behaviors:
         - **filename**: Set from the uploaded file name.
         - **odm_version**: Set from the ODM version inferred while matching table
           names.
-        - **table_mapping**: Set to the inferred mapping between sheet names and ODM
+        - **sheet_tables**: Set to the inferred mapping between sheet names and ODM
           table names. In the case of CSV files, the filename is used as the sheet
           name. Inference is done by seeing if the sheet name matches the a
           hardcoded list of valid ODM table names for any version of the ODM, which
@@ -906,7 +906,7 @@ Fields:
   which ODM version to validate against. It must have one of the values from
   [OdmVersion](#odmversion).
 
-- `table_mapping: Dict[SheetName, OdmTableName]`
+- `sheet_tables: Dict[SheetName, OdmTableName]`
 
   Maps table/sheet names to valid ODM table names. This is the same for CSV and
   Excel files. CSV files have one sheet with the same name as the file.
