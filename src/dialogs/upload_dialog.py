@@ -258,7 +258,9 @@ def register(app):  # type: ignore
     ) -> Tuple[str, Patch, Patch, Patch, Patch, Patch, bool, bool, str]:
         """import dataset, close import dialog, open conf dialog or go to
         dataset page directly"""
-        # TODO: error handling around import_dataset
+        # TODO:
+        # - error handling around import_dataset
+        # - validate file type
         if not flag:
             return no_update
         (_, data) = decode_contents(contents)
