@@ -20,41 +20,39 @@ from components import modals
 from odm import odm
 from stores import DatasetDict
 
-IGNORE_LABEL = 'Ignore'
+_IGNORE_LABEL = 'Ignore'
+_DUP_ERROR_PREFIX = 'Multiple sheets are mapped to table'
 
 _versions = list(map(lambda e: e.value, odm.Version))
-version_dropdown = dcc.Dropdown(_versions, _versions[-1], clearable=False)
+_version_dropdown = dcc.Dropdown(_versions, _versions[-1], clearable=False)
 
-filename_label = html.Span()
-mapping_table = html.Div(id='conf-dialog-mapping-table')
+_filename_label = html.Span()
+_mapping_table = html.Div(id='conf-dialog-mapping-table')
 
-ok_btn = dbc.Button('Ok')
-cancel_btn = dbc.Button('Cancel')
+_ok_btn = dbc.Button('Ok')
+_cancel_btn = dbc.Button('Cancel')
 
-duplicate_err = dbc.Alert('', color='danger', is_open=False)
-
-# this store is only used by this module
-'''type: list of dropdown ids'''
+_duplicate_err = dbc.Alert('', color='danger', is_open=False)
 
 _conf_dialog = modals.init_modal(
     id='conf-dialog',
     title='Configure dataset',
     body=[
-        duplicate_err,
-        html.P(html.Strong(filename_label)),
-        html.Div(['ODM Version: ', version_dropdown]),
-        mapping_table,
+        _duplicate_err,
+        html.P(html.Strong(_filename_label)),
+        html.Div(['ODM Version: ', _version_dropdown]),
+        _mapping_table,
     ],
     buttons=[
-        ok_btn,
-        cancel_btn,
+        _ok_btn,
+        _cancel_btn,
     ]
 )
 
 layout = _conf_dialog
 
 
-def find_keys(d: dict, val: str) -> List[str]:
+def _find_keys(d: dict, val: str) -> List[str]:
     '''returns list of keys in dict `d` with value `val`'''
     return list(
         map(lambda pair: pair[0],
@@ -69,7 +67,7 @@ def register(app):  # type: ignore
             Output(stores.datasets, 'data', allow_duplicate=True),
             Output(stores.dataset_id, 'data', allow_duplicate=True),
         ],
-        Input(cancel_btn, 'n_clicks'),
+        Input(_cancel_btn, 'n_clicks'),
         State(stores.conf_dialog_flag, 'data'),
         State(stores.dataset_id, 'data'),
     )
@@ -85,36 +83,44 @@ def register(app):  # type: ignore
     @app.callback(
         [
             Output(_conf_dialog, 'is_open'),
-            Output(filename_label, 'children'),
-            Output(version_dropdown, 'value'),
-            Output(duplicate_err, 'children', allow_duplicate=True),
-            Output(duplicate_err, 'is_open', allow_duplicate=True),
+            Output(stores.conf_dialog_init, 'data'),
+        ],
+        Input(stores.conf_dialog_flag, 'data'),
+    )
+    def on_conf_dialog_flag(flag: bool) -> Tuple[bool, bool]:
+        '''open/close conf dialog'''
+        return flag, (True if flag else no_update)
+
+    @app.callback(
+        [
+            Output(_filename_label, 'children'),
+            Output(_version_dropdown, 'value'),
+            Output(_duplicate_err, 'children', allow_duplicate=True),
+            Output(_duplicate_err, 'is_open', allow_duplicate=True),
         ],
         [
-            Input(stores.conf_dialog_flag, 'data'),
+            Input(stores.conf_dialog_init, 'data'),
             State(stores.datasets, 'data'),
             State(stores.dataset_id, 'data'),
         ]
     )
-    def on_conf_dialog_flag(
-        flag: bool,
+    def on_conf_dialog_init(
+        signal: bool,
         datasets: DatasetDict,
         dataset_id: str,
-    ) -> Tuple[bool, str, str, str, bool]:
-        '''open/close conf dialog when flag changes, init when opening'''
-        if not flag:
-            return (flag,) + (no_update,)*4
+    ) -> Tuple[str, str, str, bool]:
+        '''init conf dialog'''
         ds = datasets[dataset_id]
         version_str = ds['odm_version']
         assert version_str in _versions
-        return flag, ds['filename'], version_str, '', False
+        return ds['filename'], version_str, '', False
 
     @app.callback(
         [
-            Output(mapping_table, 'children'),
+            Output(_mapping_table, 'children'),
             Output(stores.dataset_conf_form, 'data', allow_duplicate=True),
         ],
-        Input(version_dropdown, 'value'),
+        Input(_version_dropdown, 'value'),
         State(stores.datasets, 'data'),
         State(stores.dataset_id, 'data'),
     )
@@ -139,13 +145,13 @@ def register(app):  # type: ignore
             new_mapping = mapping
 
         odm_table_names = odm.get_table_names(selected_version)
-        table_options = [IGNORE_LABEL] + odm_table_names
+        table_options = [_IGNORE_LABEL] + odm_table_names
 
         def init_dropdown(sheet: str, table: str) -> Component:
             # uses https://dash.plotly.com/pattern-matching-callbacks to
             # enable callbacks with dynamically generated components
             values = table_options
-            current = table if table else IGNORE_LABEL
+            current = table if table else _IGNORE_LABEL
             id = {
                 'type': 'sheet-table-dropdown',
                 'index': sheet,
@@ -171,14 +177,10 @@ def register(app):  # type: ignore
         Output(stores.dataset_conf_form, 'data'),
         Input({'type': 'sheet-table-dropdown', 'index': ALL}, 'value'),
         State({'type': 'sheet-table-dropdown', 'index': ALL}, 'id'),
-        State(stores.datasets, 'data'),
-        State(stores.dataset_id, 'data'),
     )
     def on_sheet_table_dropdown_value(
         dropdown_values: List[str],
         dropdown_ids: List[str],
-        datasets: DatasetDict,
-        dataset_id: str,
     ) -> Patch:
         '''Update the sheet-table mapping, when a table is selected. Any
         previous mappings to the same table will be set to ignored.
@@ -191,20 +193,20 @@ def register(app):  # type: ignore
         table = dropdown_values[table_ix]
         assert table, 'table should not be None or an empty string'
         patch = Patch()
-        patch[sheet] = table if table != IGNORE_LABEL else ''
+        patch[sheet] = table if table != _IGNORE_LABEL else ''
         return patch
 
     @app.callback(
         [
-            Output(duplicate_err, 'is_open', allow_duplicate=True),
-            Output(duplicate_err, 'children', allow_duplicate=True),
+            Output(_duplicate_err, 'is_open', allow_duplicate=True),
+            Output(_duplicate_err, 'children', allow_duplicate=True),
             Output(stores.conf_dialog_flag, 'data', allow_duplicate=True),
             Output(stores.datasets, 'data', allow_duplicate=True),
             Output('url', 'pathname'),
         ],
         [
-            Input(ok_btn, 'n_clicks'),
-            State(version_dropdown, 'value'),
+            Input(_ok_btn, 'n_clicks'),
+            State(_version_dropdown, 'value'),
             State(stores.dataset_conf_form, 'data'),
             State(stores.datasets, 'data'),
             State(stores.dataset_id, 'data'),
@@ -226,15 +228,14 @@ def register(app):  # type: ignore
             mapping[sheet] = table
 
         # check for duplicates
-        error_prefix = 'Multiple sheets are mapped to table'
         selected_tables = list(filter(bool, mapping.values()))
         dup_tables = utils.duplicates(selected_tables)
         if len(dup_tables) > 0:
             entries: List[str] = []
             for table in dup_tables:
-                keys = find_keys(mapping, table)
+                keys = _find_keys(mapping, table)
                 entries.append(html.Span([
-                    f'{error_prefix} "{table}": ',
+                    f'{_DUP_ERROR_PREFIX} "{table}": ',
                     utils.gen_html_list(keys),
                 ]))
             error_list = utils.gen_html_list(entries)
@@ -243,8 +244,8 @@ def register(app):  # type: ignore
         patch = Patch()
         patch[filename] = ds
         return (
-            False,  # duplicate_err
-            '',     # duplicate_err msg
+            False,  # error flag
+            '',     # error msg
             False,  # conf dialog
             patch,  # datasets
             utils.get_dataset_path(filename),  # url

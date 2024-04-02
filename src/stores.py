@@ -1,12 +1,28 @@
-from typing import Dict
 import os
 import tempfile
+from datetime import datetime
+from typing import Dict, List
 
 import diskcache
 from dash import DiskcacheManager, dcc
 from typing_extensions import TypedDict
 
-from dataset_import import Filename, Dataset
+from odm import odm
+
+Filename = str
+SheetName = str
+
+
+class Dataset(TypedDict):
+    '''metadata only'''
+    filename: str
+    odm_version: str
+    upload_time: datetime
+    sheet_tables: Dict[SheetName, odm.TableName]
+    table_headers: Dict[odm.TableName, List[str]]
+    table_sizes: Dict[odm.TableName, int]
+    revision: int
+
 
 DatasetDict = Dict[Filename, Dataset]
 
@@ -48,6 +64,7 @@ validation_dialog_flag = dcc.Store(id='validation-dialog-flag', data=False)
 # signals
 #
 
+conf_dialog_init = dcc.Store(id='conf-dialog-init', data=False)
 report_dialog_init = dcc.Store(id='report-dialog-init', data=False)
 
 # collections
@@ -66,7 +83,8 @@ cancel_operation = dcc.Store(id='cancel-op', data=False)
 dataset_conf_form = dcc.Store(id='dataset-conf-form', data={})
 dataset_id = dcc.Store(id='dataset-id')
 replace_on_dup = dcc.Store(id='replace-on-dup', data=True)
-uploaded_file = dcc.Store(id='uploaded-file')
+uploaded_data = dcc.Store(id='uploaded-data')
+uploaded_name = dcc.Store(id='uploaded-name')
 validation_setup = dcc.Store(id='validation-setup')
 
 # other

@@ -72,7 +72,7 @@ each table. We do not support validating multiple sheets representing the same
 table, and it's more likely to be a user error, so it's better to ignore any
 extra matches.
 
-This feature is handled by the [dataset_import](#dataset_import) module.
+This feature is handled by the [import_utils](#import_utils) module.
 
 ### Matching algorithm
 
@@ -850,14 +850,17 @@ samples
 4. set `_TABLE_NAMES` to the resulting dict
 
 
-## dataset_import
+## import_utils
 
-This module is responsible for the creation of a [Dataset](#dataset) once the
-user has uploaded their dataset file and completed its configuration. It has
-the following public API:
+This module is responsible for loading spreadsheets and importing them as
+[datasets](#dataset).
 
-* **import_dataset**: The function used for the [dataset](#dataset) creation.
-* **Dataset**: The [dataset](#dataset) class.
+### API
+
+* **load_sheets**: Loads sheet names and data from a byte-array representing a
+  file.
+* **import_dataset**: Creates a [dataset](#dataset) from sheets loaded with
+  `load_sheets`.
 
 # Types
 

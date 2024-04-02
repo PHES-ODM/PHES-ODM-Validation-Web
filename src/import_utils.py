@@ -1,32 +1,24 @@
-# TODO: move Dataset class to a separate module
-
+import base64
 import io
 import os
 import pandas as pd
 import warnings
 from datetime import datetime
-from typing import Dict, List
+from typing import Dict, List, Tuple
 # from pprint import pprint
 
-from typing_extensions import TypedDict
-
 from odm import odm
+from stores import Dataset, Filename, SheetName
 
-Filename = str
-SheetName = str
 TableRow = dict  # key-value pairs
 TableData = List[TableRow]
 
 
-class Dataset(TypedDict):
-    '''metadata only'''
-    filename: str
-    odm_version: str
-    upload_time: datetime
-    sheet_tables: Dict[SheetName, odm.TableName]
-    table_headers: Dict[odm.TableName, List[str]]
-    table_sizes: Dict[odm.TableName, int]
-    revision: int
+def decode_contents(contents: str) -> Tuple[str, bytes]:
+    '''decode string with file type and base64-encoded file data'''
+    content_type, content_string = contents.split(',')
+    decoded = base64.b64decode(content_string)
+    return content_type, decoded
 
 
 def _to_dict_list(df: pd.DataFrame) -> List[dict]:
@@ -37,7 +29,7 @@ def _to_dict_list(df: pd.DataFrame) -> List[dict]:
 
 def load_sheets(filename: Filename, data: bytes
                 ) -> Dict[SheetName, TableData]:
-    """returns a dictionary of sheet-names mapped to dataframes"""
+    """returns a dictionary of sheet-names and their respective table data"""
     # XXX: excel warnings are ignored to hide warning about excel
     # data-validation not being supported in pandas/openpyxl
     (name, ext) = os.path.splitext(filename)
@@ -54,7 +46,7 @@ def load_sheets(filename: Filename, data: bytes
         assert False, 'invalid ext'
 
 
-def get_table_headers(
+def _get_table_headers(
     sheet_tables: Dict[SheetName, odm.TableName],
     sheet_data: Dict[SheetName, list],
 ) -> Dict[SheetName, List[str]]:
@@ -67,7 +59,7 @@ def get_table_headers(
     return result
 
 
-def get_table_sizes(
+def _get_table_sizes(
     sheet_tables: Dict[SheetName, odm.TableName],
     sheet_data: Dict[str, list]
 ) -> Dict[odm.TableName, int]:
@@ -84,8 +76,8 @@ def import_dataset(filename: Filename, sheets: dict) -> Dataset:
     sheet_names = list(sheets.keys())
     odm_version = odm.infer_version(sheet_names)
     sheet_tables = odm.infer_table_mapping(sheet_names, odm_version)
-    headers = get_table_headers(sheet_tables, sheets)
-    sizes = get_table_sizes(sheet_tables, sheets)
+    headers = _get_table_headers(sheet_tables, sheets)
+    sizes = _get_table_sizes(sheet_tables, sheets)
     return Dataset(
         filename=filename,
         odm_version=odm_version.value,

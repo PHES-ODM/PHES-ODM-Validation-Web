@@ -1,4 +1,3 @@
-import base64
 from typing import Dict, Tuple
 
 import dash_bootstrap_components as dbc
@@ -16,9 +15,16 @@ from dash.dash import no_update
 import stores
 import utils
 from components import modals
-from dataset_import import SheetName, TableData, import_dataset, load_sheets
+from stores import SheetName
 
-dataset_uploader = dcc.Upload(
+from import_utils import (
+    TableData,
+    decode_contents,
+    import_dataset,
+    load_sheets,
+)
+
+_dataset_uploader = dcc.Upload(
     id='upload-data',
     children=html.Div([
         'Drag and drop or ',
@@ -28,20 +34,20 @@ dataset_uploader = dcc.Upload(
     multiple=False,
 )
 
-ok_btn = dbc.Button('Ok', id='upload-ok-btn', disabled=True)
-cancel_btn = dbc.Button('Cancel', id='upload-cancel-btn')
-status_label = html.Div(id='upload-status')
+_ok_btn = dbc.Button('Ok', id='upload-ok-btn', disabled=True)
+_cancel_btn = dbc.Button('Cancel', id='upload-cancel-btn')
+_status_label = html.Div(id='upload-status')
 
 _upload_dialog = modals.init_modal(
     id='upload-dialog',
     title='Upload dataset',
     body=[
-        dataset_uploader,
-        status_label,
+        _dataset_uploader,
+        _status_label,
     ],
     buttons=[
-        ok_btn,
-        cancel_btn,
+        _ok_btn,
+        _cancel_btn,
     ]
 )
 
@@ -111,21 +117,14 @@ layout = html.Div([
 ])
 
 
-def _decode_contents(contents: str) -> Tuple[str, bytes]:
-    """returns a tuple of content-type and the decoded data"""
-    content_type, content_string = contents.split(',')
-    decoded = base64.b64decode(content_string)
-    return content_type, decoded
-
-
 def register(app):  # type: ignore
 
     @app.callback(
         [
             Output(_upload_dialog, 'is_open'),
-            Output(status_label, 'children', allow_duplicate=True),
-            Output(ok_btn, 'disabled', allow_duplicate=True),
-            Output(dataset_uploader, 'contents'),
+            Output(_status_label, 'children', allow_duplicate=True),
+            Output(_ok_btn, 'disabled', allow_duplicate=True),
+            Output(_dataset_uploader, 'contents'),
         ],
         Input(stores.upload_dialog_flag, 'data'),
     )
@@ -137,34 +136,31 @@ def register(app):  # type: ignore
 
     @app.callback(
         Output(stores.upload_dialog_flag, 'data', allow_duplicate=True),
-        Input(cancel_btn, 'n_clicks'),
+        Input(_cancel_btn, 'n_clicks'),
     )
-    def on_cancel_btn_click(n: int) -> bool:
+    def on__cancel_btn_click(n: int) -> bool:
         """Close upload dialog"""
         return False
 
     @app.callback(
         [
-            Output(stores.uploaded_file, 'data'),
-            Output(status_label, 'children', allow_duplicate=True),
-            Output(ok_btn, 'disabled'),
+            Output(stores.uploaded_name, 'data'),
+            Output(stores.uploaded_data, 'data'),
+            Output(_status_label, 'children', allow_duplicate=True),
+            Output(_ok_btn, 'disabled'),
         ],
-        Input(dataset_uploader, 'contents'),
-        State(dataset_uploader, 'filename'),
+        Input(_dataset_uploader, 'contents'),
+        State(_dataset_uploader, 'filename'),
     )
     def on_dataset_uploaded(
         contents: str,
         filename: str,
-    ) -> Tuple[dict, str, bool]:
+    ) -> Tuple[str, str, str, bool]:
         """Store uploaded dataset, and enable ok button"""
         if not contents:
             return no_update
-        uploaded_file = {
-            'filename': filename,
-            'contents': contents,
-        }
         status = f'{filename} uploaded'
-        return uploaded_file, status, False
+        return filename, contents, status, False
 
     @app.callback(
         [
@@ -173,17 +169,16 @@ def register(app):  # type: ignore
             Output(_import_dialog, 'is_open', allow_duplicate=True),
             Output(_import_status_text, 'children', allow_duplicate=True),
         ],
-        Input(ok_btn, 'n_clicks'),
+        Input(_ok_btn, 'n_clicks'),
         State(stores.datasets, 'data'),
-        State(stores.uploaded_file, 'data'),
+        State(stores.uploaded_name, 'data'),
     )
     def on_ok_btn_click(
         n: int,
         datasets: dict,
-        uploaded_file: dict
+        dataset_id: str
     ) -> Tuple[bool, bool, bool, str]:
         '''close upload dialog, open duplicate dialog or import dialog'''
-        dataset_id = uploaded_file['filename']
         if dataset_id in datasets:
             return (False, True) + (no_update,)*2  # duplicate
         return False, no_update, True, dataset_id
@@ -191,11 +186,10 @@ def register(app):  # type: ignore
     @app.callback(
         Output(_duplicate_name_text, 'children'),
         Input(_duplicate_dialog, 'is_open'),
-        State(stores.uploaded_file, 'data'),
+        State(stores.uploaded_name, 'data'),
     )
-    def on_duplicate_dialog_open(flag: bool, uploaded_file: dict) -> str:
+    def on_duplicate_dialog_open(flag: bool, dataset_id: str) -> str:
         '''init duplicate dialog'''
-        dataset_id = uploaded_file['filename']
         if not flag:
             return no_update
         return dataset_id
@@ -212,18 +206,17 @@ def register(app):  # type: ignore
         Input(_update_btn, 'n_clicks'),
         Input(_replace_btn, 'n_clicks'),
         State(_replace_btn, 'id'),
-        State(stores.uploaded_file, 'data'),
+        State(stores.uploaded_name, 'data'),
     )
     def on_duplicate_resolution_btn_click(
         update_clicks: int,
         replace_clicks: int,
         replace_id: str,
-        uploaded_file: dict,
+        dataset_id: str,
     ) -> Tuple[bool, bool, bool, bool, str]:
         '''close duplicate dialog, go through replace confirmation or go
         straight to import dialog'''
         do_replace = (callback_context.triggered_id == replace_id)
-        dataset_id = uploaded_file['filename']
         return False, do_replace, do_replace, (not do_replace), dataset_id
 
     @app.callback(
@@ -232,9 +225,10 @@ def register(app):  # type: ignore
             Output(_import_dialog, 'is_open', allow_duplicate=True),
         ],
         Input(_confirm_replace_dialog, 'submit_n_clicks'),
-        State(stores.uploaded_file, 'data'),
+        State(stores.uploaded_name, 'data'),
     )
-    def on_confirm_replace(n: int, uploaded_file: dict) -> Tuple[bool, bool]:
+    def on_confirm_replace(n: int, dataset_id: str) -> Tuple[bool, bool]:
+        '''transitions from replace dialog to import dialog'''
         return False, True
 
     @app.callback(
@@ -250,24 +244,26 @@ def register(app):  # type: ignore
             Output('url', 'pathname', allow_duplicate=True),
         ],
         Input(_import_dialog, 'is_open'),
-        State(stores.uploaded_file, 'data'),
+        State(stores.uploaded_name, 'data'),
+        State(stores.uploaded_data, 'data'),
         State(stores.replace_on_dup, 'data'),
         State(stores.datasets, 'data'),
     )
     def on_import(
         flag: bool,
-        uploaded_file: dict,
+        filename: str,
+        contents: str,
         replace_on_dup: bool,
         datasets: dict,
     ) -> Tuple[str, Patch, Patch, Patch, Patch, Patch, bool, bool, str]:
         """import dataset, close import dialog, open conf dialog or go to
         dataset page directly"""
-        # TODO: error handling around import_dataset
+        # TODO:
+        # - error handling around import_dataset
+        # - validate file type
         if not flag:
             return no_update
-        filename = uploaded_file['filename']
-        contents = uploaded_file['contents']
-        (_, data) = _decode_contents(contents)
+        (_, data) = decode_contents(contents)
         dataset_id = filename
         is_dup = dataset_id in datasets
 

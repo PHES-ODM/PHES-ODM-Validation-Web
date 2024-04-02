@@ -38,6 +38,7 @@ app.layout = html.Div([
     # stores
     stores.cancel_operation,
     stores.conf_dialog_flag,
+    stores.conf_dialog_init,
     stores.dataset_conf_form,
     stores.dataset_id,
     stores.dataset_sheets,
@@ -47,7 +48,8 @@ app.layout = html.Div([
     stores.report_dialog_flag,
     stores.report_dialog_init,
     stores.upload_dialog_flag,
-    stores.uploaded_file,
+    stores.uploaded_data,
+    stores.uploaded_name,
     stores.validation_dialog_flag,
     stores.validation_setup,
     stores.validation_trigger,
