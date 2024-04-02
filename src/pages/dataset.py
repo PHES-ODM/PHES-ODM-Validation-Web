@@ -22,9 +22,9 @@ from components import sidebar
 from odm import odm
 from stores import Dataset
 
-PAGE_URL = '/datasets/<dataset_id>'
+_PAGE_URL = '/datasets/<dataset_id>'
 
-dash.register_page(__name__, path_template=PAGE_URL)
+dash.register_page(__name__, path_template=_PAGE_URL)
 
 _page_content = html.Div(id='dataset-page-content')
 
@@ -89,6 +89,9 @@ def _gen_unknown_table_list(
 
 
 def _init_upload_report(ds: Dataset) -> List[Component]:
+    # FIXME: "upload report" isn't a good name, since it changes every time the
+    # dataset is re-configured. It's more of a "dataset config overview". This
+    # must be fixed in the spec as well.
     def entry(key: str, val: Component = '') -> Component:
         return html.P([html.Strong(key + ': '), val])
 
@@ -139,9 +142,12 @@ def on_dataset_page(
 def on_url_pathname(pathname: str) -> str:
     '''sets dataset_id from pathname on page load'''
     # XXX: This can't be combined with on_dataset_page because:
+    #
     # - dataset_id output requires allow_duplicate
     # - allow_duplicate requires prevent_initial_call='initial_duplicate'
     # - prevent_initial_call not being False causes dash to complain about the
     #   on_dataset_page output (_page_content) component not existing yet
+    #
+    # In other words, this callback has to fire before the page is initialized.
     ds_id = utils.get_dataset_id(pathname)
     return ds_id if ds_id else no_update
