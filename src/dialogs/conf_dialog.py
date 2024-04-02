@@ -83,29 +83,37 @@ def register(app):  # type: ignore
     @app.callback(
         [
             Output(_conf_dialog, 'is_open'),
+            Output(stores.conf_dialog_init, 'data'),
+        ],
+        Input(stores.conf_dialog_flag, 'data'),
+    )
+    def on_conf_dialog_flag(flag: bool) -> Tuple[bool, bool]:
+        '''open/close conf dialog'''
+        return flag, (True if flag else no_update)
+
+    @app.callback(
+        [
             Output(_filename_label, 'children'),
             Output(_version_dropdown, 'value'),
             Output(_duplicate_err, 'children', allow_duplicate=True),
             Output(_duplicate_err, 'is_open', allow_duplicate=True),
         ],
         [
-            Input(stores.conf_dialog_flag, 'data'),
+            Input(stores.conf_dialog_init, 'data'),
             State(stores.datasets, 'data'),
             State(stores.dataset_id, 'data'),
         ]
     )
-    def on_conf_dialog_flag(
-        flag: bool,
+    def on_conf_dialog_init(
+        signal: bool,
         datasets: DatasetDict,
         dataset_id: str,
-    ) -> Tuple[bool, str, str, str, bool]:
-        '''open/close conf dialog when flag changes, init when opening'''
-        if not flag:
-            return (flag,) + (no_update,)*4
+    ) -> Tuple[str, str, str, bool]:
+        '''init conf dialog'''
         ds = datasets[dataset_id]
         version_str = ds['odm_version']
         assert version_str in _versions
-        return flag, ds['filename'], version_str, '', False
+        return ds['filename'], version_str, '', False
 
     @app.callback(
         [

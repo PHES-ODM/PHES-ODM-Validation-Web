@@ -38,6 +38,7 @@ app.layout = html.Div([
     # stores
     stores.cancel_operation,
     stores.conf_dialog_flag,
+    stores.conf_dialog_init,
     stores.dataset_conf_form,
     stores.dataset_id,
     stores.dataset_sheets,

@@ -64,6 +64,7 @@ validation_dialog_flag = dcc.Store(id='validation-dialog-flag', data=False)
 # signals
 #
 
+conf_dialog_init = dcc.Store(id='conf-dialog-init', data=False)
 report_dialog_init = dcc.Store(id='report-dialog-init', data=False)
 
 # collections
