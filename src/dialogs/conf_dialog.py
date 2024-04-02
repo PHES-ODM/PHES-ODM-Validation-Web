@@ -177,14 +177,10 @@ def register(app):  # type: ignore
         Output(stores.dataset_conf_form, 'data'),
         Input({'type': 'sheet-table-dropdown', 'index': ALL}, 'value'),
         State({'type': 'sheet-table-dropdown', 'index': ALL}, 'id'),
-        State(stores.datasets, 'data'),
-        State(stores.dataset_id, 'data'),
     )
     def on_sheet_table_dropdown_value(
         dropdown_values: List[str],
         dropdown_ids: List[str],
-        datasets: DatasetDict,
-        dataset_id: str,
     ) -> Patch:
         '''Update the sheet-table mapping, when a table is selected. Any
         previous mappings to the same table will be set to ignored.
