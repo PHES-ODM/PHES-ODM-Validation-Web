@@ -82,7 +82,8 @@ cancel_operation = dcc.Store(id='cancel-op', data=False)
 dataset_conf_form = dcc.Store(id='dataset-conf-form', data={})
 dataset_id = dcc.Store(id='dataset-id')
 replace_on_dup = dcc.Store(id='replace-on-dup', data=True)
-uploaded_file = dcc.Store(id='uploaded-file')
+uploaded_data = dcc.Store(id='uploaded-data')
+uploaded_name = dcc.Store(id='uploaded-name')
 validation_setup = dcc.Store(id='validation-setup')
 
 # other

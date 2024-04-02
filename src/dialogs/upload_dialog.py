@@ -146,7 +146,8 @@ def register(app):  # type: ignore
 
     @app.callback(
         [
-            Output(stores.uploaded_file, 'data'),
+            Output(stores.uploaded_name, 'data'),
+            Output(stores.uploaded_data, 'data'),
             Output(_status_label, 'children', allow_duplicate=True),
             Output(_ok_btn, 'disabled'),
         ],
@@ -156,16 +157,12 @@ def register(app):  # type: ignore
     def on_dataset_uploaded(
         contents: str,
         filename: str,
-    ) -> Tuple[dict, str, bool]:
+    ) -> Tuple[str, str, str, bool]:
         """Store uploaded dataset, and enable ok button"""
         if not contents:
             return no_update
-        uploaded_file = {
-            'filename': filename,
-            'contents': contents,
-        }
         status = f'{filename} uploaded'
-        return uploaded_file, status, False
+        return filename, contents, status, False
 
     @app.callback(
         [
@@ -176,15 +173,14 @@ def register(app):  # type: ignore
         ],
         Input(_ok_btn, 'n_clicks'),
         State(stores.datasets, 'data'),
-        State(stores.uploaded_file, 'data'),
+        State(stores.uploaded_name, 'data'),
     )
     def on_ok_btn_click(
         n: int,
         datasets: dict,
-        uploaded_file: dict
+        dataset_id: str
     ) -> Tuple[bool, bool, bool, str]:
         '''close upload dialog, open duplicate dialog or import dialog'''
-        dataset_id = uploaded_file['filename']
         if dataset_id in datasets:
             return (False, True) + (no_update,)*2  # duplicate
         return False, no_update, True, dataset_id
@@ -192,11 +188,10 @@ def register(app):  # type: ignore
     @app.callback(
         Output(_duplicate_name_text, 'children'),
         Input(_duplicate_dialog, 'is_open'),
-        State(stores.uploaded_file, 'data'),
+        State(stores.uploaded_name, 'data'),
     )
-    def on_duplicate_dialog_open(flag: bool, uploaded_file: dict) -> str:
+    def on_duplicate_dialog_open(flag: bool, dataset_id: str) -> str:
         '''init duplicate dialog'''
-        dataset_id = uploaded_file['filename']
         if not flag:
             return no_update
         return dataset_id
@@ -213,18 +208,17 @@ def register(app):  # type: ignore
         Input(_update_btn, 'n_clicks'),
         Input(_replace_btn, 'n_clicks'),
         State(_replace_btn, 'id'),
-        State(stores.uploaded_file, 'data'),
+        State(stores.uploaded_name, 'data'),
     )
     def on_duplicate_resolution_btn_click(
         update_clicks: int,
         replace_clicks: int,
         replace_id: str,
-        uploaded_file: dict,
+        dataset_id: str,
     ) -> Tuple[bool, bool, bool, bool, str]:
         '''close duplicate dialog, go through replace confirmation or go
         straight to import dialog'''
         do_replace = (callback_context.triggered_id == replace_id)
-        dataset_id = uploaded_file['filename']
         return False, do_replace, do_replace, (not do_replace), dataset_id
 
     @app.callback(
@@ -233,9 +227,10 @@ def register(app):  # type: ignore
             Output(_import_dialog, 'is_open', allow_duplicate=True),
         ],
         Input(_confirm_replace_dialog, 'submit_n_clicks'),
-        State(stores.uploaded_file, 'data'),
+        State(stores.uploaded_name, 'data'),
     )
-    def on_confirm_replace(n: int, uploaded_file: dict) -> Tuple[bool, bool]:
+    def on_confirm_replace(n: int, dataset_id: str) -> Tuple[bool, bool]:
+        '''transitions from replace dialog to import dialog'''
         return False, True
 
     @app.callback(
@@ -251,13 +246,15 @@ def register(app):  # type: ignore
             Output('url', 'pathname', allow_duplicate=True),
         ],
         Input(_import_dialog, 'is_open'),
-        State(stores.uploaded_file, 'data'),
+        State(stores.uploaded_name, 'data'),
+        State(stores.uploaded_data, 'data'),
         State(stores.replace_on_dup, 'data'),
         State(stores.datasets, 'data'),
     )
     def on_import(
         flag: bool,
-        uploaded_file: dict,
+        filename: str,
+        contents: str,
         replace_on_dup: bool,
         datasets: dict,
     ) -> Tuple[str, Patch, Patch, Patch, Patch, Patch, bool, bool, str]:
@@ -266,8 +263,6 @@ def register(app):  # type: ignore
         # TODO: error handling around import_dataset
         if not flag:
             return no_update
-        filename = uploaded_file['filename']
-        contents = uploaded_file['contents']
         (_, data) = _decode_contents(contents)
         dataset_id = filename
         is_dup = dataset_id in datasets
