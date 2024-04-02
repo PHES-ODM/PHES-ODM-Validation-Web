@@ -21,7 +21,7 @@ def _to_dict_list(df: pd.DataFrame) -> List[dict]:
 
 def load_sheets(filename: Filename, data: bytes
                 ) -> Dict[SheetName, TableData]:
-    """returns a dictionary of sheet-names mapped to dataframes"""
+    """returns a dictionary of sheet-names and their respective table data"""
     # XXX: excel warnings are ignored to hide warning about excel
     # data-validation not being supported in pandas/openpyxl
     (name, ext) = os.path.splitext(filename)
@@ -38,7 +38,7 @@ def load_sheets(filename: Filename, data: bytes
         assert False, 'invalid ext'
 
 
-def get_table_headers(
+def _get_table_headers(
     sheet_tables: Dict[SheetName, odm.TableName],
     sheet_data: Dict[SheetName, list],
 ) -> Dict[SheetName, List[str]]:
@@ -51,7 +51,7 @@ def get_table_headers(
     return result
 
 
-def get_table_sizes(
+def _get_table_sizes(
     sheet_tables: Dict[SheetName, odm.TableName],
     sheet_data: Dict[str, list]
 ) -> Dict[odm.TableName, int]:
@@ -68,8 +68,8 @@ def import_dataset(filename: Filename, sheets: dict) -> Dataset:
     sheet_names = list(sheets.keys())
     odm_version = odm.infer_version(sheet_names)
     sheet_tables = odm.infer_table_mapping(sheet_names, odm_version)
-    headers = get_table_headers(sheet_tables, sheets)
-    sizes = get_table_sizes(sheet_tables, sheets)
+    headers = _get_table_headers(sheet_tables, sheets)
+    sizes = _get_table_sizes(sheet_tables, sheets)
     return Dataset(
         filename=filename,
         odm_version=odm_version.value,
