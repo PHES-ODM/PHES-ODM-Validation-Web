@@ -19,7 +19,7 @@ from components import modals
 from stores import SheetName
 from import_utils import TableData, import_dataset, load_sheets
 
-dataset_uploader = dcc.Upload(
+_dataset_uploader = dcc.Upload(
     id='upload-data',
     children=html.Div([
         'Drag and drop or ',
@@ -29,20 +29,20 @@ dataset_uploader = dcc.Upload(
     multiple=False,
 )
 
-ok_btn = dbc.Button('Ok', id='upload-ok-btn', disabled=True)
-cancel_btn = dbc.Button('Cancel', id='upload-cancel-btn')
-status_label = html.Div(id='upload-status')
+_ok_btn = dbc.Button('Ok', id='upload-ok-btn', disabled=True)
+_cancel_btn = dbc.Button('Cancel', id='upload-cancel-btn')
+_status_label = html.Div(id='upload-status')
 
 _upload_dialog = modals.init_modal(
     id='upload-dialog',
     title='Upload dataset',
     body=[
-        dataset_uploader,
-        status_label,
+        _dataset_uploader,
+        _status_label,
     ],
     buttons=[
-        ok_btn,
-        cancel_btn,
+        _ok_btn,
+        _cancel_btn,
     ]
 )
 
@@ -124,9 +124,9 @@ def register(app):  # type: ignore
     @app.callback(
         [
             Output(_upload_dialog, 'is_open'),
-            Output(status_label, 'children', allow_duplicate=True),
-            Output(ok_btn, 'disabled', allow_duplicate=True),
-            Output(dataset_uploader, 'contents'),
+            Output(_status_label, 'children', allow_duplicate=True),
+            Output(_ok_btn, 'disabled', allow_duplicate=True),
+            Output(_dataset_uploader, 'contents'),
         ],
         Input(stores.upload_dialog_flag, 'data'),
     )
@@ -138,20 +138,20 @@ def register(app):  # type: ignore
 
     @app.callback(
         Output(stores.upload_dialog_flag, 'data', allow_duplicate=True),
-        Input(cancel_btn, 'n_clicks'),
+        Input(_cancel_btn, 'n_clicks'),
     )
-    def on_cancel_btn_click(n: int) -> bool:
+    def on__cancel_btn_click(n: int) -> bool:
         """Close upload dialog"""
         return False
 
     @app.callback(
         [
             Output(stores.uploaded_file, 'data'),
-            Output(status_label, 'children', allow_duplicate=True),
-            Output(ok_btn, 'disabled'),
+            Output(_status_label, 'children', allow_duplicate=True),
+            Output(_ok_btn, 'disabled'),
         ],
-        Input(dataset_uploader, 'contents'),
-        State(dataset_uploader, 'filename'),
+        Input(_dataset_uploader, 'contents'),
+        State(_dataset_uploader, 'filename'),
     )
     def on_dataset_uploaded(
         contents: str,
@@ -174,7 +174,7 @@ def register(app):  # type: ignore
             Output(_import_dialog, 'is_open', allow_duplicate=True),
             Output(_import_status_text, 'children', allow_duplicate=True),
         ],
-        Input(ok_btn, 'n_clicks'),
+        Input(_ok_btn, 'n_clicks'),
         State(stores.datasets, 'data'),
         State(stores.uploaded_file, 'data'),
     )
