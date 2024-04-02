@@ -1,9 +1,10 @@
+import base64
 import io
 import os
 import pandas as pd
 import warnings
 from datetime import datetime
-from typing import Dict, List
+from typing import Dict, List, Tuple
 # from pprint import pprint
 
 from odm import odm
@@ -11,6 +12,13 @@ from stores import Dataset, Filename, SheetName
 
 TableRow = dict  # key-value pairs
 TableData = List[TableRow]
+
+
+def decode_contents(contents: str) -> Tuple[str, bytes]:
+    '''decode string with file type and base64-encoded file data'''
+    content_type, content_string = contents.split(',')
+    decoded = base64.b64decode(content_string)
+    return content_type, decoded
 
 
 def _to_dict_list(df: pd.DataFrame) -> List[dict]:

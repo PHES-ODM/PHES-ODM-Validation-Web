@@ -1,4 +1,3 @@
-import base64
 from typing import Dict, Tuple
 
 import dash_bootstrap_components as dbc
@@ -17,7 +16,13 @@ import stores
 import utils
 from components import modals
 from stores import SheetName
-from import_utils import TableData, import_dataset, load_sheets
+
+from import_utils import (
+    TableData,
+    decode_contents,
+    import_dataset,
+    load_sheets,
+)
 
 _dataset_uploader = dcc.Upload(
     id='upload-data',
@@ -110,13 +115,6 @@ layout = html.Div([
     _confirm_replace_dialog,
     _import_dialog,
 ])
-
-
-def _decode_contents(contents: str) -> Tuple[str, bytes]:
-    """returns a tuple of content-type and the decoded data"""
-    content_type, content_string = contents.split(',')
-    decoded = base64.b64decode(content_string)
-    return content_type, decoded
 
 
 def register(app):  # type: ignore
@@ -263,7 +261,7 @@ def register(app):  # type: ignore
         # TODO: error handling around import_dataset
         if not flag:
             return no_update
-        (_, data) = _decode_contents(contents)
+        (_, data) = decode_contents(contents)
         dataset_id = filename
         is_dup = dataset_id in datasets
 
