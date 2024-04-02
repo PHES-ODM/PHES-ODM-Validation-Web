@@ -1,5 +1,3 @@
-# TODO: move Dataset class to a separate module
-
 import io
 import os
 import pandas as pd
@@ -8,25 +6,11 @@ from datetime import datetime
 from typing import Dict, List
 # from pprint import pprint
 
-from typing_extensions import TypedDict
-
 from odm import odm
+from stores import Dataset, Filename, SheetName
 
-Filename = str
-SheetName = str
 TableRow = dict  # key-value pairs
 TableData = List[TableRow]
-
-
-class Dataset(TypedDict):
-    '''metadata only'''
-    filename: str
-    odm_version: str
-    upload_time: datetime
-    sheet_tables: Dict[SheetName, odm.TableName]
-    table_headers: Dict[odm.TableName, List[str]]
-    table_sizes: Dict[odm.TableName, int]
-    revision: int
 
 
 def _to_dict_list(df: pd.DataFrame) -> List[dict]:

@@ -1,12 +1,28 @@
-from typing import Dict
 import os
 import tempfile
+from datetime import datetime
+from typing import Dict, List
 
 import diskcache
 from dash import DiskcacheManager, dcc
 from typing_extensions import TypedDict
 
-from dataset_import import Filename, Dataset
+from odm import odm
+
+Filename = str
+SheetName = str
+
+
+class Dataset(TypedDict):
+    '''metadata only'''
+    filename: str
+    odm_version: str
+    upload_time: datetime
+    sheet_tables: Dict[SheetName, odm.TableName]
+    table_headers: Dict[odm.TableName, List[str]]
+    table_sizes: Dict[odm.TableName, int]
+    revision: int
+
 
 DatasetDict = Dict[Filename, Dataset]
 

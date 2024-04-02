@@ -19,8 +19,8 @@ from dash.development.base_component import Component
 import stores
 import utils
 from components import sidebar
-from dataset_import import Dataset
 from odm import odm
+from stores import Dataset
 
 PAGE_URL = '/datasets/<dataset_id>'
 

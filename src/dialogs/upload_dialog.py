@@ -16,7 +16,8 @@ from dash.dash import no_update
 import stores
 import utils
 from components import modals
-from dataset_import import SheetName, TableData, import_dataset, load_sheets
+from stores import SheetName
+from import_utils import TableData, import_dataset, load_sheets
 
 dataset_uploader = dcc.Upload(
     id='upload-data',
