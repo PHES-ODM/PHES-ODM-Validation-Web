@@ -85,22 +85,30 @@ def register(app):  # type:ignore
     @app.callback(
         [
             Output(_validation_dialog, 'is_open'),
+            Output(stores.validation_dialog_init, 'data'),
+        ],
+        Input(stores.validation_dialog_flag, 'data'),
+    )
+    def on_dialog_flag(flag: bool) -> Tuple[bool, bool]:
+        '''open/close dialog, signal init on open'''
+        return flag, (True if flag else no_update)
+
+    @app.callback(
+        [
             Output(validation_name_text, 'value'),
             Output(validation_rules, 'children'),
         ],
-        Input(stores.validation_dialog_flag, 'data'),
+        Input(stores.validation_dialog_init, 'data'),
         State(stores.dataset_id, 'data'),
         State(stores.validations, 'data'),
     )
-    def on_dialog_flag(flag: bool, dataset_id: str, validations: dict
-                       ) -> Tuple[bool, str, Component]:
-        '''open/close dialog, init when opening'''
-        if not flag:
-            return flag, no_update, no_update
+    def on_dialog_init(signal: bool, dataset_id: str, validations: dict
+                       ) -> Tuple[str, Component]:
+        '''init dialog'''
         names = validations.get(dataset_id, [])
         name = get_next_name(names)
         rules = utils.gen_html_list(RULE_NAMES)
-        return flag, name, rules
+        return name, rules
 
     @app.callback(
         [
