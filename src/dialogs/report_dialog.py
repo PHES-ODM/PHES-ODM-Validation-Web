@@ -1,4 +1,4 @@
-from typing import Dict, List, Tuple
+from typing import Dict, List
 from enum import Enum
 # from pprint import pprint
 
@@ -21,6 +21,8 @@ from odm_validation.reports import ErrorKind
 import stores
 import utils
 from components import modals
+
+from dialogs.common import register_dialog_flag_callback
 
 Format = Enum('Format', type=str, names=['CSV', 'JSON', 'YAML'])
 
@@ -97,20 +99,16 @@ def reportToCsvStr(report: dict) -> str:
 
 
 def register(app):  # type: ignore
+    register_dialog_flag_callback(app, layout, stores.report_dialog_flag,
+                                  stores.report_dialog_init)
 
     @app.callback(
-        [
-            Output(layout, 'is_open'),
-            Output(stores.report_dialog_init, 'data'),
-            Output(_content, 'children', allow_duplicate=True),
-        ],
+        Output(_content, 'children', allow_duplicate=True),
         Input(stores.report_dialog_flag, 'data'),
     )
-    def on_report_dialog_flag(flag: bool) -> Tuple[bool, bool, str]:
-        """Open/close dialog"""
-        if not flag:
-            return (flag, no_update, no_update)
-        return (flag, True, 'Loading...')
+    def on_report_dialog_preinit(flag: bool) -> str:
+        '''preinit dialog with loading text'''
+        return ('Loading...' if flag else no_update)
 
     # TODO: optimize using client callback due to transfer of big reports
     @app.callback(
@@ -119,11 +117,9 @@ def register(app):  # type: ignore
         State('url', 'pathname'),
         State(stores.validation_reports, 'data'),
     )
-    def on_report_dialog_init(flag: bool, pathname: str, reports: dict
+    def on_report_dialog_init(signal: bool, pathname: str, reports: dict
                               ) -> Component:
         """init dialog"""
-        # XXX: dialog init requires separate store/signal to avoid
-        # re-transferring state-input when closing the dialog.
         (dataset_id, validation_name) = utils.get_validation_id(pathname)
         report = reports[dataset_id][validation_name]
         errors = report['errors']

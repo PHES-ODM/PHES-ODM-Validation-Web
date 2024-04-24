@@ -24,6 +24,8 @@ from odm import odm
 from components import modals
 from stores import ValidationSetup
 
+from dialogs.common import register_dialog_flag_callback
+
 cancel_btn = dbc.Button('Cancel')
 close_btn = dbc.Button('Close', disabled=True)
 result_text = html.P(id='result-text')
@@ -69,10 +71,11 @@ def unpack_setup(vs: ValidationSetup) -> Tuple[str, str, str]:
 
 
 def register(app):  # type: ignore
+    register_dialog_flag_callback(app, layout, stores.progress_dialog_flag,
+                                  stores.progress_dialog_init)
 
     @app.callback(
         [
-            Output(layout, 'is_open'),
             Output(dataset_name_text, 'children', allow_duplicate=True),
             Output(table_name_text, 'children', allow_duplicate=True),
             Output(result_text, 'children', allow_duplicate=True),
@@ -80,19 +83,16 @@ def register(app):  # type: ignore
             Output(stores.validation_trigger, 'data'),
             Output(stores.cancel_operation, 'data'),
         ],
-        Input(stores.progress_dialog_flag, 'data'),
+        Input(stores.progress_dialog_init, 'data'),
         State(stores.validation_setup, 'data'),
     )
-    def on_dialog_flag(flag: bool, setup: ValidationSetup
-                       ) -> Tuple[bool, str, str, str, str, bool, bool]:
-        '''Open/close dialog. When opening: initialize dialog, and start
-        validation. This is separate from on_validation since it needs to
-        initialize the dialog before starting the blocking validation
-        process.'''
-        if not flag:
-            return (flag,) + (no_update,)*6
+    def on_dialog_init(signal: bool, setup: ValidationSetup
+                       ) -> Tuple[str, str, str, str, bool, bool]:
+        '''init dialog, and start validation. This is separate from
+        on_validation since it needs to initialize the dialog before starting
+        the blocking validation process.'''
         dataset_id, _, _ = unpack_setup(setup)
-        return flag, dataset_id, '', '', '0', True, False
+        return dataset_id, '', '', '0', True, False
 
     @app.callback(
         output=[

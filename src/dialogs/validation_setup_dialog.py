@@ -18,6 +18,8 @@ import utils
 from components import modals
 from stores import ValidationSetup
 
+from dialogs.common import register_dialog_flag_callback
+
 DUP_ERR_MSG = 'Validation name already exists'
 ODM_PROFILE = 'ODM profile'
 VALIDATION_NAME_FMT = 'Validation {n}'
@@ -73,6 +75,9 @@ def get_next_name(cased_names: list) -> str:
 
 
 def register(app):  # type:ignore
+    register_dialog_flag_callback(app, _validation_dialog,
+                                  stores.validation_dialog_flag,
+                                  stores.validation_dialog_init)
 
     @app.callback(
         Output(stores.validation_dialog_flag, 'data', allow_duplicate=True),
@@ -84,23 +89,20 @@ def register(app):  # type:ignore
 
     @app.callback(
         [
-            Output(_validation_dialog, 'is_open'),
             Output(validation_name_text, 'value'),
             Output(validation_rules, 'children'),
         ],
-        Input(stores.validation_dialog_flag, 'data'),
+        Input(stores.validation_dialog_init, 'data'),
         State(stores.dataset_id, 'data'),
         State(stores.validations, 'data'),
     )
-    def on_dialog_flag(flag: bool, dataset_id: str, validations: dict
-                       ) -> Tuple[bool, str, Component]:
-        '''open/close dialog, init when opening'''
-        if not flag:
-            return flag, no_update, no_update
+    def on_dialog_init(signal: bool, dataset_id: str, validations: dict
+                       ) -> Tuple[str, Component]:
+        '''init dialog'''
         names = validations.get(dataset_id, [])
         name = get_next_name(names)
         rules = utils.gen_html_list(RULE_NAMES)
-        return flag, name, rules
+        return name, rules
 
     @app.callback(
         [
