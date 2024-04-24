@@ -119,11 +119,9 @@ def register(app):  # type: ignore
         State('url', 'pathname'),
         State(stores.validation_reports, 'data'),
     )
-    def on_report_dialog_init(flag: bool, pathname: str, reports: dict
+    def on_report_dialog_init(signal: bool, pathname: str, reports: dict
                               ) -> Component:
         """init dialog"""
-        # XXX: dialog init requires separate store/signal to avoid
-        # re-transferring state-input when closing the dialog.
         (dataset_id, validation_name) = utils.get_validation_id(pathname)
         report = reports[dataset_id][validation_name]
         errors = report['errors']

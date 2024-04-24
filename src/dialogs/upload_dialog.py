@@ -138,7 +138,7 @@ def register(app):  # type: ignore
         Output(stores.upload_dialog_flag, 'data', allow_duplicate=True),
         Input(_cancel_btn, 'n_clicks'),
     )
-    def on__cancel_btn_click(n: int) -> bool:
+    def on_cancel_btn_click(n: int) -> bool:
         """Close upload dialog"""
         return False
 
