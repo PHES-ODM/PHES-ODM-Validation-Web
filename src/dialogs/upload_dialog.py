@@ -24,6 +24,8 @@ from import_utils import (
     load_sheets,
 )
 
+from dialogs.common import register_dialog_flag_callback
+
 _dataset_uploader = dcc.Upload(
     id='upload-data',
     children=html.Div([
@@ -118,21 +120,23 @@ layout = html.Div([
 
 
 def register(app):  # type: ignore
+    register_dialog_flag_callback(app, _upload_dialog,
+                                  stores.upload_dialog_flag,
+                                  stores.upload_dialog_init)
 
     @app.callback(
         [
-            Output(_upload_dialog, 'is_open'),
             Output(_status_label, 'children', allow_duplicate=True),
             Output(_ok_btn, 'disabled', allow_duplicate=True),
             Output(_dataset_uploader, 'contents'),
         ],
-        Input(stores.upload_dialog_flag, 'data'),
+        Input(stores.upload_dialog_init, 'data'),
     )
-    def on_upload_dialog_flag(flag: bool) -> Tuple[bool, None, bool, None]:
-        """Open/close upload dialog"""
+    def on_dialog_init(signal: bool) -> Tuple[str, bool, None]:
+        '''init upload dialog'''
         # XXX: uploader contents must be cleared so that its callback will
         # trigger (due to change) if the same file is reuploaded
-        return flag, None, True, None
+        return '', True, None
 
     @app.callback(
         Output(stores.upload_dialog_flag, 'data', allow_duplicate=True),

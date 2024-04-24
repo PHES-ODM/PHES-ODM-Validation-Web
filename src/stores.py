@@ -65,7 +65,9 @@ validation_dialog_flag = dcc.Store(id='validation-dialog-flag', data=False)
 #
 
 conf_dialog_init = dcc.Store(id='conf-dialog-init', data=False)
+progress_dialog_init = dcc.Store(id='progress-dialog-init', data=False)
 report_dialog_init = dcc.Store(id='report-dialog-init', data=False)
+upload_dialog_init = dcc.Store(id='upload-dialog-init', data=False)
 validation_dialog_init = dcc.Store(id='validation-dialog-init', data=False)
 
 # collections
