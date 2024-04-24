@@ -18,6 +18,8 @@ import utils
 from components import modals
 from stores import ValidationSetup
 
+from dialogs.common import register_dialog_flag_callback
+
 DUP_ERR_MSG = 'Validation name already exists'
 ODM_PROFILE = 'ODM profile'
 VALIDATION_NAME_FMT = 'Validation {n}'
@@ -73,6 +75,9 @@ def get_next_name(cased_names: list) -> str:
 
 
 def register(app):  # type:ignore
+    register_dialog_flag_callback(app, _validation_dialog,
+                                  stores.validation_dialog_flag,
+                                  stores.validation_dialog_init)
 
     @app.callback(
         Output(stores.validation_dialog_flag, 'data', allow_duplicate=True),
@@ -81,17 +86,6 @@ def register(app):  # type:ignore
     def on_cancel_btn(n: int) -> bool:
         '''close dialog'''
         return False
-
-    @app.callback(
-        [
-            Output(_validation_dialog, 'is_open'),
-            Output(stores.validation_dialog_init, 'data'),
-        ],
-        Input(stores.validation_dialog_flag, 'data'),
-    )
-    def on_dialog_flag(flag: bool) -> Tuple[bool, bool]:
-        '''open/close dialog, signal init on open'''
-        return flag, (True if flag else no_update)
 
     @app.callback(
         [

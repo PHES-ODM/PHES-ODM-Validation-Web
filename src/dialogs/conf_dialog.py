@@ -20,6 +20,8 @@ from components import modals
 from odm import odm
 from stores import DatasetDict
 
+from dialogs.common import register_dialog_flag_callback
+
 _IGNORE_LABEL = 'Ignore'
 _DUP_ERROR_PREFIX = 'Multiple sheets are mapped to table'
 
@@ -60,6 +62,8 @@ def _find_keys(d: dict, val: str) -> List[str]:
 
 
 def register(app):  # type: ignore
+    register_dialog_flag_callback(app, _conf_dialog, stores.conf_dialog_flag,
+                                  stores.conf_dialog_init)
 
     @app.callback(
         [
@@ -79,17 +83,6 @@ def register(app):  # type: ignore
             del p[dataset_id]
             return False, p, ''
         return False, no_update, no_update
-
-    @app.callback(
-        [
-            Output(_conf_dialog, 'is_open'),
-            Output(stores.conf_dialog_init, 'data'),
-        ],
-        Input(stores.conf_dialog_flag, 'data'),
-    )
-    def on_conf_dialog_flag(flag: bool) -> Tuple[bool, bool]:
-        '''open/close conf dialog'''
-        return flag, (True if flag else no_update)
 
     @app.callback(
         [
