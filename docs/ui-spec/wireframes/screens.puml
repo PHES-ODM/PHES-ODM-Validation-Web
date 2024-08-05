@@ -83,6 +83,7 @@ salt
     $sidebar($file_name, $show_validations) | {
         <File Name>
         {SI
+            Revision: <N> [<valid-tick>]
             Validation Summary Text
             .
             .
@@ -141,6 +142,7 @@ salt
     $sidebar("<File Name>", 1) |
     {^"Main Content"
         <File Name>
+        <Validity>
         {SI
             Validation Summary Text
             .
@@ -277,5 +279,50 @@ salt
 }
 !endprocedure
 
+!procedure $share_dataset_dialog($file_name, $schema_name="", $is_schema_valid=1)
+salt
+{
+  title Share Dataset Dialog
+
+  $file_name
+
+  Dataset Valid/Invalid
+
+  $schema_name
+
+  !if $is_schema_valid == 0
+    <color:Red>Schema Errors
+  !endif
+
+  [Load Sharing Schema]
+  [Share]
+}
+!endprocedure
+
+!endprocedure
+
+!procedure $save_shared_file_dialog()
+salt
+{
+  title Save Shared File Dialog
+
+  "Enter shared file name"
+
+  [Save]
+  [Cancel]
+}
+!endprocedure
+
+!procedure $confirm_share_invalid_dataset_dialog()
+salt
+{
+  title Confirm Share Invalid Dataset Dialog
+
+  **the dataset isn't valid, are you sure you want to share it?**
+
+  [Share]
+  [Cancel]
+}
+!endprocedure
 
 @enduml

@@ -177,6 +177,16 @@ The flow diagram is shown below:
 Users can download the validation report from the [Validation Report](#validation-report-dialog)
 dialog.
 
+## Sharing
+
+![share dataset](../../dist/share-dataset.png)
+
+Users can share their datasets with others by applying a sharing schema. It can
+be reached from the [sidebar](#sidebar), and opens up the
+[sharing dialog](#sharing-dialog).
+
+The green arrows in the flow diagram shows the happy path in the process.
+
 # Screens
 
 The next sub-sections will go over the different pages and dialogs presented in
@@ -274,7 +284,7 @@ In addition,
 
 This page is shown when the user uploads a new dataset or selects a dataset
 on another page. It allows the user to view summary details about the
-uploaded dataset.
+uploaded dataset, and share it with others.
 
 From this page the user can:
 
@@ -438,6 +448,58 @@ From this dialog the user can:
 * Choose to not replace the existing dataset by clicking the **No** button
 * Choose to replace the existing dataset by clicking the **Yes** button
 
+## Sharing Dialog
+
+![sharing dialog](../../dist/share-dataset-dialog.png)
+
+This dialog is shown when the user chooses to share a dataset.
+
+From this dialog the user can:
+
+* View the name of the dataset that they want to share. The *<Dataset Name*>
+  text should be replaced with the selected dataset.
+* View whether the selected dataset is valid or not. The *Dataset
+  Valid/Invalid* text should be replaced with the correct value.
+* Upload the sharing schema to use by clicking the **Load Sharing Schema**
+  button. This should bring up the
+  [upload sharing schema dialog](#upload-sharing-schema-dialog).
+* View the name of the selected sharing schema. The *<Sharing Schema Name*> text
+  should be replaced with the correct value. In addition, if the user has
+  uploaded a schema previously, then the dialog should open up with that schema
+  auto-selected.
+* Create the file to share by clicking the **Share** button. This should bring
+  up the [save shared file dialog](#save-shared-file-dialog).
+* View any errors from their uploaded schema. This should replace the **Schema
+  Errors** text with the errors. If a user uploads an invalid schema then the
+  share button should be disabled.
+
+## Save Shared File Dialog
+
+![save shared file dialog](../../dist/save-shared-file-dialog.png)
+
+This dialog is part of the [share dataset flow](#sharing).
+
+From this dialog the user an:
+
+* Enter in the name of the created shared file
+* Click on the **Save** button to save the created shared file. This button
+  should be disabled if the entered file name is invalid. Currently only an
+  empty file name is considered invalid.
+* Cancel the download the process by pressing the **Cancel** button. This should
+  close the dialog.
+
+## Confirm Share Dataset Share Dialog
+
+![confirm share invalid dataset dialog](../../dist/confirm-share-invalid-dataset-dialog.png)
+
+This dialog is part of the [share dataset flow](#sharing).
+
+From this dialog the user can:
+
+* Confirm that they want to share the invalid dataset by clicking the **Share**
+  button
+* Cancel the share process by clicking the **Cancel** button
+
 # UI Components
 
 This section contains UI components that are used in multiple pages and/or
@@ -483,6 +545,7 @@ From the sidebar the user can:
     * The groupings should be in reverse chronological order, i.e. the
       latest uploaded dataset revision should be presented first.
 * Start a new validation by clicking the **Validate Dataset** button
+* Share the dataset by clicking the **Share Dataset** button
 
 # Appendix
 

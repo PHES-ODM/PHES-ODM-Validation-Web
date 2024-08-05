@@ -1,0 +1,51 @@
+@startuml
+
+!include ../screens.puml
+
+(*) -[#green]-> [User has uploaded and selected a dataset]"
+{{
+  $view_dataset_page("Ontario Lab.csv", 0)
+}}
+" as view_dataset_page
+
+view_dataset_page -[#green]-> [User clicks on the **Share Dataset** button]"
+{{
+  $share_dataset_dialog("Ontario Lab.csv")
+}}
+" as share_dataset_dialog_no_schema 
+
+share_dataset_dialog_no_schema -[#green]-> [User clicks on the **Load Sharing Schema** button and \n chooses a valid schema]"
+{{
+  $share_dataset_dialog("Ontatio Lab.csv", "Schema.csv")
+}}
+" as share_dataset_dialog_valid_schema
+
+share_dataset_dialog_valid_schema -[#green]-> [User clicks on the **Share** button and the dataset is valid]"
+{{
+  $save_shared_file_dialog()
+}}
+" as save_shared_file_dialog
+
+save_shared_file_dialog -[#green]-> [User enters a valid file name and \n clicks the **Save** button] view_dataset_page
+
+share_dataset_dialog_valid_schema --> [User clicks on the **Share** button and the dataset is invalid]"
+{{
+  $confirm_share_invalid_dataset_dialog()
+}}
+" as confirm_share_invalid_dataset_dialog
+
+confirm_share_invalid_dataset_dialog --> [User clicks on the **Share** button] save_shared_file_dialog
+
+confirm_share_invalid_dataset_dialog --> [Users clicks on the **Cancel** button] view_dataset_page
+
+share_dataset_dialog_no_schema --> [Users clicks on the **Load Sharing Schema** button and \n chooses an invalid schema]"
+{{
+  $share_dataset_dialog("Ontario Lab.csv", "Schema.csv", 0)
+}}
+" as share_dataset_dialog_invalid_schema
+
+share_dataset_dialog_invalid_schema --> [Users clicks on the **Load Sharing Schema** button and \n chooses an invalid schema] share_dataset_dialog_invalid_schema
+
+share_dataset_dialog_invalid_schema --> [User clicks on the **Load Sharing Schema** button and \n chooses a valid schema] share_dataset_dialog_valid_schema
+
+@enduml
