@@ -16,16 +16,20 @@ from dash.development.base_component import Component
 import stores
 import utils
 
-conf_btn = dbc.Button('Configure Dataset')
-validate_btn = dbc.Button('Validate Dataset')
+conf_btn = dbc.NavLink('Configure')
+validate_btn = dbc.NavLink('Validate')
 validation_list = html.Div()
 
 layout = html.Div(
     [
-        html.Div([
-            conf_btn,
-            validate_btn,
-        ]),
+        html.Strong("Dataset Actions"),
+        dbc.Nav(
+            [
+                conf_btn,
+                validate_btn,
+            ],
+            vertical="md",
+        ),
         html.Br(),
         html.Strong('Validations'),
         validation_list,
