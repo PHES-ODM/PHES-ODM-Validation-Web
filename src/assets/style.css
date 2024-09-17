@@ -45,7 +45,7 @@ ul li ul {
     max-width: none !important;
 }
 
-/* {{{1 dash data table */
+/* dash data table */
 
 .dash-table-container {
     overflow: scroll;
@@ -55,4 +55,15 @@ ul li ul {
     margin: 0;
     padding-top: 0 !important;
     padding-bottom: 0 !important;
+}
+
+/* sharing schema uploader */
+
+div:has(> .schema-uploader) {
+    display: inline-block;
+}
+
+.schema-uploader a {
+    color: var(--bs-link-color) !important;
+    text-decoration: underline !important;
 }

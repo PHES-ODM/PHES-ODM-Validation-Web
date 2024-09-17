@@ -7,4 +7,5 @@ orjson==3.9.15
 pandas==2.2.2
 typing_extensions==4.8.0
 
+odm_sharing @ git+https://github.com/Big-Life-Lab/PHES-ODM-sharing.git
 odm_validation @ git+https://github.com/Big-Life-Lab/PHES-ODM-Validation.git@c0c80084

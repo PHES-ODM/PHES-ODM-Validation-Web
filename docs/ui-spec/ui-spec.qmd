@@ -466,11 +466,12 @@ From this dialog the user can:
   auto-selected.
 * Upload the sharing schema to use by clicking the **Upload** link. This should
   bring up a native file-picker dialog to select and load the file.
-* View any errors from their uploaded schema. This should replace the **Schema
-  Errors** text with the errors. If a user uploads an invalid schema then the
-  share button should be disabled.
 * Create the file to share by clicking the **Share** button. This should bring
   up a native file-picker dialog to select and save the file.
+* View any errors from the uploaded schema or the sharing process. This should
+  replace the **Schema Errors** text with the errors. The share button should
+  be disabled until a valid schema is present.
+* Close the dialog using the close-button.
 
 # UI Components
 

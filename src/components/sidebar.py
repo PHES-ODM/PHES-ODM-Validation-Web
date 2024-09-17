@@ -17,6 +17,7 @@ import stores
 import utils
 
 conf_btn = dbc.NavLink('Configure')
+share_btn = dbc.NavLink('Share')
 validate_btn = dbc.NavLink('Validate')
 validation_list = html.Div()
 
@@ -27,6 +28,7 @@ layout = html.Div(
             [
                 conf_btn,
                 validate_btn,
+                share_btn,
             ],
             vertical="md",
         ),
@@ -101,3 +103,11 @@ def register(app):  # type: ignore
             rev_links[rev_text] = links
 
         return utils.gen_html_list(rev_links)
+
+    @app.callback(
+        Output(stores.share_dialog_flag, 'data', allow_duplicate=True),
+        Input(share_btn, 'n_clicks'),
+    )
+    def on_share_btn(n: int) -> bool:
+        '''open share dialog'''
+        return open_dialog(n)

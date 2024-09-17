@@ -1,6 +1,7 @@
 from typing import Dict, Tuple
 
 import dash_bootstrap_components as dbc
+import pandas as pd
 from dash import (
     Input,
     Output,
@@ -18,10 +19,9 @@ from components import modals
 from stores import SheetName
 
 from import_utils import (
-    TableData,
     decode_contents,
     import_dataset,
-    load_sheets,
+    load_dfs,
 )
 
 from dialogs.common import register_dialog_flag_callback
@@ -239,7 +239,7 @@ def register(app):  # type: ignore
         [
             Output(stores.dataset_id, 'data', allow_duplicate=True),
             Output(stores.datasets, 'data'),
-            Output(stores.dataset_sheets, 'data'),
+            Output(stores.dataset_data, 'data'),
             Output(stores.validations, 'data', allow_duplicate=True),
             Output(stores.validation_reports, 'data', allow_duplicate=True),
             Output(stores.validation_summaries, 'data', allow_duplicate=True),
@@ -271,8 +271,8 @@ def register(app):  # type: ignore
         dataset_id = filename
         is_dup = dataset_id in datasets
 
-        sheets: Dict[SheetName, TableData] = load_sheets(filename, data)
-        ds = import_dataset(dataset_id, sheets)
+        dfs: Dict[SheetName, pd.DataFrame] = load_dfs(filename, data)
+        ds = import_dataset(dataset_id, dfs)
 
         if is_dup and (not replace_on_dup):
             prev_ds = datasets[dataset_id]
@@ -281,8 +281,8 @@ def register(app):  # type: ignore
         # patches
         dataset_patch = Patch()
         dataset_patch[dataset_id] = ds
-        dataset_sheet_patch = Patch()
-        dataset_sheet_patch[dataset_id] = sheets
+        dataset_data_patch = Patch()
+        dataset_data_patch[dataset_id] = stores._encode_dataframes(dfs)
         validation_patch = Patch()
         validation_patch[dataset_id] = {}
 
@@ -296,7 +296,7 @@ def register(app):  # type: ignore
         return (
             dataset_id,
             dataset_patch,
-            dataset_sheet_patch,
+            dataset_data_patch,
             val_update,
             val_update,
             val_update,
