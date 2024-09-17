@@ -1,7 +1,7 @@
 import os
 import tempfile
 from datetime import datetime
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import diskcache
 from dash import DiskcacheManager, dcc
@@ -22,6 +22,7 @@ class Dataset(TypedDict):
     table_headers: Dict[odm.TableName, List[str]]
     table_sizes: Dict[odm.TableName, int]
     revision: int
+    valid: Optional[bool]
 
 
 DatasetDict = Dict[Filename, Dataset]

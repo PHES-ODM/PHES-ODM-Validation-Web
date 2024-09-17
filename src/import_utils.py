@@ -86,4 +86,5 @@ def import_dataset(filename: Filename, sheets: dict) -> Dataset:
         table_headers=headers,
         table_sizes=sizes,
         revision=1,
+        valid=None,
     )

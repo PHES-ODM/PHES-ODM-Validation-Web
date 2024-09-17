@@ -101,6 +101,7 @@ def register(app):  # type: ignore
             Output(stores.validations, 'data'),
             Output(stores.validation_reports, 'data'),
             Output(stores.validation_summaries, 'data'),
+            Output(stores.datasets, 'data', allow_duplicate=True),
         ],
         inputs=[
             Input(stores.validation_trigger, 'data'),
@@ -129,7 +130,7 @@ def register(app):  # type: ignore
         datasets: dict,
         dataset_sheets: dict,
         setup: ValidationSetup,
-    ) -> Tuple[Component, Component, Patch, Patch, Patch]:
+    ) -> Tuple[Component, Component, Patch, Patch, Patch, Patch]:
         '''open/close dialog, start validation when opening, show report'''
         if not trigger:
             return no_update
@@ -163,9 +164,10 @@ def register(app):  # type: ignore
 
         es = report.errors
         ws = report.warnings
-        keys = {SummaryKey.TABLE, SummaryKey.COLUMN, SummaryKey.ROW}
+        ds['valid'] = (len(es) == 0)
 
         on_progress('summarizing report', '', 1, 2)
+        keys = {SummaryKey.TABLE, SummaryKey.COLUMN, SummaryKey.ROW}
         report_summary = summarize_report(report, by=keys)
 
         summary = [
@@ -184,8 +186,10 @@ def register(app):  # type: ignore
         val_report[dataset_id][validation_name] = report.__dict__
         val_summary = Patch()
         val_summary[dataset_id][validation_name] = report_summary.__dict__
+        ds2 = Patch()
+        ds2[dataset_id] = ds
 
-        return '', summary, validation, val_report, val_summary
+        return '', summary, validation, val_report, val_summary, ds2
 
     @app.callback(
         Output(confirm_cancel_dialog, 'displayed', allow_duplicate=True),
