@@ -1,0 +1,7 @@
+@startuml
+
+!include ../screens.puml
+
+$share_dataset_dialog("<Dataset Name>", "<Sharing Schema Name>", 0)
+
+@enduml

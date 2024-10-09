@@ -21,12 +21,13 @@
 {^"Sidebar"
     [Configure Dataset]
     [Validate Dataset]
+    [Share Dataset]
 
     !if ($show_validations)
         {^"Previous Validations"
 
             {^"rev. 2"
-                [Validation 3]
+                [Validation 3 <valid-tick>]
             }
 
             {^"rev. 1"
