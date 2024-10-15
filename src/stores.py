@@ -53,6 +53,9 @@ class ValidationSetup(TypedDict):
 # was opened from the upload dialog.
 OPEN_FROM_UPLOAD: int = 2
 
+# storage type constant for dev. purposes
+ST = 'memory'
+
 # dialog flags
 #
 
@@ -74,18 +77,20 @@ validation_dialog_init = dcc.Store(id='validation-dialog-init', data=False)
 # collections
 #
 
-dataset_sheets = dcc.Store(id='dataset-sheets', data={})
-datasets = dcc.Store(id='datasets', data={})
-validations = dcc.Store(id='validations', data={})
-validation_reports = dcc.Store(id='validation-reports', data={})
-validation_summaries = dcc.Store(id='validation-summaries', data={})
+dataset_sheets = dcc.Store(id='dataset-sheets', data={}, storage_type=ST)
+datasets = dcc.Store(id='datasets', data={}, storage_type=ST)
+validations = dcc.Store(id='validations', data={}, storage_type=ST)
+validation_reports = dcc.Store(id='validation-reports', data={},
+                               storage_type=ST)
+validation_summaries = dcc.Store(id='validation-summaries', data={},
+                                 storage_type=ST)
 
 # intermediaries
 #
 
 cancel_operation = dcc.Store(id='cancel-op', data=False)
 dataset_conf_form = dcc.Store(id='dataset-conf-form', data={})
-dataset_id = dcc.Store(id='dataset-id')
+dataset_id = dcc.Store(id='dataset-id', storage_type=ST)
 replace_on_dup = dcc.Store(id='replace-on-dup', data=True)
 uploaded_data = dcc.Store(id='uploaded-data')
 uploaded_name = dcc.Store(id='uploaded-name')
