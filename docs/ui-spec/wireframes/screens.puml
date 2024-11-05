@@ -284,18 +284,18 @@ salt
 {
   title Share Dataset Dialog
 
-  $file_name
+  Dataset: <Dataset name>
 
-  Dataset Valid/Invalid
+  Valid: <Valid>
 
-  $schema_name
+  Schema: <Schema name> or [Upload]
 
   !if $is_schema_valid == 0
     <color:Red>Schema Errors
   !endif
 
-  [Load Sharing Schema]
   [Share]
+  [Close]
 }
 !endprocedure
 

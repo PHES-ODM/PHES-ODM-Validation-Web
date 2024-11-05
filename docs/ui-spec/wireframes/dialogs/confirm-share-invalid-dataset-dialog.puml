@@ -1,7 +1,0 @@
-@startuml
-
-!include ../screens.puml
-
-$confirm_share_invalid_dataset_dialog()
-
-@enduml
