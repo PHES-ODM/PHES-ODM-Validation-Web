@@ -282,20 +282,20 @@ salt
 !procedure $share_dataset_dialog($file_name, $schema_name="", $is_schema_valid=1)
 salt
 {
-  title Share Dataset Dialog
-
-  $file_name
-
-  Dataset Valid/Invalid
-
-  $schema_name
-
   !if $is_schema_valid == 0
     <color:Red>Schema Errors
   !endif
 
-  [Load Sharing Schema]
+  title Share Dataset Dialog
+
+  Dataset: <Dataset name>
+
+  Valid: <Valid>
+
+  Schema: <Schema name> or [Upload]
+
   [Share]
+  [Close]
 }
 !endprocedure
 

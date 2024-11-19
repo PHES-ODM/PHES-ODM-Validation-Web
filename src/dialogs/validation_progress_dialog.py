@@ -1,8 +1,9 @@
 import logging
-from typing import Callable, Tuple
+from typing import Callable, Dict, List, Tuple
 # from pprint import pprint
 
 import dash_bootstrap_components as dbc
+import pandas as pd
 from dash import (
     Input,
     Output,
@@ -22,7 +23,7 @@ import stores
 import utils
 from odm import odm
 from components import modals
-from stores import ValidationSetup
+from stores import DatasetId, SheetName, ValidationSetup
 
 from dialogs.common import register_dialog_flag_callback
 
@@ -55,14 +56,21 @@ _validation_progress_dialog = modals.init_modal(
 layout = _validation_progress_dialog
 
 
-def map_table_data(sheets: dict, mapping: dict) -> dict:
+def _to_dict_list(df: pd.DataFrame) -> List[dict]:
+    """converts a pandas DataFrame to a list of dicts with column names as
+    keys and field values as values"""
+    return df.to_dict('records')
+
+
+def _map_table_data(dfs: Dict[SheetName, pd.DataFrame], mapping: dict
+                    ) -> Dict[odm.TableName, List[dict]]:
     '''maps `sheets` to ODM tables, using `mapping`'''
     tables = {}
-    for sheet_name, data in sheets.items():
+    for sheet_name, df in dfs.items():
         table_name = mapping[sheet_name]
         if not table_name:
             continue
-        tables[table_name] = data
+        tables[table_name] = _to_dict_list(df)
     return tables
 
 
@@ -101,11 +109,12 @@ def register(app):  # type: ignore
             Output(stores.validations, 'data'),
             Output(stores.validation_reports, 'data'),
             Output(stores.validation_summaries, 'data'),
+            Output(stores.datasets, 'data', allow_duplicate=True),
         ],
         inputs=[
             Input(stores.validation_trigger, 'data'),
             State(stores.datasets, 'data'),
-            State(stores.dataset_sheets, 'data'),
+            State(stores.dataset_data, 'data'),
             State(stores.validation_setup, 'data'),
         ],
         background=True,
@@ -127,9 +136,9 @@ def register(app):  # type: ignore
         set_progress: Callable,
         trigger: bool,
         datasets: dict,
-        dataset_sheets: dict,
+        dataset_data: Dict[DatasetId, Dict[SheetName, str]],
         setup: ValidationSetup,
-    ) -> Tuple[Component, Component, Patch, Patch, Patch]:
+    ) -> Tuple[Component, Component, Patch, Patch, Patch, Patch]:
         '''open/close dialog, start validation when opening, show report'''
         if not trigger:
             return no_update
@@ -138,8 +147,9 @@ def register(app):  # type: ignore
         ds = datasets[dataset_id]
         version = odm.Version(ds['odm_version'])
         mapping = ds['sheet_tables']
-        sheets = dataset_sheets[dataset_id]
-        tables = map_table_data(sheets, mapping)
+        enc_dfs = dataset_data[dataset_id]
+        dfs = stores._decode_dataframes(enc_dfs)
+        tables = _map_table_data(dfs, mapping)
         schema = odm.load_schema(version)
 
         def on_progress(action: str, table_id: str, current: int, total: int
@@ -163,9 +173,10 @@ def register(app):  # type: ignore
 
         es = report.errors
         ws = report.warnings
-        keys = {SummaryKey.TABLE, SummaryKey.COLUMN, SummaryKey.ROW}
+        ds['valid'] = (len(es) == 0)
 
         on_progress('summarizing report', '', 1, 2)
+        keys = {SummaryKey.TABLE, SummaryKey.COLUMN, SummaryKey.ROW}
         report_summary = summarize_report(report, by=keys)
 
         summary = [
@@ -184,8 +195,10 @@ def register(app):  # type: ignore
         val_report[dataset_id][validation_name] = report.__dict__
         val_summary = Patch()
         val_summary[dataset_id][validation_name] = report_summary.__dict__
+        ds2 = Patch()
+        ds2[dataset_id] = ds
 
-        return '', summary, validation, val_report, val_summary
+        return '', summary, validation, val_report, val_summary, ds2
 
     @app.callback(
         Output(confirm_cancel_dialog, 'displayed', allow_duplicate=True),

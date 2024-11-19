@@ -1,10 +1,11 @@
 dash-bootstrap-components==1.4.1
-dash[diskcache]==2.10.2
-diskcache==5.2.1
+dash[compress]
+dash[diskcache]
 mypy==1.5.1
-openpyxl==3.1.2
+openpyxl==3.1.4
 orjson==3.9.15
-pandas==2.0.2
+pandas==2.2.2
 typing_extensions==4.8.0
 
+odm_sharing @ git+https://github.com/Big-Life-Lab/PHES-ODM-sharing.git
 odm_validation @ git+https://github.com/Big-Life-Lab/PHES-ODM-Validation.git@c0c80084

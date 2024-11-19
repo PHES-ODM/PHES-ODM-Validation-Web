@@ -16,6 +16,7 @@ from components import (
 from dialogs import (
     conf_dialog,
     report_dialog,
+    share_dialog,
     upload_dialog,
     validation_setup_dialog,
     validation_progress_dialog,
@@ -32,7 +33,8 @@ stylesheets = [
 ]
 
 app = Dash(__name__, use_pages=True, external_stylesheets=stylesheets,
-           prevent_initial_callbacks=True)
+           prevent_initial_callbacks=True,
+           compress=True)
 
 app.layout = html.Div([
     # stores
@@ -40,14 +42,19 @@ app.layout = html.Div([
     stores.conf_dialog_flag,
     stores.conf_dialog_init,
     stores.dataset_conf_form,
+    stores.dataset_data,
     stores.dataset_id,
-    stores.dataset_sheets,
     stores.datasets,
     stores.progress_dialog_flag,
     stores.progress_dialog_init,
     stores.replace_on_dup,
     stores.report_dialog_flag,
     stores.report_dialog_init,
+    stores.share_dialog_flag,
+    stores.share_dialog_init,
+    stores.share_dialog_share,
+    stores.sharing_schema_data,
+    stores.sharing_schema_filename,
     stores.upload_dialog_flag,
     stores.upload_dialog_init,
     stores.uploaded_data,
@@ -63,6 +70,7 @@ app.layout = html.Div([
     # dialogs
     conf_dialog.layout,
     report_dialog.layout,
+    share_dialog.layout,
     upload_dialog.layout,
     validation_setup_dialog.layout,
     validation_progress_dialog.layout,
@@ -79,6 +87,7 @@ app.layout = html.Div([
 # register component/dialog callbacks
 conf_dialog.register(app)  # type: ignore
 report_dialog.register(app)  # type: ignore
+share_dialog.register(app)  # type: ignore
 sidebar.register(app)  # type: ignore
 topbar.register(app)  # type: ignore
 upload_dialog.register(app)  # type: ignore

@@ -1,7 +1,0 @@
-@startuml
-
-!include ../screens.puml
-
-$upload_sharing_schema_dialog()
-
-@enduml
