@@ -1,5 +1,9 @@
 # Built files
+app.spec
+
+# Build dirs
 __pycache__/
+build/
 dist/
 
 # Python venv
