@@ -1,5 +1,3 @@
-from typing import Dict, Tuple
-
 import dash_bootstrap_components as dbc
 import pandas as pd
 from dash import (
@@ -132,7 +130,7 @@ def register(app):  # type: ignore
         ],
         Input(stores.upload_dialog_init, 'data'),
     )
-    def on_dialog_init(signal: bool) -> Tuple[str, bool, None]:
+    def on_dialog_init(signal: bool) -> tuple[str, bool, None]:
         '''init upload dialog'''
         # XXX: uploader contents must be cleared so that its callback will
         # trigger (due to change) if the same file is reuploaded
@@ -159,7 +157,7 @@ def register(app):  # type: ignore
     def on_dataset_uploaded(
         contents: str,
         filename: str,
-    ) -> Tuple[str, str, str, bool]:
+    ) -> tuple[str, str, str, bool]:
         """Store uploaded dataset, and enable ok button"""
         if not contents:
             return no_update
@@ -181,7 +179,7 @@ def register(app):  # type: ignore
         n: int,
         datasets: dict,
         dataset_id: str
-    ) -> Tuple[bool, bool, bool, str]:
+    ) -> tuple[bool, bool, bool, str]:
         '''close upload dialog, open duplicate dialog or import dialog'''
         if dataset_id in datasets:
             return (False, True) + (no_update,)*2  # duplicate
@@ -217,7 +215,7 @@ def register(app):  # type: ignore
         replace_clicks: int,
         replace_id: str,
         dataset_id: str,
-    ) -> Tuple[bool, bool, bool, bool, str]:
+    ) -> tuple[bool, bool, bool, bool, str]:
         '''close duplicate dialog, go through replace confirmation or go
         straight to import dialog'''
         do_replace = (callback_context.triggered_id == replace_id)
@@ -231,7 +229,7 @@ def register(app):  # type: ignore
         Input(_confirm_replace_dialog, 'submit_n_clicks'),
         State(stores.uploaded_name, 'data'),
     )
-    def on_confirm_replace(n: int, dataset_id: str) -> Tuple[bool, bool]:
+    def on_confirm_replace(n: int, dataset_id: str) -> tuple[bool, bool]:
         '''transitions from replace dialog to import dialog'''
         return False, True
 
@@ -259,7 +257,7 @@ def register(app):  # type: ignore
         contents: str,
         replace_on_dup: bool,
         datasets: dict,
-    ) -> Tuple[str, Patch, Patch, Patch, Patch, Patch, bool, int, str]:
+    ) -> tuple[str, Patch, Patch, Patch, Patch, Patch, bool, int, str]:
         """import dataset, close import dialog, open conf dialog or go to
         dataset page directly"""
         # TODO:
@@ -271,7 +269,7 @@ def register(app):  # type: ignore
         dataset_id = filename
         is_dup = dataset_id in datasets
 
-        dfs: Dict[SheetName, pd.DataFrame] = load_dfs(filename, data)
+        dfs: dict[SheetName, pd.DataFrame] = load_dfs(filename, data)
         ds = import_dataset(dataset_id, dfs)
 
         if is_dup and (not replace_on_dup):

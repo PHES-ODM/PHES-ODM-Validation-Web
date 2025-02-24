@@ -1,5 +1,3 @@
-from typing import Tuple
-
 from dash import (
     Input,
     Output,
@@ -20,7 +18,7 @@ def register_dialog_flag_callback(  # type: ignore
         ],
         Input(flag_store, 'data'),
     )
-    def on_dialog_flag(flag: bool) -> Tuple[bool, bool]:
+    def on_dialog_flag(flag: bool) -> tuple[bool, bool]:
         '''open/close dialog'''
         return flag, (True if flag else no_update)
     return on_dialog_flag

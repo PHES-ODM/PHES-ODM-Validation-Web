@@ -1,4 +1,3 @@
-from typing import Dict, List
 from enum import Enum
 # from pprint import pprint
 
@@ -80,7 +79,7 @@ def errorToRowPreview(e: dict) -> dict:
     return row
 
 
-def fmttable(errors: List[dict]) -> List[dict]:
+def fmttable(errors: list[dict]) -> list[dict]:
     return list(map(errorToRowPreview, errors))
 
 
@@ -90,7 +89,7 @@ def error_kind_key(kind: ErrorKind) -> str:
 
 
 def reportToCsvStr(report: dict) -> str:
-    rows: List[Dict] = []
+    rows: list[dict] = []
     for kind in reversed(ErrorKind):
         errors = report.get(error_kind_key(kind), [])
         rows += map(errorToRow, errors)

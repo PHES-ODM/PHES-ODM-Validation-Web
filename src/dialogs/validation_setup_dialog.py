@@ -1,5 +1,3 @@
-from typing import Tuple
-
 import dash_bootstrap_components as dbc
 from dash import (
     Input,
@@ -97,7 +95,7 @@ def register(app):  # type:ignore
         State(stores.validations, 'data'),
     )
     def on_dialog_init(signal: bool, dataset_id: str, validations: dict
-                       ) -> Tuple[str, Component]:
+                       ) -> tuple[str, Component]:
         '''init dialog'''
         names = validations.get(dataset_id, [])
         name = get_next_name(names)
@@ -124,7 +122,7 @@ def register(app):  # type:ignore
         profile_id: str,
         dataset_id: str,
         validations: dict,
-    ) -> Tuple[bool, bool, bool, ValidationSetup]:
+    ) -> tuple[bool, bool, bool, ValidationSetup]:
         '''validate validation name, close dialog, open validation-progress
         dialog'''
         if validation_name in validations.get(dataset_id, {}):
