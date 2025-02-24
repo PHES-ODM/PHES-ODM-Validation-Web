@@ -1,11 +1,6 @@
 from itertools import groupby
 # from pprint import pformat, pprint
-from typing import (
-    List,
-    Optional,
-    Set,
-    Tuple,
-)
+from typing import Optional, Set
 from urllib.parse import unquote
 
 import dash
@@ -76,7 +71,7 @@ def layout(
 )
 def on_page_load(dummy: Component, pathname: str,
                  datasets: dict, summaries: dict
-                 ) -> Tuple[Component, str]:
+                 ) -> tuple[Component, str]:
     # - number of invalid tables (excel)
     # - for each table:
     #   - number of errors
@@ -92,11 +87,11 @@ def on_page_load(dummy: Component, pathname: str,
         kind: ErrorKind,
         table: str,
         key: SummaryKey
-    ) -> List[SummaryEntry]:
+    ) -> list[SummaryEntry]:
         es = summary[kind.value + 's'].get(table, [])
         return list(filter(lambda e: e['key'] == key, es))
 
-    def get_count(es: List[dict], rule_id: RuleId) -> int:
+    def get_count(es: list[dict], rule_id: RuleId) -> int:
         e: dict = next(filter(lambda e: e['rule_id'] == rule_id.value, es), {})
         return e.get('count', 0)
 
@@ -132,7 +127,7 @@ def on_page_load(dummy: Component, pathname: str,
             'Total Rows': total_rows,
         })
 
-    def getrows(table: str, es: List[SummaryEntry]) -> List[dict]:
+    def getrows(table: str, es: list[SummaryEntry]) -> list[dict]:
         def getkey(e: SummaryEntry) -> str:
             return e['value']
         result = []

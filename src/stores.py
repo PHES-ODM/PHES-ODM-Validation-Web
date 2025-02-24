@@ -4,7 +4,7 @@ from base64 import b64decode, b64encode
 from datetime import datetime
 from io import BytesIO
 import pandas as pd
-from typing import Dict, List, Optional
+from typing import Optional
 
 import diskcache
 from dash import DiskcacheManager, dcc
@@ -23,16 +23,16 @@ class Dataset(TypedDict):
     filename: str
     odm_version: str
     upload_time: datetime
-    sheet_tables: Dict[SheetName, odm.TableName]
-    sheet_columns: Dict[SheetName, List[str]]
-    sheet_rowcounts: Dict[SheetName, int]
-    table_headers: Dict[odm.TableName, List[str]]
-    table_sizes: Dict[odm.TableName, int]
+    sheet_tables: dict[SheetName, odm.TableName]
+    sheet_columns: dict[SheetName, list[str]]
+    sheet_rowcounts: dict[SheetName, int]
+    table_headers: dict[odm.TableName, list[str]]
+    table_sizes: dict[odm.TableName, int]
     revision: int
     valid: Optional[bool]
 
 
-DatasetDict = Dict[Filename, Dataset]
+DatasetDict = dict[Filename, Dataset]
 
 
 class Validation(TypedDict):
@@ -48,8 +48,8 @@ class ValidationSetup(TypedDict):
     profile_id: str
 
 
-def _encode_dataframes(dfs: Dict[SheetName, pd.DataFrame]
-                       ) -> Dict[SheetName, str]:
+def _encode_dataframes(dfs: dict[SheetName, pd.DataFrame]
+                       ) -> dict[SheetName, str]:
     '''encodes dataframes as compressed CSV text'''
     result = {}
     for sheet_name, df in dfs.items():
@@ -61,8 +61,8 @@ def _encode_dataframes(dfs: Dict[SheetName, pd.DataFrame]
     return result
 
 
-def _decode_files(enc: Dict[SheetName, str]
-                  ) -> Dict[SheetName, BytesIO]:
+def _decode_files(enc: dict[SheetName, str]
+                  ) -> dict[SheetName, BytesIO]:
     '''decodes compressed CSV text to file objects'''
     result = {}
     for sheet_name, encoded in enc.items():
@@ -72,8 +72,8 @@ def _decode_files(enc: Dict[SheetName, str]
     return result
 
 
-def _decode_dataframes(enc: Dict[SheetName, str]
-                       ) -> Dict[SheetName, pd.DataFrame]:
+def _decode_dataframes(enc: dict[SheetName, str]
+                       ) -> dict[SheetName, pd.DataFrame]:
     '''decodes compressed CSV text to dataframes'''
     return seq(_decode_files(enc).items())\
         .map(lambda kv: (kv[0], pd.read_csv(kv[1], na_filter=False)))\

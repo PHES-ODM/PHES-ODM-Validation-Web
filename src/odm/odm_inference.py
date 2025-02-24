@@ -1,5 +1,3 @@
-from typing import Dict, List
-
 from .odm_defs import (
     TableName,
     Version,
@@ -13,7 +11,7 @@ def _match(sheet_name: str, table_name: TableName) -> bool:
             sheet_name.endswith(' ' + table_name))
 
 
-def infer_version(sheet_names: List[str]) -> Version:
+def infer_version(sheet_names: list[str]) -> Version:
     """Returns the latest version that matches any of the `sheet_names`.
     Defaults to the latest version."""
     for version in reversed(Version):
@@ -36,8 +34,8 @@ def _validate_table_mapping(
                     f'in ODM version {version}')
 
 
-def infer_table_mapping(sheet_names: List[str], odm_version: Version
-                        ) -> Dict[str, TableName]:
+def infer_table_mapping(sheet_names: list[str], odm_version: Version
+                        ) -> dict[str, TableName]:
     """Attempts to map sheet names to ODM table names."""
     result = {}
     tables = set(get_table_names(odm_version))

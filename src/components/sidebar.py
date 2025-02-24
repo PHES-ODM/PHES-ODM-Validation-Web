@@ -1,4 +1,3 @@
-from typing import Tuple
 from operator import itemgetter
 from itertools import groupby
 
@@ -74,12 +73,12 @@ def register(app):  # type: ignore
             (dataset_id, _) = utils.get_validation_id(pathname)
         assert dataset_id
 
-        def get_nameurl(validation_name: str) -> Tuple[str, str]:
+        def get_nameurl(validation_name: str) -> tuple[str, str]:
             name = validation_name
             url = utils.get_validation_path(dataset_id, name)
             return (name, url)
 
-        def get_link(nameurl: Tuple[str, str]) -> Component:
+        def get_link(nameurl: tuple[str, str]) -> Component:
             name, url = nameurl
             return dcc.Link(name, href=url)
 

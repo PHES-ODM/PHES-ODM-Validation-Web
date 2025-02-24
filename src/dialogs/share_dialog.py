@@ -1,6 +1,6 @@
 from io import BytesIO
 from pathlib import Path
-from typing import Callable, List, Optional, Tuple, Union
+from typing import Callable, Optional, Union
 from base64 import b64decode
 
 import dash_bootstrap_components as dbc
@@ -80,10 +80,10 @@ def gen_schema_name_text(schema_name: str) -> str:
     return schema_name + ' or ' if schema_name else ''
 
 
-def errors_to_strings(e: Union[Exception, List[Exception]]) -> List[str]:
+def errors_to_strings(e: Union[Exception, list[Exception]]) -> list[str]:
     '''nested error list to nested str list'''
 
-    def inner(ee: Union[Exception, List[Exception]]) -> Union[str, List[str]]:
+    def inner(ee: Union[Exception, list[Exception]]) -> Union[str, list[str]]:
         if isinstance(e, Exception):
             val = e.args[0]
             if isinstance(val, list) and len(val) > 1:
@@ -97,7 +97,7 @@ def errors_to_strings(e: Union[Exception, List[Exception]]) -> List[str]:
     return result if isinstance(result, list) else [result]
 
 
-def errors_to_html(caption: str, e: Union[Exception, List[Exception]]
+def errors_to_html(caption: str, e: Union[Exception, list[Exception]]
                    ) -> Component:
     return html.Div([
         html.Strong(caption + ': '),
@@ -134,7 +134,7 @@ def register(app):  # type:ignore
     )
     def on_dialog_init(
         signal: bool, dataset_id: str, datasets: dict, schema_name: str,
-    ) -> Tuple[str, str, str, bool, str, bool]:
+    ) -> tuple[str, str, str, bool, str, bool]:
         NO_YES = ('No', 'Yes')
         assert dataset_id
         ds = datasets[dataset_id]
@@ -162,7 +162,7 @@ def register(app):  # type:ignore
     )
     def on_schema_uploaded(
         filename: str, contents: str,
-    ) -> Tuple[str, str, str, bool, str, bool, str]:
+    ) -> tuple[str, str, str, bool, str, bool, str]:
         if not contents:
             return no_update
         (content_type, content_data) = contents.split(',')
@@ -195,7 +195,7 @@ def register(app):  # type:ignore
         ],
         Input(share_btn, 'n_clicks'),
     )
-    def on_share(n: int) -> Tuple[str, bool]:
+    def on_share(n: int) -> tuple[str, bool]:
         '''initializes the sharing status and signals for sharing to start'''
         # XXX: status must be initialized here since calling `set_progress` in
         # the beginning of the background-callback below isn't synced before
@@ -232,7 +232,7 @@ def register(app):  # type:ignore
         dataset_data: dict,
         schema_filename: str,
         schema_data: str,
-     ) -> Tuple[dict, bool, Component]:
+     ) -> tuple[dict, bool, Component]:
         '''runs the sharing function'''
 
         # get schema

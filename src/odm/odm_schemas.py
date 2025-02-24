@@ -2,7 +2,6 @@ import logging
 import os
 import time
 import yaml
-from typing import List
 
 import odm_validation.utils
 
@@ -16,17 +15,17 @@ from .odm_defs import (
 _version_table_columns: TableMetadata
 
 
-def get_table_names(version: Version) -> List[TableName]:
+def get_table_names(version: Version) -> list[TableName]:
     return list(_version_table_columns[version.value].keys())
 
 
 def get_column_names(version: Version, table_name: TableName
-                     ) -> List[ColumnName]:
+                     ) -> list[ColumnName]:
     tables = _version_table_columns[version.value]
     return tables.get(table_name, [])
 
 
-def _get_file_paths(dir: str) -> List[str]:
+def _get_file_paths(dir: str) -> list[str]:
     """returns the list of file paths in `dir`"""
     with os.scandir(dir) as entries:
         files = filter(lambda e: e.is_file, entries)
@@ -40,17 +39,17 @@ def _get_schema_dir() -> str:
     return schema_dir
 
 
-def _get_schema_paths() -> List[str]:
+def _get_schema_paths() -> list[str]:
     """returns a list of odm-validation schema file paths"""
     schema_dir = _get_schema_dir()
     return _get_file_paths(schema_dir)
 
 
-def _get_tables(schema: dict) -> List[TableName]:
+def _get_tables(schema: dict) -> list[TableName]:
     return list(schema['schema'].keys())
 
 
-def _get_table_columns(schema: dict, table: TableName) -> List[ColumnName]:
+def _get_table_columns(schema: dict, table: TableName) -> list[ColumnName]:
     return list(schema['schema'][table]['schema']['schema'].keys())
 
 

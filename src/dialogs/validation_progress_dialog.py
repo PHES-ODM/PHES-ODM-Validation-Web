@@ -1,5 +1,5 @@
 import logging
-from typing import Callable, Dict, List, Tuple
+from typing import Callable
 # from pprint import pprint
 
 import dash_bootstrap_components as dbc
@@ -56,14 +56,14 @@ _validation_progress_dialog = modals.init_modal(
 layout = _validation_progress_dialog
 
 
-def _to_dict_list(df: pd.DataFrame) -> List[dict]:
+def _to_dict_list(df: pd.DataFrame) -> list[dict]:
     """converts a pandas DataFrame to a list of dicts with column names as
     keys and field values as values"""
     return df.to_dict('records')
 
 
-def _map_table_data(dfs: Dict[SheetName, pd.DataFrame], mapping: dict
-                    ) -> Dict[odm.TableName, List[dict]]:
+def _map_table_data(dfs: dict[SheetName, pd.DataFrame], mapping: dict
+                    ) -> dict[odm.TableName, list[dict]]:
     '''maps `sheets` to ODM tables, using `mapping`'''
     tables = {}
     for sheet_name, df in dfs.items():
@@ -74,7 +74,7 @@ def _map_table_data(dfs: Dict[SheetName, pd.DataFrame], mapping: dict
     return tables
 
 
-def unpack_setup(vs: ValidationSetup) -> Tuple[str, str, str]:
+def unpack_setup(vs: ValidationSetup) -> tuple[str, str, str]:
     return vs['dataset_id'], vs['validation_name'], vs['profile_id']
 
 
@@ -95,7 +95,7 @@ def register(app):  # type: ignore
         State(stores.validation_setup, 'data'),
     )
     def on_dialog_init(signal: bool, setup: ValidationSetup
-                       ) -> Tuple[str, str, str, str, bool, bool]:
+                       ) -> tuple[str, str, str, str, bool, bool]:
         '''init dialog, and start validation. This is separate from
         on_validation since it needs to initialize the dialog before starting
         the blocking validation process.'''
@@ -136,9 +136,9 @@ def register(app):  # type: ignore
         set_progress: Callable,
         trigger: bool,
         datasets: dict,
-        dataset_data: Dict[DatasetId, Dict[SheetName, str]],
+        dataset_data: dict[DatasetId, dict[SheetName, str]],
         setup: ValidationSetup,
-    ) -> Tuple[Component, Component, Patch, Patch, Patch, Patch]:
+    ) -> tuple[Component, Component, Patch, Patch, Patch, Patch]:
         '''open/close dialog, start validation when opening, show report'''
         if not trigger:
             return no_update
@@ -215,7 +215,7 @@ def register(app):  # type: ignore
         ],
         Input(confirm_cancel_dialog, 'submit_n_clicks'),
     )
-    def on_confirm_cancel_click(n: int) -> Tuple[bool, Component, Component]:
+    def on_confirm_cancel_click(n: int) -> tuple[bool, Component, Component]:
         text = html.P('Validation canceled')
         return True, '', text
 
@@ -232,7 +232,7 @@ def register(app):  # type: ignore
         n: int,
         setup: ValidationSetup,
         canceled: bool,
-    ) -> Tuple[bool, str]:
+    ) -> tuple[bool, str]:
         '''close dialog, go to validation page'''
         if canceled:
             return False, no_update

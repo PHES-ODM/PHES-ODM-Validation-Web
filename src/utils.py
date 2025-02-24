@@ -1,6 +1,6 @@
 import sys
 from urllib.parse import quote, unquote
-from typing import Any, List, Tuple, Union
+from typing import Any, Union
 
 from dash import (
     html,
@@ -37,7 +37,7 @@ def get_validation_path(dataset_id: str, validation_name: str) -> str:
     return quote(f'/validations/{dataset_id}/{validation_name}')
 
 
-def get_pathname_parts(pathname: str) -> List[str]:
+def get_pathname_parts(pathname: str) -> list[str]:
     return unquote(pathname).split('/')[1:]
 
 
@@ -49,7 +49,7 @@ def get_dataset_id(pathname: str) -> str:
     return parts[1]
 
 
-def get_validation_id(pathname: str) -> Tuple[str, str]:
+def get_validation_id(pathname: str) -> tuple[str, str]:
     '''validation id is (dataset_id, validation_name)'''
     parts = get_pathname_parts(pathname)
     assert parts[0] == 'validations'
@@ -60,7 +60,7 @@ def gen_html_list(xs: Union[list, dict]) -> Component:
     if isinstance(xs, list):
         return html.Ul(list(map(gen_html_list, xs)), className='compact-list')
     elif isinstance(xs, dict):
-        items: List[html.Li] = []
+        items: list[html.Li] = []
         for key, val in xs.items():
             if not (isinstance(val, dict) or isinstance(val, list)):
                 items.append(html.Li(f'{key}: {val}'))
@@ -71,7 +71,7 @@ def gen_html_list(xs: Union[list, dict]) -> Component:
         return html.Li(xs)
 
 
-def gen_html_table(rows: List[dict]) -> Component:
+def gen_html_table(rows: list[dict]) -> Component:
     def gen_td(obj: Union[int, str]) -> Component:
         cn = ('number' if isinstance(obj, int) else 'text') + '-cell'
         return html.Td(obj, className=cn)

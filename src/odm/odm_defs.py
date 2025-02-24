@@ -1,11 +1,11 @@
 from enum import Enum
-from typing import Dict, List, TypeAlias
+from typing import TypeAlias
 
 
 ColumnName: TypeAlias = str
 TableName: TypeAlias = str
 VersionStr: TypeAlias = str
-TableMetadata: TypeAlias = Dict[VersionStr, Dict[TableName, List[ColumnName]]]
+TableMetadata: TypeAlias = dict[VersionStr, dict[TableName, list[ColumnName]]]
 
 
 class Version(Enum):

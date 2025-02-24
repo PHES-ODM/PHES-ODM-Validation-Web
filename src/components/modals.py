@@ -1,11 +1,9 @@
-from typing import List
-
 import dash_bootstrap_components as dbc
 from dash.development.base_component import Component
 
 
-def init_modal(id: str, title: str, body: List[Component],
-               buttons: List[Component], escape: bool = True,
+def init_modal(id: str, title: str, body: list[Component],
+               buttons: list[Component], escape: bool = True,
                class_name: str = '') -> Component:
     """Constructs a modal dialog."""
     return dbc.Modal(
