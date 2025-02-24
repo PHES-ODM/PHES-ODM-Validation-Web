@@ -259,7 +259,7 @@ def register(app):  # type: ignore
         contents: str,
         replace_on_dup: bool,
         datasets: dict,
-    ) -> Tuple[str, Patch, Patch, Patch, Patch, Patch, bool, bool, str]:
+    ) -> Tuple[str, Patch, Patch, Patch, Patch, Patch, bool, int, str]:
         """import dataset, close import dialog, open conf dialog or go to
         dataset page directly"""
         # TODO:
