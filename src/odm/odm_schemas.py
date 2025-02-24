@@ -4,7 +4,7 @@ import time
 import yaml
 from typing import List
 
-from odm_validation import part_tables as odmpt
+import odm_validation.utils
 
 from .odm_defs import (
     ColumnName,
@@ -35,7 +35,7 @@ def _get_file_paths(dir: str) -> List[str]:
 
 
 def _get_schema_dir() -> str:
-    asset_dir = odmpt._get_asset_dir()
+    asset_dir = odm_validation.utils.get_asset_dir()
     schema_dir = os.path.join(asset_dir, 'validation-schemas')
     return schema_dir
 
