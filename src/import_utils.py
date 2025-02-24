@@ -41,26 +41,34 @@ def load_dfs(filename: Filename, data: bytes) -> Dict[SheetName, pd.DataFrame]:
 
 def _get_headers(
     sheet_tables: Dict[SheetName, odm.TableName],
-    sheet_data: Dict[SheetName, pd.DataFrame],
+    sheet_columns: Dict[SheetName, List[str]],
 ) -> Dict[SheetName, List[str]]:
     result = {}
     for sheet, table, in sheet_tables.items():
         if not table:
             continue
-        df = sheet_data[sheet]
-        result[table] = list(df.keys())
+        result[table] = sheet_columns[sheet]
     return result
 
 
-def _get_row_counts(
+def _get_sizes(
     sheet_tables: Dict[SheetName, odm.TableName],
-    sheet_data: Dict[str, pd.DataFrame],
+    sheet_rowcounts: Dict[str, int],
 ) -> Dict[odm.TableName, int]:
     result = {}
     for sheet, table, in sheet_tables.items():
         if table:
-            result[table] = len(sheet_data[sheet])
+            result[table] = sheet_rowcounts[sheet]
     return result
+
+
+def update_dataset_mapping(ds: Dataset, mapping: Dict[SheetName, odm.TableName]
+                           ) -> None:
+    columns = ds['sheet_columns']
+    rowcounts = ds['sheet_rowcounts']
+    ds['table_headers'] = _get_headers(mapping, columns)
+    ds['table_sizes'] = _get_sizes(mapping, rowcounts)
+    ds['sheet_tables'] = mapping
 
 
 def import_dataset(filename: Filename, sheets: Dict[SheetName, pd.DataFrame]
@@ -70,15 +78,19 @@ def import_dataset(filename: Filename, sheets: Dict[SheetName, pd.DataFrame]
     sheet_names = list(sheets.keys())
     odm_version = odm.infer_version(sheet_names)
     sheet_tables = odm.infer_table_mapping(sheet_names, odm_version)
-    headers = _get_headers(sheet_tables, sheets)
-    sizes = _get_row_counts(sheet_tables, sheets)
-    return Dataset(
+    sheet_columns = {sheet: list(df.keys()) for sheet, df in sheets.items()}
+    sheet_rowcounts = {sheet: len(df) for sheet, df in sheets.items()}
+    ds = Dataset(
         filename=filename,
         odm_version=odm_version.value,
         upload_time=datetime.now(),
-        sheet_tables=sheet_tables,
-        table_headers=headers,
-        table_sizes=sizes,
+        sheet_columns=sheet_columns,
+        sheet_rowcounts=sheet_rowcounts,
+        sheet_tables={},
+        table_headers={},
+        table_sizes={},
         revision=1,
         valid=None,
     )
+    update_dataset_mapping(ds, sheet_tables)
+    return ds

@@ -24,6 +24,8 @@ class Dataset(TypedDict):
     odm_version: str
     upload_time: datetime
     sheet_tables: Dict[SheetName, odm.TableName]
+    sheet_columns: Dict[SheetName, List[str]]
+    sheet_rowcounts: Dict[SheetName, int]
     table_headers: Dict[odm.TableName, List[str]]
     table_sizes: Dict[odm.TableName, int]
     revision: int

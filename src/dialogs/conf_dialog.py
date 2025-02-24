@@ -16,6 +16,7 @@ from dash.development.base_component import Component
 
 import stores
 import utils
+from import_utils import update_dataset_mapping
 from components import modals
 from odm import odm
 from stores import DatasetDict
@@ -219,6 +220,7 @@ def register(app):  # type: ignore
         mapping = ds['sheet_tables']
         for sheet, table in new_mapping.items():
             mapping[sheet] = table
+        update_dataset_mapping(ds, mapping)
 
         # check for duplicates
         selected_tables = list(filter(bool, mapping.values()))
