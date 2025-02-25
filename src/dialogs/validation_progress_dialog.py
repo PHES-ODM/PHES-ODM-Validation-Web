@@ -181,7 +181,8 @@ def register(app):  # type: ignore
 
         summary = [
             html.P('Validation complete'),
-            html.P(f'tables: {len(tables)}, errors: {len(es)}, warnings: {len(ws)}'),
+            html.P(f'tables: {len(tables)}, ' +
+                   f'errors: {len(es)}, warnings: {len(ws)}'),
         ]
 
         # patches
