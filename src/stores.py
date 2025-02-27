@@ -72,11 +72,15 @@ def _decode_files(enc: dict[SheetName, str]
     return result
 
 
+def _decode_csv_df(data: BytesIO) -> pd.DataFrame:
+    return pd.read_csv(data, na_filter=False, dtype=str)
+
+
 def _decode_dataframes(enc: dict[SheetName, str]
                        ) -> dict[SheetName, pd.DataFrame]:
     '''decodes compressed CSV text to dataframes'''
     return seq(_decode_files(enc).items())\
-        .map(lambda kv: (kv[0], pd.read_csv(kv[1], na_filter=False)))\
+        .map(lambda kv: (kv[0], _decode_csv_df(kv[1])))\
         .dict()
 
 
