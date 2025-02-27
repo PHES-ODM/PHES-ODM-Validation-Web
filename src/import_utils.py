@@ -73,7 +73,7 @@ def update_dataset_mapping(ds: Dataset, mapping: dict[SheetName, odm.TableName]
 def import_dataset(filename: Filename, sheets: dict[SheetName, pd.DataFrame]
                    ) -> Dataset:
     """Constructs a Dataset with data parsed from an Excel/CSV file. May throw
-    an exceptionjif the file can't be imported."""
+    an exception if the file can't be imported."""
     sheet_names = list(sheets.keys())
     odm_version = odm.infer_version(sheet_names)
     sheet_tables = odm.infer_table_mapping(sheet_names, odm_version)
