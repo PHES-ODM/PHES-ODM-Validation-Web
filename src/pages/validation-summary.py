@@ -22,6 +22,7 @@ from odm_validation.summarization import ErrorSummary, SummaryEntry, SummaryKey
 import stores
 import utils
 from components import sidebar
+from stores import get_table_mapping, get_table_size
 
 # XXX: validation_name is called name and not id because the name doesn't
 # identify the validation by itself, since it depends on dataset_id, so the
@@ -98,18 +99,20 @@ def on_page_load(dummy: Component, pathname: str,
     (dataset_id, validation_name) = utils.get_validation_id(pathname)
 
     ds = datasets[dataset_id]
-    sheet_tables = ds['sheet_tables']
 
     report_summary = summaries[dataset_id][validation_name]
 
     # tables
     # XXX: validations can't be read with an updated version of the app, if
     # RuleId value changes in the next version
+    tables = []
     rs = report_summary
     table_errors = []
-    for sheet, table in sheet_tables.items():
+    for sheet, table in get_table_mapping(ds):
         if not table:
             continue
+        tables.append(table)
+
         es = get_entries(rs, ErrorKind.ERROR, table, SummaryKey.TABLE)
         ws = get_entries(rs, ErrorKind.WARNING, table, SummaryKey.TABLE)
         num_errors = get_count(es, RuleId._all)
@@ -117,7 +120,7 @@ def on_page_load(dummy: Component, pathname: str,
 
         es = get_entries(rs, ErrorKind.ERROR, table, SummaryKey.ROW)
         invalid_rows = list(get_value_set(es))
-        total_rows = ds['table_sizes'][table]
+        total_rows = get_table_size(ds, table)
 
         table_errors.append({
             'Table': table,
@@ -142,9 +145,7 @@ def on_page_load(dummy: Component, pathname: str,
         return result
 
     col_errors = []
-    for table in sheet_tables.values():
-        if not table:
-            continue
+    for table in tables:
         es = get_entries(rs, ErrorKind.ERROR, table, SummaryKey.COLUMN)
         col_errors += getrows(table, es)
 
