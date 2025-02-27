@@ -16,7 +16,13 @@ import stores
 import utils
 from components import sidebar
 from odm import odm
-from stores import Dataset
+from stores import (
+    Dataset,
+    get_table_headers,
+    get_table_mapping,
+    get_table_size,
+)
+
 
 _PAGE_URL = '/datasets/<dataset_id>'
 
@@ -40,16 +46,14 @@ def _fmt_list(values: list[str]) -> str:
 
 def _gen_odm_table_list(
     version: odm.Version,
-    sheet_tables: dict[str, str],
-    table_headers: dict[odm.TableName, list[str]],
-    table_sizes: dict[odm.TableName, int],
+    ds: Dataset,
 ) -> Component:
     entries: list[Component] = []
-    for sheet, table, in sheet_tables.items():
+    for sheet, table, in get_table_mapping(ds):
         if not table:
             continue
-        num_rows = table_sizes[table]
-        cols = set(table_headers[table])
+        num_rows = get_table_size(ds, table)
+        cols = set(get_table_headers(ds, table))
         num_cols = len(cols)
         all_odm_cols = set(odm.get_column_names(version, table))
         odm_cols = all_odm_cols.intersection(cols)
@@ -104,8 +108,7 @@ def _init_upload_report(ds: Dataset) -> list[Component]:
         entry('Upload time', timestr),
         entry('ODM version', ver_str),
         entry(f'ODM tables ({num_odm_tables})'),
-        _gen_odm_table_list(ver, sheet_tables, ds['table_headers'],
-                            ds['table_sizes']),
+        _gen_odm_table_list(ver, ds),
         entry(f'Ignored sheets ({num_ignored_tables})'),
         _gen_unknown_table_list(sheet_tables),
     ]

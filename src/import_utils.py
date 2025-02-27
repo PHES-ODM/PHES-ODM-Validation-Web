@@ -38,35 +38,8 @@ def load_dfs(filename: Filename, data: bytes) -> dict[SheetName, pd.DataFrame]:
         assert False, 'invalid ext'
 
 
-def _get_headers(
-    sheet_tables: dict[SheetName, odm.TableName],
-    sheet_columns: dict[SheetName, list[str]],
-) -> dict[SheetName, list[str]]:
-    result = {}
-    for sheet, table, in sheet_tables.items():
-        if not table:
-            continue
-        result[table] = sheet_columns[sheet]
-    return result
-
-
-def _get_sizes(
-    sheet_tables: dict[SheetName, odm.TableName],
-    sheet_rowcounts: dict[str, int],
-) -> dict[odm.TableName, int]:
-    result = {}
-    for sheet, table, in sheet_tables.items():
-        if table:
-            result[table] = sheet_rowcounts[sheet]
-    return result
-
-
 def update_dataset_mapping(ds: Dataset, mapping: dict[SheetName, odm.TableName]
                            ) -> None:
-    columns = ds['sheet_columns']
-    rowcounts = ds['sheet_rowcounts']
-    ds['table_headers'] = _get_headers(mapping, columns)
-    ds['table_sizes'] = _get_sizes(mapping, rowcounts)
     ds['sheet_tables'] = mapping
 
 
@@ -85,9 +58,7 @@ def import_dataset(filename: Filename, sheets: dict[SheetName, pd.DataFrame]
         upload_time=datetime.now(),
         sheet_columns=sheet_columns,
         sheet_rowcounts=sheet_rowcounts,
-        sheet_tables={},
-        table_headers={},
-        table_sizes={},
+        sheet_tables={},  # updated below
         revision=1,
         valid=None,
     )

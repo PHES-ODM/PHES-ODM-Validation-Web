@@ -1,12 +1,13 @@
 import os
 import tempfile
 from base64 import b64decode, b64encode
+from collections.abc import Generator
 from datetime import datetime
 from io import BytesIO
-import pandas as pd
 from typing import Optional
 
 import diskcache
+import pandas as pd
 from dash import DiskcacheManager, dcc
 from functional import seq
 from typing_extensions import TypedDict
@@ -26,8 +27,6 @@ class Dataset(TypedDict):
     sheet_tables: dict[SheetName, odm.TableName]
     sheet_columns: dict[SheetName, list[str]]
     sheet_rowcounts: dict[SheetName, int]
-    table_headers: dict[odm.TableName, list[str]]
-    table_sizes: dict[odm.TableName, int]
     revision: int
     valid: Optional[bool]
 
@@ -46,6 +45,36 @@ class ValidationSetup(TypedDict):
     dataset_id: str
     validation_name: str
     profile_id: str
+
+
+def get_table_mapping(
+    ds: Dataset
+) -> Generator[tuple[SheetName, Optional[odm.TableName]]]:
+    # accesses table names in a type-safe way, by converting empty table names
+    # to optional ones
+    for sheet, table in ds['sheet_tables'].items():
+        assert table is not None
+        yield (sheet, (table if table != '' else None))
+
+
+def _get_table_sheet(ds: Dataset, table: str) -> Optional[str]:
+    assert table != ''
+    for sheet, sheet_table in get_table_mapping(ds):
+        if sheet_table == table:
+            return sheet
+    return None
+
+
+def get_table_size(ds: Dataset, table: str) -> int:
+    sheet = _get_table_sheet(ds, table)
+    assert sheet
+    return ds['sheet_rowcounts'][sheet]
+
+
+def get_table_headers(ds: Dataset, table: str) -> list[str]:
+    sheet = _get_table_sheet(ds, table)
+    assert sheet
+    return ds['sheet_columns'][sheet]
 
 
 def _encode_dataframes(dfs: dict[SheetName, pd.DataFrame]
