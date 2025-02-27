@@ -72,7 +72,7 @@ def _decode_files(enc: dict[SheetName, str]
     return result
 
 
-def _decode_csv_df(data: BytesIO):
+def _decode_csv_df(data: BytesIO) -> pd.DataFrame:
     return pd.read_csv(data, na_filter=False, dtype=str)
 
 
