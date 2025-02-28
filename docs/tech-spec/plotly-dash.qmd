@@ -5,7 +5,8 @@
 ### General
 
 Pass around references to components instead of using string constants
-(component ids).
+(component ids). This avoids bugs from hardcoding ids which may be changed
+later, and gives the compiler a chance to complain at build time.
 
 Ex:
 ```
@@ -17,17 +18,22 @@ my_button = button(...)
 
 ### Inputs
 
-Try to only have one input per callback, unless you don't need to distinguish
-between them. This should enable you to avoid using dash.ctx. if you need it
-then it's a sign of bad design.
+Try to only have one input per callback, so that each callback only has a
+single source of activation. This makes the application much more predictable.
+This also eliminates the need to check `dash.ctx` for where it was called from.
 
 ### Outputs
 
-Prefer having multiple callbacks with the same outputs over one big callback
-with a context switch. Use `Output(allow_multiple=True)` to enable multiple
-callbacks with the same output. This also requires setting
-`@callback(prevent_initial_callback=True)`, except for callbacks directly on the
-app (`@app.callback`) which inherit the app config:
+If your callback sets different outputs depending on a condition, then you
+should consider splitting it into multiple callbacks instead, unless that would
+violate the previous 'single-input' rule. This makes the code more modular,
+cleaner and possibly also more performant due to only loading in state that
+will be used.
+
+Multiple callbacks using the same outputs can be achieved by setting
+`Output(..., allow_multiple=True)`. This also requires setting
+`@callback(..., prevent_initial_callback=True)`, except for callbacks added
+directly to the app (`@app.callback`) which inherit the app config:
 
 ```
 app = Dash(prevent_initial_callbacks=True)
@@ -35,7 +41,42 @@ app = Dash(prevent_initial_callbacks=True)
 
 ### Stores
 
-Separate callbacks from/to different components with stores. ex: instead of
-directly connecting two components with a callback, you would write to a store
-associated with the target component, and have an additional callback for
-reacting to the store and mutating the target component.
+Use stores as intermediaries between callbacks instead of connecting callbacks
+directly. This decouples the callbacks, making it more manageable. This also
+enables triggering callbacks at will by setting store values.
+
+One may be tempted to use the same store/flag for both opening and closing a
+dialog or other component, however, considering the previously mentioned
+'single-input' rule, this may be a bad idea depending on the use case. Having a
+binary flag means that the input can have two different values that may lead to
+conditional code inside the callback. This becomes an issue if the callback is
+pulling in a lot of data (through `State`) which is only used some times. This
+can be resolved by having a separate flag for initialization, in addition to
+the normal signal flag. An example of this follows:
+
+```python
+dialog_toggle = dcc.Store(data=False)
+dialog_init = dcc.Store(data=False)
+
+@callback(
+    Output(dialog, 'is_open'),
+    Input(dialog_init, 'data'),
+)
+def on_dialog_toggle(signal: bool):
+    '''opens the dialog when the signal is true, and closes the dialog when the
+    signal is false'''
+    return signal
+
+@callback(
+    Output(graph, 'children'),
+    Input(dialog_init, 'data'),
+    State(bigdata, 'data'),
+)
+def on_init(signal: bool, bigdata: dict):
+    '''initializes the dialog'''
+    return initialize_dialog(bigdata)
+```
+
+Here we can see that toggling the dialog depends on the signal value, which is
+fine since it's not using any state. The state is isolated to the init-callback
+which uses the state exclusively and consistently.
