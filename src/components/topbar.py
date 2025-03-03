@@ -1,5 +1,3 @@
-from typing import List
-
 import dash_bootstrap_components as dbc
 from dash import (
     Input,
@@ -52,7 +50,7 @@ def register(app):  # type: ignore
         Input(stores.datasets, 'data'),
         prevent_initial_call=False,
     )
-    def on_datasets(datasets: DatasetDict) -> List[Component]:
+    def on_datasets(datasets: DatasetDict) -> list[Component]:
         """Update dataset dropdown"""
         if not datasets:
             return [dbc.DropdownMenuItem('No datasets uploaded')]

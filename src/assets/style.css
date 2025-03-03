@@ -67,3 +67,9 @@ div:has(> .schema-uploader) {
     color: var(--bs-link-color) !important;
     text-decoration: underline !important;
 }
+
+/* conf dialog */
+/* TODO: auto fit content text width */
+#conf-dialog-mapping-table td {
+    min-width: 200px;
+}

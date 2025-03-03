@@ -1,5 +1,3 @@
-from typing import List, Tuple
-
 import dash_bootstrap_components as dbc
 import dash.dcc as dcc
 from dash import (
@@ -16,6 +14,7 @@ from dash.development.base_component import Component
 
 import stores
 import utils
+from import_utils import update_dataset_mapping
 from components import modals
 from odm import odm
 from stores import DatasetDict
@@ -54,7 +53,7 @@ _conf_dialog = modals.init_modal(
 layout = _conf_dialog
 
 
-def _find_keys(d: dict, val: str) -> List[str]:
+def _find_keys(d: dict, val: str) -> list[str]:
     '''returns list of keys in dict `d` with value `val`'''
     return list(
         map(lambda pair: pair[0],
@@ -76,7 +75,7 @@ def register(app):  # type: ignore
         State(stores.dataset_id, 'data'),
     )
     def on_cancel_btn_click(n: int, flag: bool, dataset_id: str
-                            ) -> Tuple[bool, Patch, str]:
+                            ) -> tuple[bool, Patch, str]:
         '''close dialog. If opened from upload, then delete dataset.'''
         if flag == stores.OPEN_FROM_UPLOAD:
             p = Patch()
@@ -101,7 +100,7 @@ def register(app):  # type: ignore
         signal: bool,
         datasets: DatasetDict,
         dataset_id: str,
-    ) -> Tuple[str, str, str, bool]:
+    ) -> tuple[str, str, str, bool]:
         '''init conf dialog'''
         ds = datasets[dataset_id]
         version_str = ds['odm_version']
@@ -121,7 +120,7 @@ def register(app):  # type: ignore
         selected_version_str: str,
         datasets: DatasetDict,
         dataset_id: str,
-    ) -> Tuple[Component, dict]:
+    ) -> tuple[Component, dict]:
         '''initializes the mapping table with ODM table names whenever the
         selected version changes'''
         assert selected_version_str
@@ -172,8 +171,8 @@ def register(app):  # type: ignore
         State({'type': 'sheet-table-dropdown', 'index': ALL}, 'id'),
     )
     def on_sheet_table_dropdown_value(
-        dropdown_values: List[str],
-        dropdown_ids: List[str],
+        dropdown_values: list[str],
+        dropdown_ids: list[str],
     ) -> Patch:
         '''Update the sheet-table mapping, when a table is selected. Any
         previous mappings to the same table will be set to ignored.
@@ -211,7 +210,7 @@ def register(app):  # type: ignore
         new_mapping: dict,
         datasets: DatasetDict,
         dataset_id: str,
-    ) -> Tuple[bool, str, bool, Patch, str]:
+    ) -> tuple[bool, str, bool, Patch, str]:
         '''update dataset config with table mapping, and close conf dialog'''
         ds = datasets[dataset_id]
         ds['odm_version'] = version_str
@@ -219,12 +218,13 @@ def register(app):  # type: ignore
         mapping = ds['sheet_tables']
         for sheet, table in new_mapping.items():
             mapping[sheet] = table
+        update_dataset_mapping(ds, mapping)
 
         # check for duplicates
         selected_tables = list(filter(bool, mapping.values()))
         dup_tables = utils.duplicates(selected_tables)
         if len(dup_tables) > 0:
-            entries: List[str] = []
+            entries: list[str] = []
             for table in dup_tables:
                 keys = _find_keys(mapping, table)
                 entries.append(html.Span([

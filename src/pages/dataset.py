@@ -1,9 +1,5 @@
 import logging
-from typing import (
-    Dict,
-    List,
-    Optional,
-)
+from typing import Optional
 
 import dash
 from dash import (
@@ -20,7 +16,13 @@ import stores
 import utils
 from components import sidebar
 from odm import odm
-from stores import Dataset
+from stores import (
+    Dataset,
+    get_table_headers,
+    get_table_mapping,
+    get_table_size,
+)
+
 
 _PAGE_URL = '/datasets/<dataset_id>'
 
@@ -38,22 +40,20 @@ def layout(dataset_id: Optional[str] = None) -> Component:
     ])
 
 
-def _fmt_list(values: List[str]) -> str:
+def _fmt_list(values: list[str]) -> str:
     return ', '.join(values)
 
 
 def _gen_odm_table_list(
     version: odm.Version,
-    sheet_tables: Dict[str, str],
-    table_headers: Dict[odm.TableName, List[str]],
-    table_sizes: Dict[odm.TableName, int],
+    ds: Dataset,
 ) -> Component:
-    entries: List[Component] = []
-    for sheet, table, in sheet_tables.items():
+    entries: list[Component] = []
+    for sheet, table, in get_table_mapping(ds):
         if not table:
             continue
-        num_rows = table_sizes[table]
-        cols = set(table_headers[table])
+        num_rows = get_table_size(ds, table)
+        cols = set(get_table_headers(ds, table))
         num_cols = len(cols)
         all_odm_cols = set(odm.get_column_names(version, table))
         odm_cols = all_odm_cols.intersection(cols)
@@ -79,16 +79,16 @@ def _gen_odm_table_list(
 
 
 def _gen_unknown_table_list(
-    sheet_tables: Dict[str, str]
+    sheet_tables: dict[str, str]
 ) -> Component:
-    entries: List[html.Li] = []
+    entries: list[html.Li] = []
     for a, b, in sheet_tables.items():
         if not b:
             entries.append(html.Li(f'"{a}"'))
     return html.Ul(entries)
 
 
-def _init_upload_report(ds: Dataset) -> List[Component]:
+def _init_upload_report(ds: Dataset) -> list[Component]:
     # FIXME: "upload report" isn't a good name, since it changes every time the
     # dataset is re-configured. It's more of a "dataset config overview". This
     # must be fixed in the spec as well.
@@ -108,8 +108,7 @@ def _init_upload_report(ds: Dataset) -> List[Component]:
         entry('Upload time', timestr),
         entry('ODM version', ver_str),
         entry(f'ODM tables ({num_odm_tables})'),
-        _gen_odm_table_list(ver, sheet_tables, ds['table_headers'],
-                            ds['table_sizes']),
+        _gen_odm_table_list(ver, ds),
         entry(f'Ignored sheets ({num_ignored_tables})'),
         _gen_unknown_table_list(sheet_tables),
     ]
@@ -122,7 +121,7 @@ def _init_upload_report(ds: Dataset) -> List[Component]:
     State('url', 'pathname'),
 )
 def on_dataset_page(
-    datasets: Dict[str, Dataset],
+    datasets: dict[str, Dataset],
     pathname: str,
 ) -> Component:
     '''(re)initializes the dataset page on load and when changed'''

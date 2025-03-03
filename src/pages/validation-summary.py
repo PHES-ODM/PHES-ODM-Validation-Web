@@ -1,11 +1,6 @@
 from itertools import groupby
 # from pprint import pformat, pprint
-from typing import (
-    List,
-    Optional,
-    Set,
-    Tuple,
-)
+from typing import Optional, Set
 from urllib.parse import unquote
 
 import dash
@@ -27,6 +22,7 @@ from odm_validation.summarization import ErrorSummary, SummaryEntry, SummaryKey
 import stores
 import utils
 from components import sidebar
+from stores import get_table_mapping, get_table_size
 
 # XXX: validation_name is called name and not id because the name doesn't
 # identify the validation by itself, since it depends on dataset_id, so the
@@ -76,7 +72,7 @@ def layout(
 )
 def on_page_load(dummy: Component, pathname: str,
                  datasets: dict, summaries: dict
-                 ) -> Tuple[Component, str]:
+                 ) -> tuple[Component, str]:
     # - number of invalid tables (excel)
     # - for each table:
     #   - number of errors
@@ -92,29 +88,31 @@ def on_page_load(dummy: Component, pathname: str,
         kind: ErrorKind,
         table: str,
         key: SummaryKey
-    ) -> List[SummaryEntry]:
+    ) -> list[SummaryEntry]:
         es = summary[kind.value + 's'].get(table, [])
         return list(filter(lambda e: e['key'] == key, es))
 
-    def get_count(es: List[dict], rule_id: RuleId) -> int:
+    def get_count(es: list[dict], rule_id: RuleId) -> int:
         e: dict = next(filter(lambda e: e['rule_id'] == rule_id.value, es), {})
         return e.get('count', 0)
 
     (dataset_id, validation_name) = utils.get_validation_id(pathname)
 
     ds = datasets[dataset_id]
-    sheet_tables = ds['sheet_tables']
 
     report_summary = summaries[dataset_id][validation_name]
 
     # tables
     # XXX: validations can't be read with an updated version of the app, if
     # RuleId value changes in the next version
+    tables = []
     rs = report_summary
     table_errors = []
-    for sheet, table in sheet_tables.items():
+    for sheet, table in get_table_mapping(ds):
         if not table:
             continue
+        tables.append(table)
+
         es = get_entries(rs, ErrorKind.ERROR, table, SummaryKey.TABLE)
         ws = get_entries(rs, ErrorKind.WARNING, table, SummaryKey.TABLE)
         num_errors = get_count(es, RuleId._all)
@@ -122,7 +120,7 @@ def on_page_load(dummy: Component, pathname: str,
 
         es = get_entries(rs, ErrorKind.ERROR, table, SummaryKey.ROW)
         invalid_rows = list(get_value_set(es))
-        total_rows = ds['table_sizes'][table]
+        total_rows = get_table_size(ds, table)
 
         table_errors.append({
             'Table': table,
@@ -132,7 +130,7 @@ def on_page_load(dummy: Component, pathname: str,
             'Total Rows': total_rows,
         })
 
-    def getrows(table: str, es: List[SummaryEntry]) -> List[dict]:
+    def getrows(table: str, es: list[SummaryEntry]) -> list[dict]:
         def getkey(e: SummaryEntry) -> str:
             return e['value']
         result = []
@@ -147,9 +145,7 @@ def on_page_load(dummy: Component, pathname: str,
         return result
 
     col_errors = []
-    for table in sheet_tables.values():
-        if not table:
-            continue
+    for table in tables:
         es = get_entries(rs, ErrorKind.ERROR, table, SummaryKey.COLUMN)
         col_errors += getrows(table, es)
 
