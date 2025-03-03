@@ -98,5 +98,10 @@ validation_progress_dialog.register(app)  # type: ignore
 # eg. gunicorn -b 127.0.0.1:8000 app:server
 server = app.server
 
-if __name__ == '__main__':
+
+def main():
     app.run_server(debug=True)
+
+
+if __name__ == '__main__':
+    main()
