@@ -1,4 +1,6 @@
+import sys
 import logging
+from os.path import dirname, join
 
 import dash
 import dash_bootstrap_components as dbc
@@ -32,9 +34,21 @@ stylesheets = [
     'https://codepen.io/chriddyp/pen/bWLwgP.css'
 ]
 
-app = Dash(__name__, use_pages=True, external_stylesheets=stylesheets,
+is_bundle = getattr(sys, "frozen", False)
+src_dir = join(dirname(sys.executable), 'src') if is_bundle else ''
+
+app = Dash(__name__, use_pages=True,
+           assets_folder=join(src_dir, 'assets'),
+           pages_folder=join(src_dir, 'pages'),
+           external_stylesheets=stylesheets,
            prevent_initial_callbacks=True,
            compress=True)
+
+if is_bundle:
+    logging.info(
+        "The ODM webtool is now running. " +
+        "If a browser window does not open soon, type in the URL " +
+        "http://127.0.0.1:8050/ in a browser to open the tool.")
 
 app.layout = html.Div([
     # stores

@@ -1,0 +1,19 @@
+name: test-installer-gen
+
+on: [pull_request]
+
+jobs:
+  test-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source repository
+        uses: actions/checkout@v2
+      - name: Set up Python environment
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - name: Install Python Dependencies
+        run: pip install -r requirements.txt
+      - name: Build linux app
+        run: python install/setup.py build_exe

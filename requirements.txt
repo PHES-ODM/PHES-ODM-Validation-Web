@@ -1,4 +1,4 @@
-# requires python>=3.9
+# requires python>=3.9,<=3.12
 
 dash==2.18.2
 dash-bootstrap-components==1.7.1
@@ -7,6 +7,7 @@ dash[diskcache]
 mypy==1.15.0
 orjson==3.10.15
 typing_extensions==4.12.2
+cx_Freeze
 
 odm_sharing @ git+https://github.com/Big-Life-Lab/PHES-ODM-sharing.git@v1.0.1
 odm_validation @ git+https://github.com/Big-Life-Lab/PHES-ODM-Validation.git@dev
