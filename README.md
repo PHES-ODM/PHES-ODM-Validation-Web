@@ -26,6 +26,29 @@ For Windows systems use the command below,
 ".env/Scripts/python" src/app.py
 ```
 
+## Standalone installation
+
+The app can also be packaged as a binary distributable.
+
+1. Pre-built binaries are available in the release section of the github
+   repository. If you want to build it yourself, then use the following command
+   for your system to package the app:
+
+    Linux:
+
+    `python install/setup.py bdist_appimage`
+
+    Mac:
+
+    `python install/setup.py bdist_dmg`
+
+    Windows:
+
+    `python install/setup.py bdist_msi`
+
+2. Distribute and run it. A browser tab pointing to the web-service will be
+   opened automatically when running it.
+
 ## Development
 
 For Unix type systems use the commands below,
