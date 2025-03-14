@@ -241,9 +241,8 @@ def register(app):  # type:ignore
 
         # get data sources
         table_files = stores._decode_files(dataset_data[dataset_id])
-        csv_files = seq(table_files.items())\
-            .map(lambda kv: CsvFile(table=kv[0], file=kv[1]))\
-            .list()
+        csv_files: list[CsvFile] = \
+            [CsvFile(table=t, file=f) for t, f in table_files.items()]
 
         # extract filtered data
         try:
