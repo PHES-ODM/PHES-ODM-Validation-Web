@@ -1,5 +1,6 @@
 import logging
 from typing import Optional
+from urllib.parse import unquote
 
 import dash
 from dash import (
@@ -24,14 +25,15 @@ from stores import (
 )
 
 
-_PAGE_URL = '/datasets/<dataset_id>'
+_PAGE_URL = '/datasets/<enc_dataset_id>'
 
 dash.register_page(__name__, path_template=_PAGE_URL)
 
 _page_content = html.Div(id='dataset-page-content')
 
 
-def layout(dataset_id: Optional[str] = None) -> Component:
+def layout(enc_dataset_id: Optional[str] = None) -> Component:
+    dataset_id = str(unquote(enc_dataset_id)) if enc_dataset_id else ''
     return html.Div([
         sidebar.layout,
         html.H1('Dataset'),
