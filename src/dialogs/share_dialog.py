@@ -24,6 +24,7 @@ import stores
 import utils
 from components import modals
 from dialogs.common import register_dialog_flag_callback
+from odm.odm_defs import TableName
 
 sharing_errors = dbc.Alert('', color='danger', is_open=False)
 
@@ -215,6 +216,7 @@ def register(app):  # type:ignore
             Input(stores.share_dialog_share, 'data'),
             State(stores.dataset_id, 'data'),
             State(stores.dataset_data, 'data'),
+            State(stores.datasets, 'data'),
             State(stores.sharing_schema_filename, 'data'),
             State(stores.sharing_schema_data, 'data'),
         ],
@@ -230,6 +232,7 @@ def register(app):  # type:ignore
         n: int,
         dataset_id: str,
         dataset_data: dict,
+        datasets: dict,
         schema_filename: str,
         schema_data: str,
      ) -> tuple[dict, bool, Component]:
@@ -240,7 +243,11 @@ def register(app):  # type:ignore
         schema_name = Path(schema_filename).stem
 
         # get data sources
-        table_files = stores._decode_files(dataset_data[dataset_id])
+        ds = datasets[dataset_id]
+        sheet_tables = ds['sheet_tables']
+        sheet_files = stores._decode_files(dataset_data[dataset_id])
+        table_files: dict[TableName, BytesIO] = \
+            {sheet_tables[s]: f for s, f in sheet_files.items()}
         csv_files: list[CsvFile] = \
             [CsvFile(table=t, file=f) for t, f in table_files.items()]
 
