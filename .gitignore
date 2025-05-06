@@ -4,3 +4,6 @@ dist/
 
 # Python venv
 .env/
+
+# Mac
+.DS_Store
