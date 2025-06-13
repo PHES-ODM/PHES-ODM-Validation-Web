@@ -1,6 +1,10 @@
 # Built files
 __pycache__/
+build/
 dist/
 
 # Python venv
 .env/
+
+# Mac
+.DS_Store
