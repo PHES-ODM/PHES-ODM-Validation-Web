@@ -1,0 +1,24 @@
+.git
+.github
+.gitignore
+
+# Python venv / build output
+.env/
+build/
+dist/
+**/__pycache__
+**/*.py[cod]
+.mypy_cache
+
+# Not needed at runtime (paths are context-root relative,
+# so src/assets is kept)
+/docs
+/assets
+/install
+mypy.ini
+
+# Mac
+**/.DS_Store
+
+Dockerfile
+.dockerignore

@@ -26,6 +26,54 @@ For Windows systems use the command below,
 ".env/Scripts/python" src/app.py
 ```
 
+## Docker
+
+The app can also be run as a website in a container, which requires no local
+Python installation. It is served by [Gunicorn](https://gunicorn.org/) on port
+3839.
+
+Using [docker compose](./docker-compose.yml),
+
+```
+docker compose up -d --build
+```
+
+Or using [docker](./Dockerfile) directly,
+
+```
+docker build -t phes-odm-validation-web .
+docker run --rm -p 3839:3839 phes-odm-validation-web
+```
+
+Then open <http://localhost:3839/> in a browser. Unlike the standalone
+installation, no browser tab is opened automatically.
+
+To view the logs and stop the app when using compose,
+
+```
+docker compose logs -f
+docker compose down
+```
+
+### Configuration
+
+The following environment variables can be set to change how the app is
+served. When using compose they can be put in a `.env` file next to
+`docker-compose.yml`.
+
+- `PORT` (default `3839`): the port the app is served on. With compose this
+  changes the host port only, the container always listens on 3839.
+- `WEB_CONCURRENCY` (default `2`): the number of Gunicorn worker processes.
+- `GUNICORN_THREADS` (default `4`): the number of threads per worker.
+- `GUNICORN_TIMEOUT` (default `180`): the number of seconds before a request is
+  timed out. Increase it if large uploads are being cut off.
+
+For example, to serve the app on port 8080 with four workers,
+
+```
+PORT=8080 WEB_CONCURRENCY=4 docker compose up -d
+```
+
 ## Standalone installation
 
 The app can also be packaged as a binary distributable.

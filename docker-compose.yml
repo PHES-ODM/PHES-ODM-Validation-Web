@@ -1,0 +1,27 @@
+# PHES-ODM web validation tool.
+#
+#   docker compose up -d --build
+#
+# Then open http://localhost:3839/
+
+services:
+  phes-odm-validation-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: phes-odm-validation-web
+    container_name: phes-odm-validation-web
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3839}:3839"
+    environment:
+      # Gunicorn tuning; see the Dockerfile for the defaults these override.
+      PORT: 3839
+      WEB_CONCURRENCY: "${WEB_CONCURRENCY:-2}"
+      GUNICORN_THREADS: "${GUNICORN_THREADS:-4}"
+      GUNICORN_TIMEOUT: "${GUNICORN_TIMEOUT:-180}"
+    # The background-callback diskcache lives in /tmp; keeping it on a tmpfs
+    # means it is discarded with the container rather than growing in the
+    # writable layer.
+    tmpfs:
+      - /tmp
